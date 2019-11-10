@@ -1,0 +1,63 @@
+﻿{
+  "functions": [
+    {
+      "subjectType": null,
+      "name": "Message",
+      "parameters": [
+        {
+          "type": "String",
+          "name": "msg",
+          "description": "The message you want to show the user."
+        }
+      ],
+      "returnValueType": null,
+      "description": "Shows a message to the user."
+    },
+    {
+      "subjectType": "Reference",
+      "name": "GetHealth",
+      "parameters": [],
+      "returnValueType": "Number",
+      "description": "Returns the health of the subject."
+    },
+    {
+      "subjectType": "Reference",
+      "name": "AddItem",
+      "parameters": [
+        {
+          "type": "Reference",
+          "name": "item",
+          "description": "The item you want to add to the container."
+        },
+        {
+          "type": "Number",
+          "name": "count",
+          "description": "The number of items you want to add."
+        }
+      ],
+      "returnValueType": "Boolean",
+      "description": "Adds the given item the given times to the container. Returns True if the add was successful, False otherwise."
+    },
+    {
+      "subjectType": "Reference",
+      "name": "GetNumberOfItems",
+      "parameters": [
+        {
+          "type": "Reference",
+          "name": "item",
+          "description": "The item you want to find out how many the subject has."
+        }
+      ],
+      "returnValueType": "Number",
+      "description": "Returns how many of the specified item is in the subject's inventory."
+    }
+  ],
+  "eventTypes": [
+    "WhenEquipped",
+    "WhenUnequipped",
+    "WhenActivated",
+    "WhenInGame",
+    "WhenAttacked",
+    "WhenDied"
+  ]
+}
