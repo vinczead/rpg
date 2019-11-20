@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameScript.Model
+namespace GameScript.Visitors
 {
-    public class EventType
+    public class ErrorType
     {
-        public string Name { get; set; }
     }
 }

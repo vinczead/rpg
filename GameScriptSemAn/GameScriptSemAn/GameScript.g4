@@ -13,8 +13,9 @@ statement: assignmentStatement | ifStatement | functionCallStatement | RETURN | 
 
 expression
 	: functionCallStatement									#funcExpression
-	| varExp												#varExpression
+	| path													#pathExpression
 	| STRING												#stringExpression
+	| REFERENCE												#refExpression
 	| NUMBER												#numberExpression
 	| BOOLEAN												#boolExpression
 	| NOT expression										#notExpression
@@ -25,15 +26,18 @@ expression
 	| '(' expression ')'									#parenExpression
 	;
 
-varExp: ((varName | REFERENCE) '.')* varName;
+path: varPath | refPath;
+
+refPath: REFERENCE ('.' varName)*;
+varPath: varName ('.' varName)*;
 
 functionParameterList: expression (',' expression)*;
 
 variableDeclaration: varName IS typeName (WITHVALUE expression)?;
-assignmentStatement: SET varExp TO expression;
+assignmentStatement: SET path TO expression;
 ifStatement: IF expression THEN statementList (elseStatement)? ENDIF;
 elseStatement: ELSE statementList;
-functionCallStatement: (varName | REFERENCE)? '=>' functionName '(' functionParameterList ')';
+functionCallStatement: path? '=>' functionName '(' functionParameterList ')';
 
 additiveOperator: PLUS | MINUS;
 multiplOperator: MULT | DIV;

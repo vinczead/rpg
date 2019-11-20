@@ -26,7 +26,7 @@ namespace Rpg.Screens
 
         protected RpgGame game;
 
-        private Keys[] prevPressedKeys = new Keys[0];
+        protected Keys[] prevPressedKeys = new Keys[0];
         protected Keys[] releasedKeys = new Keys[0];
 
         protected bool WasKeyPressed(Keys key)

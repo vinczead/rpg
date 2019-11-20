@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Runtime.Serialization;
 
-namespace GameScriptSemAn.SymbolTable
+namespace GameScript.SymbolTable
 {
     [Serializable]
     internal class NameAlreadyDefinedException : Exception

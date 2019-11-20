@@ -1,0 +1,74 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{15DCEC05-D68C-4549-BE1A-FE4EC673FCF8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <RootNamespace>GameModel</RootNamespace>
+    <AssemblyName>GameModel</AssemblyName>
+    <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <Deterministic>true</Deterministic>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup>
+    <StartupObject />
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+    <None Include="Models\GameDiagram.cd" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="GameObjectBaseManager.cs" />
+    <Compile Include="Models\BaseClasses\ActivatorBase.cs" />
+    <Compile Include="Models\BaseClasses\CharacterBase.cs" />
+    <Compile Include="Models\BaseClasses\ConsumableBase.cs" />
+    <Compile Include="Models\BaseClasses\CreatureBase.cs" />
+    <Compile Include="Models\BaseClasses\EquipmentBase.cs" />
+    <Compile Include="Models\BaseClasses\EquipmentType.cs" />
+    <Compile Include="Models\BaseClasses\GameObjectBase.cs" />
+    <Compile Include="Models\BaseClasses\ItemBase.cs" />
+    <Compile Include="Models\BaseClasses\NpcBase.cs" />
+    <Compile Include="Models\BaseClasses\PlayerBase.cs" />
+    <Compile Include="Models\IdNotFoundException.cs" />
+    <Compile Include="Models\InstanceClasses\Activator.cs" />
+    <Compile Include="Models\InstanceClasses\Character.cs" />
+    <Compile Include="Models\InstanceClasses\Consumable.cs" />
+    <Compile Include="Models\InstanceClasses\Creature.cs" />
+    <Compile Include="Models\InstanceClasses\Equipment.cs" />
+    <Compile Include="Models\InstanceClasses\GameObject.cs" />
+    <Compile Include="Models\InstanceClasses\Item.cs" />
+    <Compile Include="Models\InstanceClasses\Npc.cs" />
+    <Compile Include="Models\InstanceClasses\Player.cs" />
+    <Compile Include="Models\InstanceClasses\Quest.cs" />
+    <Compile Include="Models\InstanceClasses\Variable.cs" />
+    <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\World.cs" />
+    <Compile Include="TextureManager.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+</Project>

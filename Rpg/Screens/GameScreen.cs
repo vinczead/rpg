@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using GameModel.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Rpg.Models;
 
 namespace Rpg.Screens
 {
@@ -40,7 +40,7 @@ namespace Rpg.Screens
             }
             if (WasKeyPressed(Keys.F12))
             {
-                game.AddScreen(new ConsoleScreen(game));
+                game.AddScreen(new ConsoleScreen(game, world));
             }
         }
     }

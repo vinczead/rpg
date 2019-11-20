@@ -1,4 +1,4 @@
-﻿namespace GameScriptSemAn
+﻿namespace GameScript
 {
     partial class GameScriptParser
     {

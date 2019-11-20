@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Text;
 
-namespace GameScriptSemAn.SymbolTable
+namespace GameScript.SymbolTable
 {
     public class Env
     {

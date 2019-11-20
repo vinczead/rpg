@@ -3,22 +3,26 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using GameModel;
+using GameModel.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using GameScript;
 
 namespace Rpg.Screens
 {
-    public class ConsoleScreen : Screen
+    public class ConsoleScreen : TextInputScreen
     {
-        private string command = "Spawn($RingOfExample, $ExampleRoom, 10, 10, \"Ring2\")";
         private List<string> history = new List<string>();
+        private World world;
 
-        public ConsoleScreen(RpgGame game) : base(game)
+        public ConsoleScreen(RpgGame game, World world) : base(game)
         {
             IsOverlay = true;
+            this.world = world;
+            Text = "=>Message(var1)";
             history.Add("--- RpgGame Console ---");
-            history.Add("Enter GameScript statement below...");
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -28,20 +32,20 @@ namespace Rpg.Screens
             {
                 spriteBatch.DrawString(font, history[i], new Vector2(0, i * font.LineSpacing), Color.White);
             }
-            spriteBatch.DrawString(font, $"> {command}", new Vector2(0, 200), Color.Gray);
+            spriteBatch.DrawString(font, $"> {Text}", new Vector2(0, 200), Color.Gray);
         }
 
         public override void Update(GameTime gameTime)
         {
             base.Update(gameTime);
-            if (releasedKeys.Contains(Keys.A))
-                command += "a";
+            
             if (WasKeyPressed(Keys.Enter))
             {
                 //call script runner
+                Executer.ExecuteStatement(Text, world, world.Player);
 
-                history.Add(command);
-                command = "";
+                history.Add(Text);
+                //Text = "";
             }
             if (WasKeyPressed(Keys.Escape))
             {
