@@ -6,6 +6,7 @@ using GameModel.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Rpg.Models;
 
 namespace Rpg.Screens
 {
@@ -31,7 +32,7 @@ namespace Rpg.Screens
             world.Update(gameTime);
             if (WasKeyPressed(Keys.Space))
             {
-                GameObject selectedGameObject = null;
+                GameWorldObject selectedGameObject = null;
 
                 if (selectedGameObject is Item)
                 {

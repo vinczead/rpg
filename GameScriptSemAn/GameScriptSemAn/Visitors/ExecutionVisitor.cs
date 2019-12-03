@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime.Misc;
 using GameModel.Models;
+using GameModel.Models.InstanceInterfaces;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace GameScript.Visitors
 {
     internal class ExecutionVisitor : ExpressionVisitor
     {
-        public ExecutionVisitor(World world, GameObject gameObject) : base(world, gameObject)
+        public ExecutionVisitor(IWorld world, IGameWorldObject gameObject) : base(world, gameObject)
         {
         }
 

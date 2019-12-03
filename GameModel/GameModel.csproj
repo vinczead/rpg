@@ -37,35 +37,24 @@
   </PropertyGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Models\GameDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GameObjectBaseManager.cs" />
-    <Compile Include="Models\BaseClasses\ActivatorBase.cs" />
-    <Compile Include="Models\BaseClasses\CharacterBase.cs" />
-    <Compile Include="Models\BaseClasses\ConsumableBase.cs" />
-    <Compile Include="Models\BaseClasses\CreatureBase.cs" />
-    <Compile Include="Models\BaseClasses\EquipmentBase.cs" />
-    <Compile Include="Models\BaseClasses\EquipmentType.cs" />
-    <Compile Include="Models\BaseClasses\GameObjectBase.cs" />
-    <Compile Include="Models\BaseClasses\ItemBase.cs" />
-    <Compile Include="Models\BaseClasses\NpcBase.cs" />
-    <Compile Include="Models\BaseClasses\PlayerBase.cs" />
+    <Compile Include="Models\BaseInterfaces\IGameObjectBase.cs" />
+    <Compile Include="Models\BaseInterfaces\IGameWorldObjectBase.cs" />
     <Compile Include="Models\IdNotFoundException.cs" />
-    <Compile Include="Models\InstanceClasses\Activator.cs" />
-    <Compile Include="Models\InstanceClasses\Character.cs" />
-    <Compile Include="Models\InstanceClasses\Consumable.cs" />
-    <Compile Include="Models\InstanceClasses\Creature.cs" />
-    <Compile Include="Models\InstanceClasses\Equipment.cs" />
-    <Compile Include="Models\InstanceClasses\GameObject.cs" />
-    <Compile Include="Models\InstanceClasses\Item.cs" />
-    <Compile Include="Models\InstanceClasses\Npc.cs" />
-    <Compile Include="Models\InstanceClasses\Player.cs" />
-    <Compile Include="Models\InstanceClasses\Quest.cs" />
-    <Compile Include="Models\InstanceClasses\Variable.cs" />
-    <Compile Include="Models\Room.cs" />
-    <Compile Include="Models\World.cs" />
-    <Compile Include="TextureManager.cs" />
+    <Compile Include="Models\InstanceInterfaces\IActivator.cs" />
+    <Compile Include="Models\InstanceInterfaces\ICharacter.cs" />
+    <Compile Include="Models\InstanceInterfaces\IConsumable.cs" />
+    <Compile Include="Models\InstanceInterfaces\ICreature.cs" />
+    <Compile Include="Models\InstanceInterfaces\IEquipment.cs" />
+    <Compile Include="Models\InstanceInterfaces\IGameObject.cs" />
+    <Compile Include="Models\InstanceInterfaces\IGameWorldObject.cs" />
+    <Compile Include="Models\InstanceInterfaces\IItem.cs" />
+    <Compile Include="Models\InstanceInterfaces\INpc.cs" />
+    <Compile Include="Models\InstanceInterfaces\IPlayer.cs" />
+    <Compile Include="Models\IRoom.cs" />
+    <Compile Include="Models\IWorld.cs" />
+    <Compile Include="Models\Variable.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL" />

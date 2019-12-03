@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using GameScript.Model;
 using GameScript.Visitors;
 using GameModel.Models;
+using GameModel.Models.InstanceInterfaces;
 
 namespace GameScript
 {
@@ -50,14 +51,14 @@ namespace GameScript
             return context;
         }
 
-        public static void ExecuteStatement(string statement, World world, GameObject gameObject)
+        public static void ExecuteStatement(string statement, IWorld world, IGameWorldObject gameObject)
         {
             var parseTree = ParseStatement(statement);
             var executionVisitor = new ExecutionVisitor(world, gameObject);
             executionVisitor.Visit(parseTree);
         }
 
-        public static void ExecuteRunBlock(World world, GameObject gameObject, string runBlockType)
+        public static void ExecuteRunBlock(IWorld world, IGameWorldObject gameObject, string runBlockType) //todo: take Variables as parameter
         {
             var parseTree = ParseScript(gameObject.Base.Script);
             var executionVisitor = new ExecutionVisitor(world, gameObject);

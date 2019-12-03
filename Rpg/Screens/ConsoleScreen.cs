@@ -21,7 +21,7 @@ namespace Rpg.Screens
         {
             IsOverlay = true;
             this.world = world;
-            Text = "=>Message(var1)";
+            Text = "=>Message(var1 + \"sadas\")";
             history.Add("--- RpgGame Console ---");
         }
 

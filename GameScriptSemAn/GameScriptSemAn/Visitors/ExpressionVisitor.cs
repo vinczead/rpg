@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime.Misc;
 using GameModel.Models;
+using GameModel.Models.InstanceInterfaces;
 using GameScript;
 using System;
 using System.Collections.Generic;
@@ -11,10 +12,10 @@ namespace GameScript.Visitors
 {
     public class ExpressionVisitor : GameScriptBaseVisitor<object>
     {
-        public World World { get; set; }
-        public GameObject GameObject { get; set; }
+        public IWorld World { get; set; }
+        public IGameWorldObject GameObject { get; set; }
 
-        public ExpressionVisitor(World world, GameObject gameObject)
+        public ExpressionVisitor(IWorld world, IGameWorldObject gameObject)
         {
             World = world;
             GameObject = gameObject;
@@ -46,7 +47,7 @@ namespace GameScript.Visitors
         public override object VisitVarPath([NotNull] GameScriptParser.VarPathContext context)
         {
             Variable variable = null;
-            GameObject currentObject = GameObject;
+            IGameWorldObject currentObject = GameObject;
 
             foreach (var varName in context.varName())
             {
@@ -56,7 +57,7 @@ namespace GameScript.Visitors
                 if (currentObject.Variables.TryGetValue(varName.GetText(), out variable))
                 {
                     if (variable.Type == typeof(ReferenceType))
-                        currentObject = (GameObject)World.GetById(variable.Name);
+                        currentObject = (IGameWorldObject)World.GetById(variable.Name);
                     else
                         currentObject = null;
                 }
