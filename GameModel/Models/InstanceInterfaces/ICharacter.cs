@@ -5,7 +5,7 @@ namespace GameModel.Models.InstanceInterfaces
     public interface ICharacter : ICreature
     {
         List<IItem> Items { get; set; }
-        void InsertItem(IGameWorldObject gameObject);
-        void DropItem(IGameWorldObject gameObject);
+        void InsertItem(IItem item);
+        void DropItem(IItem item);
     }
 }

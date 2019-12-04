@@ -11,9 +11,19 @@ namespace Rpg.Models
 
         }
 
+        public double GetHealth()
+        {
+            return CurrentHealth;
+        }
+
         public void Kill()
         {
 
+        }
+
+        public void SetHealth(double health)
+        {
+            CurrentHealth = (int)health;
         }
     }
 }

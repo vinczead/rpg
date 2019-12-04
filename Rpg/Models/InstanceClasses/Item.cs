@@ -1,4 +1,5 @@
-﻿using GameModel.Models.InstanceInterfaces;
+﻿using GameModel.Models;
+using GameModel.Models.InstanceInterfaces;
 using GameScript;
 
 namespace Rpg.Models
@@ -10,6 +11,13 @@ namespace Rpg.Models
             Room.RemoveGameWorldObject(this);
             character.InsertItem(this);
             Executer.ExecuteRunBlock(this, "WhenPickedUp");
+        }
+
+        public void Drop(ICharacter character)
+        {
+            Position = character.Position;
+            character.Room.InsertGameWorldObject(this);
+            Executer.ExecuteRunBlock(this, "WhenDropped");
         }
     }
 }

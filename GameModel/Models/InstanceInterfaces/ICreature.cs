@@ -8,7 +8,10 @@ namespace GameModel.Models.InstanceInterfaces
 {
     public interface ICreature : IGameWorldObject
     {
+        int CurrentHealth { get; set; }
         void Attack(ICreature attacker);
         void Kill();
+        double GetHealth();
+        void SetHealth(double health);
     }
 }

@@ -26,12 +26,12 @@ namespace GameScript.Visitors
 
             if (varPath != null)
             {
-                return (Variable)VisitVarPath(varPath);
+                return VisitVarPath(varPath);
             }
 
             if (refPath != null)
             {
-                return (Variable)VisitRefPath(refPath);
+                return VisitRefPath(refPath);
             }
 
             return null;
@@ -50,7 +50,7 @@ namespace GameScript.Visitors
                     return variable.Value;
                 if(variable.Type == typeof(ReferenceType))
                 {
-                    //todo return object
+                    return GameObject.World.GetById(variable.Value);
                 }
             }
             return null;
@@ -82,13 +82,8 @@ namespace GameScript.Visitors
 
         public override object VisitRefPath([NotNull] GameScriptParser.RefPathContext context)
         {
-            //todo implement
-            return new Variable()
-            {
-                Name = "a",
-                Value = "aa",
-                Type = typeof(string)
-            };
+            var referenceText = context.REFERENCE().GetText();
+            return GameObject.World.GetById(referenceText.Substring(1, referenceText.Length - 1));
         }
 
         public override object VisitNumberExpression([NotNull] GameScriptParser.NumberExpressionContext context)

@@ -24,9 +24,8 @@ namespace GameModel
                 Script = @"Script PlayerScript
 Variables 
     A Is Number WithValue 1000
-Run WhenInGame
-    Set A To A + 1
-    =>Message(""""+A)
+Run WhenPickedUpItem
+    =>Message(""Item has been added to inventory."")
 End
 "
             };
@@ -39,13 +38,25 @@ End
 
 Variables
 	AlreadyPickedUp Is Boolean WithValue False
+    PickUpCount Is Number WithValue 0
 
 Run WhenPickedUp
+    $PlayerInstance=>SetHealth($PlayerInstance=>GetHealth()+5)
+    =>Message(""Health increased by 5!"")
+    Set PickUpCount To PickUpCount + 1
 	If AlreadyPickedUp = False Then
 		Set AlreadyPickedUp To True
-		=>Message(""Item picked up."")
+		=>Message(""Ring of Example picked up the first time."")
+    Else
+        =>Message(""Ring of Example picked up this many times: "" + PickUpCount)
 	EndIf
-End",
+End
+
+Run WhenDropped
+    $PlayerInstance=>SetHealth($PlayerInstance=>GetHealth()-5)
+    =>Message(""Health decreased by 5!"")
+End
+",
                 Texture=TextureManager.ring,
                 Type= EquipmentType.Ring
                 };

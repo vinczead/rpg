@@ -14,7 +14,7 @@ namespace GameModel.Models
     {
         Dictionary<string, IGameObjectBase> GameObjectBases { get; set; }
         Dictionary<string, IGameObject> GameObjects { get; set; }
-        List<string> Messages { get; set; }
+        Queue<string> Messages { get; set; }
         IPlayer Player { get; set; }
 
         void Update(GameTime gameTime);

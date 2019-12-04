@@ -26,6 +26,8 @@ namespace GameModel.Models
         public Dictionary<string, IGameWorldObject> GameWorldObjects { get; set; }
         public Dictionary<string, Variable> Variables { get; set; }
 
+        private List<IGameWorldObject> gameWorldObjectsToRemove = new List<IGameWorldObject>();
+
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(Texture, new Rectangle(0, 0, Width, Height), Color.White);
@@ -38,10 +40,15 @@ namespace GameModel.Models
 
         public void Update(GameTime gameTime)
         {
-            foreach (var gameObject in GameWorldObjects)
+            foreach (var gameObject in GameWorldObjects.Values)
             {
-                gameObject.Value.Update(gameTime);
+                gameObject.Update(gameTime);
             }
+            foreach (var gameObject in gameWorldObjectsToRemove)
+            {
+                GameWorldObjects.Remove(gameObject.Id);
+            }
+            gameWorldObjectsToRemove.Clear();
         }
 
         public void InsertGameWorldObject(IGameWorldObject gameWorldObject)
@@ -52,7 +59,8 @@ namespace GameModel.Models
 
         public void RemoveGameWorldObject(IGameWorldObject gameWorldObject)
         {
-            GameWorldObjects.Remove(gameWorldObject.Id);
+            //GameWorldObjects.Remove(gameWorldObject.Id);
+            gameWorldObjectsToRemove.Add(gameWorldObject);
             gameWorldObject.Room = null;
         }
     }

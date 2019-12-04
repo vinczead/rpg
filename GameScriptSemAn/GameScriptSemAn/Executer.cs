@@ -42,16 +42,6 @@ namespace GameScript
             return context;
         }
 
-        private static IParseTree ParseScript(string script)
-        {
-            var inputStream = new AntlrInputStream(script);
-            var lexer = new GameScriptLexer(inputStream);
-            var tokenStream = new CommonTokenStream(lexer);
-            var parser = new GameScriptParser(tokenStream);
-            var context = parser.program();
-            return context;
-        }
-
         private static GameScriptParser GetParser(string script)
         {
             var inputStream = new AntlrInputStream(script);

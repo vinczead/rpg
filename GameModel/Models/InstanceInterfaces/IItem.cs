@@ -6,8 +6,9 @@ using System.Threading.Tasks;
 
 namespace GameModel.Models.InstanceInterfaces
 {
-    public interface IItem
+    public interface IItem : IGameWorldObject
     {
         void PickUp(ICharacter character);
+        void Drop(ICharacter character);
     }
 }

@@ -8,17 +8,16 @@ namespace Rpg.Models
     {
         public List<IItem> Items { get; set; } = new List<IItem>();
 
-        public void InsertItem(IGameWorldObject gameObject)
+        public void InsertItem(IItem item)
         {
-            Items.Add(gameObject as Item);
+            Items.Add(item);
             Executer.ExecuteRunBlock(this, "WhenItemPickedUp");
         }
 
-        public void DropItem(IGameWorldObject gameObject)
+        public void DropItem(IItem item)
         {
-            Items.Remove(gameObject as Item);
-            gameObject.Position = Position;
-            Room.InsertGameWorldObject(gameObject);
+            Items.Remove(item);
+            item.Drop(this);
             Executer.ExecuteRunBlock(this, "WhenItemDropped");
         }
     }

@@ -37,7 +37,7 @@ variableDeclaration: varName IS typeName (WITHVALUE expression)?;
 assignmentStatement: SET path TO expression;
 ifStatement: IF expression THEN statementList (elseStatement)? ENDIF;
 elseStatement: ELSE statementList;
-functionCallStatement: path? '=>' functionName '(' functionParameterList ')';
+functionCallStatement: path? '=>' functionName '(' functionParameterList? ')';
 
 additiveOperator: PLUS | MINUS;
 multiplOperator: MULT | DIV;

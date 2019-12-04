@@ -78,21 +78,21 @@ namespace GameScript.Visitors
             return null;
         }
 
-
-
         public override object VisitFunctionCallStatement([NotNull] GameScriptParser.FunctionCallStatementContext context)
         {
-            //var path = context.path();
+            var path = context.path();
             var functionName = context.functionName().GetText();
-            var parameterList = context.functionParameterList().expression().ToList();
-            var parameterListTypes = parameterList.Select(p => TypeChecker.GetTypeOf(p, GameObject)).ToArray();
-            var parameterListValues = parameterList.Select(p => Visit(p)).ToArray();
+            var parameterList = context.functionParameterList()?.expression().ToList();
+            var parameterListTypes = parameterList?.Select(p => TypeChecker.GetTypeOf(p, GameObject)).ToArray();
+            var parameterListValues = parameterList?.Select(p => Visit(p)).ToArray();
 
-            var subject = GameObject.World;
+            object subject = GameObject.World;
+            if (path != null)
+                subject = VisitPath(path);
 
-            MethodInfo method = subject.GetType().GetMethod(functionName, parameterListTypes);
+            MethodInfo method = subject.GetType().GetMethod(functionName, parameterListTypes ?? new Type[0]);
 
-            return method.Invoke(GameObject.World, parameterListValues);
+            return method.Invoke(subject, parameterListValues);
         }
 
     }

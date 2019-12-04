@@ -16,13 +16,23 @@ namespace GameModel.Models
     {
         public Dictionary<string, IGameObjectBase> GameObjectBases { get; set; } = GameObjectBaseManager.GameObjectBases;
         public Dictionary<string, IGameObject> GameObjects { get; set; } = new Dictionary<string, IGameObject>();
-        public List<string> Messages { get; set; } = new List<string>();
+        public Queue<string> Messages { get; set; } = new Queue<string>();
+        double messagesDeleteTimer = 0;
 
         public IPlayer Player { get; set; }
 
         public void Update(GameTime gameTime)
         {
             Player.Room.Update(gameTime);
+            if (Messages.Count > 0)
+                messagesDeleteTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
+            else
+                messagesDeleteTimer = 0;
+            if (messagesDeleteTimer > 2000) {
+                if (Messages.Count > 0)
+                    Messages.Dequeue();
+                messagesDeleteTimer -= 2000;
+            }
         }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
@@ -30,10 +40,14 @@ namespace GameModel.Models
             Player.Room.Draw(gameTime, spriteBatch);
 
             var font = TextureManager.font;
-            for (int i = 0; i < Messages.Count; i++)
+            int i = 0;
+            foreach (var message in Messages)
             {
-                spriteBatch.DrawString(font, Messages[i], new Vector2(0, i * font.LineSpacing), Color.White);
+                spriteBatch.DrawString(font, message, new Vector2(0, i * font.LineSpacing), Color.White);
+                i++;
             }
+
+            spriteBatch.DrawString(font, $"Player Health: {Player.CurrentHealth}", new Vector2(0, 300), Color.Red);
         }
 
         public World()
@@ -61,12 +75,15 @@ namespace GameModel.Models
             GameObjects.Add(otherRoom.Id, otherRoom);
             Spawn("Player", "ExampleRoom", new Vector2(400, 150), "PlayerInstance");
             Spawn("RingOfExample", "ExampleRoom", new Vector2(200, 100), "RingOfExampleInstance");
+            Spawn("RingOfExample", "ExampleRoom", new Vector2(400, 150), "RingOfExampleInstance2");
+            Spawn("RingOfExample", "ExampleRoom", new Vector2(100, 30), "RingOfExampleInstance3");
             Player = GameObjects["PlayerInstance"] as Player;
+            Player.SetHealth(100);
             Player.Variables["var1"] = new Variable
             {
                 Name = "var1",
                 Type = typeof(string),
-                Value = "hello world from Player.Variables"
+                Value = "player variable value"
             };
         }
 
@@ -90,9 +107,7 @@ namespace GameModel.Models
 
         public void Message(string message)
         {
-            if (Messages.Count == 10)
-                Messages.RemoveAt(0);
-            Messages.Add(message);
+            Messages.Enqueue(message);
         }
 
         public object GetById(string id)

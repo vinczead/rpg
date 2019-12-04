@@ -43,6 +43,11 @@ namespace Rpg.Screens
             {
                 game.AddScreen(new ConsoleScreen(game, world));
             }
+
+            if (WasKeyPressed(Keys.I))
+            {
+                game.AddScreen(new InventoryScreen(game, world));
+            }
         }
     }
 }

@@ -67,6 +67,7 @@
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\TextureManager.cs" />
     <Compile Include="Models\World.cs" />
+    <Compile Include="Screens\InventoryScreen.cs" />
     <Compile Include="Screens\TextInputScreen.cs" />
     <Compile Include="Screens\ConsoleScreen.cs" />
     <Compile Include="Screens\GameScreen.cs" />

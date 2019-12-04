@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime.Misc;
@@ -14,8 +15,20 @@ namespace GameScript.Visitors
     {
         public static Type GetTypeOfFunctionCallStatement([NotNull] FunctionCallStatementContext context, IGameWorldObject gameObject)
         {
-            //todo fix type
-            return typeof(string);
+            var path = context.path();
+            var functionName = context.functionName().GetText();
+            var parameterList = context.functionParameterList()?.expression().ToList();
+            var parameterListTypes = parameterList?.Select(p => TypeChecker.GetTypeOf(p, gameObject)).ToArray();
+
+            object subject = gameObject.World;
+            if (path != null)
+            {
+                var expressionVisitor = new ExpressionVisitor(gameObject);
+                subject = expressionVisitor.VisitPath(path);
+            }
+
+            MethodInfo method = subject.GetType().GetMethod(functionName, parameterListTypes ?? new Type[0]);
+            return method.ReturnType;
         }
 
         public static Type GetTypeOfTypeName([NotNull] TypeNameContext context)
