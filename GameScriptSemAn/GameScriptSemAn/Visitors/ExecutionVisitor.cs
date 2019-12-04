@@ -10,7 +10,7 @@ namespace GameScript.Visitors
 {
     internal class ExecutionVisitor : ExpressionVisitor
     {
-        public ExecutionVisitor(IWorld world, IGameWorldObject gameObject) : base(world, gameObject)
+        public ExecutionVisitor(IGameWorldObject gameObject) : base(gameObject)
         {
         }
 
@@ -21,12 +21,18 @@ namespace GameScript.Visitors
 
             var expressionValue = context.expression() != null ? Visit(context.expression()) : null;
 
-            if (expressionValue != null && varType != TypeChecker.GetTypeOf(context.expression()))
+            if (expressionValue != null && varType != TypeChecker.GetTypeOf(context.expression(), GameObject))
                 throw new InvalidTypeException(context.expression(), varType);
 
-            //todo add check of duplicate variables
+            if (GameObject.Variables.TryGetValue(varName, out _))
+                throw new VariableAlreadyDeclaredException(varName);
 
-            GameObject.Variables[varName].Value = expressionValue.ToString();
+            GameObject.Variables.Add(varName, new Variable()
+            {
+                Name = varName,
+                Type = varType,
+                Value = expressionValue.ToString()
+            });
 
             return null;
         }
@@ -60,7 +66,7 @@ namespace GameScript.Visitors
 
         public override object VisitAssignmentStatement([NotNull] GameScriptParser.AssignmentStatementContext context)
         {
-            var expressionType = TypeChecker.GetTypeOf(context.expression());
+            var expressionType = TypeChecker.GetTypeOf(context.expression(), GameObject);
             var expressionValue = Visit(context.expression());
             var variable = (Variable)VisitPath(context.path());
 
@@ -72,21 +78,21 @@ namespace GameScript.Visitors
             return null;
         }
 
-        
+
 
         public override object VisitFunctionCallStatement([NotNull] GameScriptParser.FunctionCallStatementContext context)
         {
             //var path = context.path();
             var functionName = context.functionName().GetText();
             var parameterList = context.functionParameterList().expression().ToList();
-            var parameterListTypes = parameterList.Select(p => TypeChecker.GetTypeOf(p)).ToArray();
+            var parameterListTypes = parameterList.Select(p => TypeChecker.GetTypeOf(p, GameObject)).ToArray();
             var parameterListValues = parameterList.Select(p => Visit(p)).ToArray();
 
-            var subject = World;
+            var subject = GameObject.World;
 
             MethodInfo method = subject.GetType().GetMethod(functionName, parameterListTypes);
 
-            return method.Invoke(World, parameterListValues);
+            return method.Invoke(GameObject.World, parameterListValues);
         }
 
     }

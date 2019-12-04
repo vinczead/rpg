@@ -12,12 +12,10 @@ namespace GameScript.Visitors
 {
     public class ExpressionVisitor : GameScriptBaseVisitor<object>
     {
-        public IWorld World { get; set; }
         public IGameWorldObject GameObject { get; set; }
 
-        public ExpressionVisitor(IWorld world, IGameWorldObject gameObject)
+        public ExpressionVisitor(IGameWorldObject gameObject)
         {
-            World = world;
             GameObject = gameObject;
         }
 
@@ -41,7 +39,21 @@ namespace GameScript.Visitors
 
         public override object VisitPathExpression([NotNull] GameScriptParser.PathExpressionContext context)
         {
-            return (VisitPath(context.path()) as Variable)?.Value;
+            var variable = VisitPath(context.path()) as Variable;
+            if(variable != null)
+            {
+                if (variable.Type == typeof(double))
+                    return double.Parse(variable.Value);
+                if (variable.Type == typeof(bool))
+                    return bool.Parse(variable.Value);
+                if (variable.Type == typeof(string))
+                    return variable.Value;
+                if(variable.Type == typeof(ReferenceType))
+                {
+                    //todo return object
+                }
+            }
+            return null;
         }
 
         public override object VisitVarPath([NotNull] GameScriptParser.VarPathContext context)
@@ -57,7 +69,7 @@ namespace GameScript.Visitors
                 if (currentObject.Variables.TryGetValue(varName.GetText(), out variable))
                 {
                     if (variable.Type == typeof(ReferenceType))
-                        currentObject = (IGameWorldObject)World.GetById(variable.Name);
+                        currentObject = (IGameWorldObject)GameObject.World.GetById(variable.Name);
                     else
                         currentObject = null;
                 }
@@ -97,7 +109,7 @@ namespace GameScript.Visitors
 
         public override object VisitNotExpression([NotNull] GameScriptParser.NotExpressionContext context)
         {
-            var type = TypeChecker.GetTypeOf(context.expression());
+            var type = TypeChecker.GetTypeOf(context.expression(), GameObject);
 
             if (type != typeof(bool))
                 throw new InvalidTypeException(context.expression(), typeof(bool));
@@ -115,8 +127,8 @@ namespace GameScript.Visitors
         {
             var left = context.left;
             var right = context.right;
-            var leftType = TypeChecker.GetTypeOf(left);
-            var rightType = TypeChecker.GetTypeOf(right);
+            var leftType = TypeChecker.GetTypeOf(left, GameObject);
+            var rightType = TypeChecker.GetTypeOf(right, GameObject);
 
             var @operator = context.additiveOperator();
 
@@ -146,8 +158,8 @@ namespace GameScript.Visitors
         {
             var left = context.left;
             var right = context.right;
-            var leftType = TypeChecker.GetTypeOf(left);
-            var rightType = TypeChecker.GetTypeOf(right);
+            var leftType = TypeChecker.GetTypeOf(left, GameObject);
+            var rightType = TypeChecker.GetTypeOf(right, GameObject);
 
             if (leftType != typeof(double) || rightType != typeof(double))
                 throw new InvalidTypeException(context, typeof(double));
@@ -165,8 +177,8 @@ namespace GameScript.Visitors
         {
             var left = context.left;
             var right = context.right;
-            var leftType = TypeChecker.GetTypeOf(left);
-            var rightType = TypeChecker.GetTypeOf(right);
+            var leftType = TypeChecker.GetTypeOf(left, GameObject);
+            var rightType = TypeChecker.GetTypeOf(right, GameObject);
 
             if (leftType != rightType)
                 throw new InvalidTypeException(right, leftType);
@@ -217,8 +229,8 @@ namespace GameScript.Visitors
         {
             var left = context.left;
             var right = context.right;
-            var leftType = TypeChecker.GetTypeOf(left);
-            var rightType = TypeChecker.GetTypeOf(right);
+            var leftType = TypeChecker.GetTypeOf(left, GameObject);
+            var rightType = TypeChecker.GetTypeOf(right, GameObject);
 
             if (leftType != typeof(bool) || rightType != typeof(bool))
                 throw new InvalidTypeException(context, typeof(bool));

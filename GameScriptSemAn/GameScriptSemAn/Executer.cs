@@ -9,6 +9,7 @@ using GameScript.Model;
 using GameScript.Visitors;
 using GameModel.Models;
 using GameModel.Models.InstanceInterfaces;
+using System.Linq;
 
 namespace GameScript
 {
@@ -51,18 +52,52 @@ namespace GameScript
             return context;
         }
 
-        public static void ExecuteStatement(string statement, IWorld world, IGameWorldObject gameObject)
+        private static GameScriptParser GetParser(string script)
+        {
+            var inputStream = new AntlrInputStream(script);
+            var lexer = new GameScriptLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new GameScriptParser(tokenStream);
+            return parser;
+        }
+
+        public static void ExecuteStatement(IGameWorldObject gameObject, string statement)
         {
             var parseTree = ParseStatement(statement);
-            var executionVisitor = new ExecutionVisitor(world, gameObject);
+            var executionVisitor = new ExecutionVisitor(gameObject);
             executionVisitor.Visit(parseTree);
         }
 
-        public static void ExecuteRunBlock(IWorld world, IGameWorldObject gameObject, string runBlockType) //todo: take Variables as parameter
+        public static void ExecuteVariableDeclaration(IGameWorldObject gameObject)
         {
-            var parseTree = ParseScript(gameObject.Base.Script);
-            var executionVisitor = new ExecutionVisitor(world, gameObject);
-            executionVisitor.Visit(parseTree);
+            if (gameObject.Base.Script != "")
+            {
+                var parser = GetParser(gameObject.Base.Script);
+                var varBlockContext = parser.program().variablesBlock();
+                if (varBlockContext != null)
+                {
+                    var executionVisitor = new ExecutionVisitor(gameObject);
+                    executionVisitor.Visit(varBlockContext);
+                }
+            }
+        }
+
+        public static void ExecuteRunBlock(IGameWorldObject gameObject, string runBlockType) //todo: take context based Variables as parameter
+        {
+            if (gameObject.Base.Script != "")
+            {
+                var parser = GetParser(gameObject.Base.Script);
+                var runBlocksContext = parser.program().runBlock();
+                if (runBlocksContext != null)
+                {
+                    var runBlock = runBlocksContext.FirstOrDefault(r => r.eventTypeName().GetText() == runBlockType);
+                    if (runBlock != null)
+                    {
+                        var executionVisitor = new ExecutionVisitor(gameObject);
+                        executionVisitor.Visit(runBlock);
+                    }
+                }
+            }
         }
 
         /*private static void Main(string[] args)

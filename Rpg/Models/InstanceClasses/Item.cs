@@ -1,4 +1,5 @@
 ﻿using GameModel.Models.InstanceInterfaces;
+using GameScript;
 
 namespace Rpg.Models
 {
@@ -8,6 +9,7 @@ namespace Rpg.Models
         {
             Room.RemoveGameWorldObject(this);
             character.InsertItem(this);
+            Executer.ExecuteRunBlock(this, "WhenPickedUp");
         }
     }
 }

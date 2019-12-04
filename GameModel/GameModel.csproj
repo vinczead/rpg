@@ -55,6 +55,7 @@
     <Compile Include="Models\IRoom.cs" />
     <Compile Include="Models\IWorld.cs" />
     <Compile Include="Models\Variable.cs" />
+    <Compile Include="Models\VariableAlreadyDeclaredException.cs" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="MonoGame.Framework, Version=3.7.1.189, Culture=neutral, processorArchitecture=MSIL" />

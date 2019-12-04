@@ -1,4 +1,5 @@
 ﻿using GameModel.Models.InstanceInterfaces;
+using GameScript;
 using System.Collections.Generic;
 
 namespace Rpg.Models
@@ -10,6 +11,7 @@ namespace Rpg.Models
         public void InsertItem(IGameWorldObject gameObject)
         {
             Items.Add(gameObject as Item);
+            Executer.ExecuteRunBlock(this, "WhenItemPickedUp");
         }
 
         public void DropItem(IGameWorldObject gameObject)
@@ -17,6 +19,7 @@ namespace Rpg.Models
             Items.Remove(gameObject as Item);
             gameObject.Position = Position;
             Room.InsertGameWorldObject(gameObject);
+            Executer.ExecuteRunBlock(this, "WhenItemDropped");
         }
     }
 }

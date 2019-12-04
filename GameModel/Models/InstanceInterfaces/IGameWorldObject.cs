@@ -12,5 +12,6 @@ namespace GameModel.Models.InstanceInterfaces
         Vector2 Position { get; set; }
 
         void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+        void Update(GameTime gameTime);
     }
 }

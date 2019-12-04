@@ -42,7 +42,7 @@ namespace Rpg.Screens
             if (WasKeyPressed(Keys.Enter))
             {
                 //call script runner
-                Executer.ExecuteStatement(Text, world, world.Player);
+                Executer.ExecuteStatement(world.Player, Text);
 
                 history.Add(Text);
                 //Text = "";

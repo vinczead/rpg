@@ -17,10 +17,11 @@ namespace GameModel.Models
         int Depth { get; set; }
         Texture2D Texture { get; set; }
 
-        IWorld World { get; set; }
         Dictionary<string, IGameWorldObject> GameWorldObjects { get; set; }
 
         void Draw(GameTime gameTime, SpriteBatch spriteBatch);
+
+        void Update(GameTime gameTime);
 
         void InsertGameWorldObject(IGameWorldObject gameWorldObject);
 

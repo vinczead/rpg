@@ -20,7 +20,15 @@ namespace GameModel
                 Name = "You",
                 Texture = TextureManager.player,
                 Health = 100,
-                Strength = 10
+                Strength = 10,
+                Script = @"Script PlayerScript
+Variables 
+    A Is Number WithValue 1000
+Run WhenInGame
+    Set A To A + 1
+    =>Message(""""+A)
+End
+"
             };
 
             EquipmentBase ringOfExample = new EquipmentBase()
@@ -35,7 +43,7 @@ Variables
 Run WhenPickedUp
 	If AlreadyPickedUp = False Then
 		Set AlreadyPickedUp To True
-		$Player=>SetHealth($Player=>GetHealth() + 1)
+		=>Message(""Item picked up."")
 	EndIf
 End",
                 Texture=TextureManager.ring,

@@ -1,4 +1,5 @@
 ﻿using GameModel.Models.InstanceInterfaces;
+using GameScript;
 
 namespace Rpg.Models
 {
@@ -6,7 +7,7 @@ namespace Rpg.Models
     {
         public void Equip(ICharacter character)
         {
-
+            Executer.ExecuteRunBlock(this, "WhenEquipped");
         }
     }
 }

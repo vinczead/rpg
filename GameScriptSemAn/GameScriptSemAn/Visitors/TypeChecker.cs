@@ -4,14 +4,17 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Antlr4.Runtime.Misc;
+using GameModel.Models;
+using GameModel.Models.InstanceInterfaces;
 using static GameScript.GameScriptParser;
 
 namespace GameScript.Visitors
 {
     public static class TypeChecker
     {
-        public static Type GetTypeOfFunctionCallStatement([NotNull] FunctionCallStatementContext context)
+        public static Type GetTypeOfFunctionCallStatement([NotNull] FunctionCallStatementContext context, IGameWorldObject gameObject)
         {
+            //todo fix type
             return typeof(string);
         }
 
@@ -52,18 +55,18 @@ namespace GameScript.Visitors
             return typeof(double);
         }
 
-        public static Type GetTypeOfNotExpression([NotNull] NotExpressionContext context)
+        public static Type GetTypeOfNotExpression([NotNull] NotExpressionContext context, IGameWorldObject gameObject)
         {
-            if (GetTypeOf(context.expression()) == typeof(bool))
+            if (GetTypeOf(context.expression(), gameObject) == typeof(bool))
                 return typeof(bool);
             else
                 return typeof(ErrorType);
         }
 
-        public static Type GetTypeOfCompExpression([NotNull] CompExpressionContext context)
+        public static Type GetTypeOfCompExpression([NotNull] CompExpressionContext context, IGameWorldObject gameObject)
         {
-            var leftType = GetTypeOf(context.left);
-            var rightType = GetTypeOf(context.right);
+            var leftType = GetTypeOf(context.left, gameObject);
+            var rightType = GetTypeOf(context.right, gameObject);
             var @operator = context.compOperator();
 
             if (leftType != rightType)
@@ -76,10 +79,10 @@ namespace GameScript.Visitors
             return typeof(bool);
         }
 
-        public static Type GetTypeOfAdditiveExpression([NotNull] AdditiveExpressionContext context)
+        public static Type GetTypeOfAdditiveExpression([NotNull] AdditiveExpressionContext context, IGameWorldObject gameObject)
         {
-            var leftType = GetTypeOf(context.left);
-            var rightType = GetTypeOf(context.right);
+            var leftType = GetTypeOf(context.left, gameObject);
+            var rightType = GetTypeOf(context.right, gameObject);
             var @operator = context.additiveOperator();
 
             if (leftType == typeof(string) && @operator.PLUS() != null)
@@ -91,10 +94,10 @@ namespace GameScript.Visitors
             return typeof(ErrorType);
         }
 
-        public static Type GetTypeOfMultiplExpression([NotNull] MultiplExpressionContext context)
+        public static Type GetTypeOfMultiplExpression([NotNull] MultiplExpressionContext context, IGameWorldObject gameObject)
         {
-            var leftType = GetTypeOf(context.left);
-            var rightType = GetTypeOf(context.right);
+            var leftType = GetTypeOf(context.left, gameObject);
+            var rightType = GetTypeOf(context.right, gameObject);
 
             if (leftType == rightType && leftType == typeof(double))
                 return leftType;
@@ -102,10 +105,10 @@ namespace GameScript.Visitors
             return typeof(ErrorType);
         }
 
-        public static Type GetTypeOfLogicalExpression([NotNull] LogicalExpressionContext context)
+        public static Type GetTypeOfLogicalExpression([NotNull] LogicalExpressionContext context, IGameWorldObject gameObject)
         {
-            var leftType = GetTypeOf(context.left);
-            var rightType = GetTypeOf(context.right);
+            var leftType = GetTypeOf(context.left, gameObject);
+            var rightType = GetTypeOf(context.right, gameObject);
 
             if (leftType == rightType && leftType == typeof(bool))
                 return leftType;
@@ -113,10 +116,62 @@ namespace GameScript.Visitors
             return typeof(ErrorType);
         }
 
-        public static Type GetTypeOf([NotNull]ExpressionContext context)
+        public static Type GetTypeOfPathExpression([NotNull] PathExpressionContext context, IGameWorldObject gameObject)
+        {
+            return GetTypeOfPath(context.path(), gameObject);
+        }
+
+        private static Type GetTypeOfPath(PathContext context, IGameWorldObject gameObject)
+        {
+            var varPath = context.varPath();
+            var refPath = context.refPath();
+
+            if (varPath != null)
+            {
+                return VisitVarPath(varPath, gameObject).Type;
+            }
+
+            if (refPath != null)
+            {
+                return VisitRefPath(refPath, gameObject).Type;
+            }
+
+            return null;
+        }
+
+        private static Variable VisitRefPath(RefPathContext refPath, IGameWorldObject gameObject)
+        {
+            throw new NotImplementedException();
+        }
+
+        private static Variable VisitVarPath(VarPathContext context, IGameWorldObject gameObject)
+        {
+            Variable variable = null;
+            IGameWorldObject currentObject = gameObject;
+
+            foreach (var varName in context.varName())
+            {
+                if (currentObject == null)
+                    throw new IdNotFoundException(varName.GetText());
+
+                if (currentObject.Variables.TryGetValue(varName.GetText(), out variable))
+                {
+                    if (variable.Type == typeof(ReferenceType))
+                        currentObject = (IGameWorldObject)gameObject.World.GetById(variable.Name);
+                    else
+                        currentObject = null;
+                }
+                else
+                    throw new IdNotFoundException(varName.GetText());
+            }
+
+            return variable;
+        }
+
+        public static Type GetTypeOf([NotNull]ExpressionContext context, IGameWorldObject gameObject)
         {
             if (context is PathExpressionContext)
-                return typeof(string);
+                return GetTypeOfPathExpression(context as PathExpressionContext, gameObject);
 
             if (context is RefExpressionContext)
                 return GetTypeOfRefExpression(context as RefExpressionContext);
@@ -131,22 +186,22 @@ namespace GameScript.Visitors
                 return GetTypeOfNumberExpression(context as NumberExpressionContext);
 
             if (context is NotExpressionContext)
-                return GetTypeOfNotExpression(context as NotExpressionContext);
+                return GetTypeOfNotExpression(context as NotExpressionContext, gameObject);
 
             if (context is CompExpressionContext)
-                return GetTypeOfCompExpression(context as CompExpressionContext);
+                return GetTypeOfCompExpression(context as CompExpressionContext, gameObject);
 
             if (context is AdditiveExpressionContext)
-                return GetTypeOfAdditiveExpression(context as AdditiveExpressionContext);
+                return GetTypeOfAdditiveExpression(context as AdditiveExpressionContext, gameObject);
 
             if (context is MultiplExpressionContext)
-                return GetTypeOfMultiplExpression(context as MultiplExpressionContext);
+                return GetTypeOfMultiplExpression(context as MultiplExpressionContext, gameObject);
 
             if (context is LogicalExpressionContext)
-                return GetTypeOfLogicalExpression(context as LogicalExpressionContext);
+                return GetTypeOfLogicalExpression(context as LogicalExpressionContext, gameObject);
 
             if (context is FuncExpressionContext)
-                return GetTypeOfFunctionCallStatement((context as FuncExpressionContext).functionCallStatement());
+                return GetTypeOfFunctionCallStatement((context as FuncExpressionContext).functionCallStatement(), gameObject);
 
             throw new ArgumentException("Invalid parameter", "context");
 

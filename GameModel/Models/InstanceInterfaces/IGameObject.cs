@@ -12,7 +12,6 @@ namespace GameModel.Models.InstanceInterfaces
     {
         string Id { get; set; }
         Dictionary<string, Variable> Variables { get; set; }
-
-        void Update(GameTime gameTime);
+        IWorld World { get; set; }
     }
 }

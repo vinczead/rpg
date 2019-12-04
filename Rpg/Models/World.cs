@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GameModel.Models.BaseInterfaces;
 using GameModel.Models.InstanceInterfaces;
+using GameScript;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Rpg.Models;
@@ -37,7 +38,7 @@ namespace GameModel.Models
 
         public World()
         {
-            //build example GameModel
+            //build example World
             Room exampleRoom = new Room()
             {
                 Id = "ExampleRoom",
@@ -74,9 +75,12 @@ namespace GameModel.Models
             var instance = (GameObjectBases[baseId] as IGameWorldObjectBase).Spawn(instanceId);
             instance.Room = GameObjects[roomId] as IRoom;
             instance.Position = position;
+            instance.World = this;
 
             GameObjects.Add(instance.Id, instance);
             (GameObjects[roomId] as IRoom).InsertGameWorldObject(instance);
+
+            Executer.ExecuteVariableDeclaration(instance);
         }
 
         public void Spawn(string baseId, string instanceId = null)
@@ -86,6 +90,8 @@ namespace GameModel.Models
 
         public void Message(string message)
         {
+            if (Messages.Count == 10)
+                Messages.RemoveAt(0);
             Messages.Add(message);
         }
 

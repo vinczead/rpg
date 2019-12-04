@@ -1,7 +1,5 @@
 ﻿using GameModel.Models;
 using GameModel.Models.InstanceInterfaces;
-using GameScript;
-using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,10 +12,6 @@ namespace Rpg.Models.InstanceClasses
     {
         public string Id { get; set; }
         public Dictionary<string, Variable> Variables { get; set; } = new Dictionary<string, Variable>();
-
-        public virtual void Update(GameTime gameTime)
-        {
-            //Run WhenInGame Script block
-        }
+        public IWorld World { get; set; }
     }
 }
