@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameScript.SymbolTable
+namespace GameScript.Model
 {
     public class Symbol
     {
         public string Name { get; set; }
         public Type Type { get; set; }
+        public bool Readonly { get; set; }
 
-        public Symbol(string name, Type type)
+        public Symbol(string name, Type type, bool @readonly=false)
         {
             Name = name;
             Type = type;
+            Readonly = @readonly;
         }
 
         public override string ToString()

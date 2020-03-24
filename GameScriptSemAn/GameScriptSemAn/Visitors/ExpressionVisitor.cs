@@ -7,10 +7,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static GameScript.ViGaSParser;
 
 namespace GameScript.Visitors
 {
-    public class ExpressionVisitor : GameScriptBaseVisitor<object>
+    public class ExpressionVisitor : ViGaSBaseVisitor<object>
     {
         public IGameWorldObject GameObject { get; set; }
 
@@ -19,7 +20,7 @@ namespace GameScript.Visitors
             GameObject = gameObject;
         }
 
-        public override object VisitPath([NotNull] GameScriptParser.PathContext context)
+        public override object VisitPath([NotNull] PathContext context)
         {
             var varPath = context.varPath();
             var refPath = context.refPath();
@@ -37,7 +38,7 @@ namespace GameScript.Visitors
             return null;
         }
 
-        public override object VisitPathExpression([NotNull] GameScriptParser.PathExpressionContext context)
+        public override object VisitPathExpression([NotNull] PathExpressionContext context)
         {
             var variable = VisitPath(context.path()) as Variable;
             if(variable != null)
@@ -56,7 +57,7 @@ namespace GameScript.Visitors
             return null;
         }
 
-        public override object VisitVarPath([NotNull] GameScriptParser.VarPathContext context)
+        public override object VisitVarPath([NotNull] VarPathContext context)
         {
             Variable variable = null;
             IGameWorldObject currentObject = GameObject;
@@ -80,29 +81,29 @@ namespace GameScript.Visitors
             return variable;
         }
 
-        public override object VisitRefPath([NotNull] GameScriptParser.RefPathContext context)
+        public override object VisitRefPath([NotNull] RefPathContext context)
         {
             var referenceText = context.REFERENCE().GetText();
             return GameObject.World.GetById(referenceText.Substring(1, referenceText.Length - 1));
         }
 
-        public override object VisitNumberExpression([NotNull] GameScriptParser.NumberExpressionContext context)
+        public override object VisitNumberExpression([NotNull] NumberExpressionContext context)
         {
             return double.Parse(context.NUMBER().GetText());
         }
 
-        public override object VisitBoolExpression([NotNull] GameScriptParser.BoolExpressionContext context)
+        public override object VisitBoolExpression([NotNull] BoolExpressionContext context)
         {
             return bool.Parse(context.BOOLEAN().GetText());
         }
 
-        public override object VisitStringExpression([NotNull] GameScriptParser.StringExpressionContext context)
+        public override object VisitStringExpression([NotNull] StringExpressionContext context)
         {
             var value = context.STRING().GetText();
             return value.Substring(1, value.Length - 2);
         }
 
-        public override object VisitNotExpression([NotNull] GameScriptParser.NotExpressionContext context)
+        public override object VisitNotExpression([NotNull] NotExpressionContext context)
         {
             var type = TypeChecker.GetTypeOf(context.expression(), GameObject);
 
@@ -113,12 +114,12 @@ namespace GameScript.Visitors
 
         }
 
-        public override object VisitParenExpression([NotNull] GameScriptParser.ParenExpressionContext context)
+        public override object VisitParenExpression([NotNull] ParenExpressionContext context)
         {
             return Visit(context.expression());
         }
 
-        public override object VisitAdditiveExpression([NotNull] GameScriptParser.AdditiveExpressionContext context)
+        public override object VisitAdditiveExpression([NotNull] AdditiveExpressionContext context)
         {
             var left = context.left;
             var right = context.right;
@@ -149,7 +150,7 @@ namespace GameScript.Visitors
             throw new InvalidOperationException();
         }
 
-        public override object VisitMultiplExpression([NotNull] GameScriptParser.MultiplExpressionContext context)
+        public override object VisitMultiplExpression([NotNull] MultiplExpressionContext context)
         {
             var left = context.left;
             var right = context.right;
@@ -168,7 +169,7 @@ namespace GameScript.Visitors
             throw new InvalidOperationException();
         }
 
-        public override object VisitCompExpression([NotNull] GameScriptParser.CompExpressionContext context)
+        public override object VisitCompExpression([NotNull] CompExpressionContext context)
         {
             var left = context.left;
             var right = context.right;
@@ -220,7 +221,7 @@ namespace GameScript.Visitors
             throw new InvalidOperationException();
         }
 
-        public override object VisitLogicalExpression([NotNull] GameScriptParser.LogicalExpressionContext context)
+        public override object VisitLogicalExpression([NotNull] LogicalExpressionContext context)
         {
             var left = context.left;
             var right = context.right;
@@ -242,17 +243,17 @@ namespace GameScript.Visitors
             return new InvalidOperationException();
         }
 
-        private double AsNumber(GameScriptParser.ExpressionContext context)
+        private double AsNumber(ExpressionContext context)
         {
             return (double)Visit(context);
         }
 
-        private bool AsBool(GameScriptParser.ExpressionContext context)
+        private bool AsBool(ExpressionContext context)
         {
             return (bool)Visit(context);
         }
 
-        private string AsString(GameScriptParser.ExpressionContext context)
+        private string AsString(ExpressionContext context)
         {
             return (string)Visit(context);
         }

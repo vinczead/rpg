@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameScript.Model
+namespace Rpg.Models.BaseClasses
 {
-    public class EventType
+    public class QuestBase : GameObjectBase
     {
-        public string Name { get; set; }
     }
 }

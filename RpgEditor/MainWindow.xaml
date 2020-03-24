@@ -1,0 +1,89 @@
+﻿<Window x:Class="RpgEditor.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+        xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
+        xmlns:local="clr-namespace:RpgEditor"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <DockPanel>
+        <Menu x:Name="MainMenu" DockPanel.Dock="Top">
+            <MenuItem Header="File">
+                <MenuItem Header="Open..."></MenuItem>
+                <MenuItem Header="Save"></MenuItem>
+                <MenuItem Header="Save As..."></MenuItem>
+                <Separator/>
+                <MenuItem Header="Exit"/>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Undo"></MenuItem>
+                <MenuItem Header="Redo"></MenuItem>
+                <Separator/>
+                <MenuItem Header="Cut"></MenuItem>
+                <MenuItem Header="Copy"></MenuItem>
+                <MenuItem Header="Paste"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="View">
+                <MenuItem Header="World Viewer"></MenuItem>
+            </MenuItem>
+            <MenuItem Header="Script">
+                <MenuItem Header="Check for errors" Click="CheckForErrorsClick"></MenuItem>
+            </MenuItem>
+        </Menu>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="2*" MinWidth="150"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="8*" MinWidth="500"/>
+            </Grid.ColumnDefinitions>
+            <DockPanel Grid.Column="0">
+                <xctk:WatermarkTextBox Watermark="Search..." DockPanel.Dock="Top"></xctk:WatermarkTextBox>
+                <TreeView>
+                    <TreeViewItem Header="Creatures">
+                        <TreeViewItem Header="Wolf"></TreeViewItem>
+                        <TreeViewItem Header="Skeleton"></TreeViewItem>
+                    </TreeViewItem>
+                    <TreeViewItem Header="Characters">
+                        <TreeViewItem Header="Diego"></TreeViewItem>
+                        <TreeViewItem Header="Thorus"></TreeViewItem>
+                        <TreeViewItem Header="Whistler"></TreeViewItem>
+                    </TreeViewItem>
+                </TreeView>
+            </DockPanel>
+            <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
+            <TabControl Grid.Column="2">
+                <TabItem>
+                    <TabItem.Header>
+                        <Span>
+                            <TextBlock>Script Editor</TextBlock>
+                            <TextBlock FontWeight="Bold">X</TextBlock>
+                        </Span>
+                    </TabItem.Header>
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="1*"/>
+                            <RowDefinition Height="150"/>
+                        </Grid.RowDefinitions>
+                        <ae:TextEditor
+                            Grid.Column="0"
+                            Name="textEditor"
+                            FontFamily="Consolas"
+                            FontSize="15"
+                            ShowLineNumbers="True"
+                            SyntaxHighlighting="ViGaS"
+                            Grid.Row="0"/>
+                        <TextBox
+                            Name="errorList"
+                            Grid.Row="1"
+                            IsReadOnly="True">
+                        </TextBox>
+
+                    </Grid>
+                </TabItem>
+            </TabControl>
+
+        </Grid>
+    </DockPanel>
+</Window>

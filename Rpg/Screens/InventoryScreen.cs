@@ -42,7 +42,7 @@ namespace Rpg.Screens
 
             if (WasKeyPressed(Keys.Down))
             {
-                selectedItem = Math.Min(world.Player.Items.Count, selectedItem + 1);
+                selectedItem = Math.Min(world.Player.Items.Count - 1, selectedItem + 1);
             }
 
             if (WasKeyPressed(Keys.Up))
@@ -52,7 +52,12 @@ namespace Rpg.Screens
 
             if (WasKeyPressed(Keys.Space))
             {
-                world.Player.DropItem(world.Player.Items[selectedItem]);
+                if (world.Player.Items.Count > 0)
+                {
+                    world.Player.DropItem(world.Player.Items[selectedItem]);
+                    if (world.Player.Items.Count - 1 < selectedItem)
+                        selectedItem = world.Player.Items.Count - 1;
+                }
             }
 
             if (WasKeyPressed(Keys.Escape))

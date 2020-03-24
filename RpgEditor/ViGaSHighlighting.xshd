@@ -1,0 +1,71 @@
+<?xml version="1.0"?>
+<SyntaxDefinition name="ViGaS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
+  <Color name="Comment" foreground="Green" fontStyle="italic"  />
+  <Color name="String" foreground="Red" />
+  <Color name="Number" foreground="DarkBlue" />
+  <Color name="Reference" foreground="Gray" />
+  <Color name="MethodCall" fontWeight="bold" foreground="Brown" />
+  <Color name="Keyword" fontWeight="bold" foreground="Blue" />
+
+  <!-- This is the main ruleset. -->
+  <RuleSet>
+    <Span color="Comment" begin="//"/>
+
+    <Span color="String">
+      <Begin>"</Begin>
+      <End>"</End>
+    </Span>
+
+    <Keywords color="Keyword">
+      <Word>Define</Word>
+      <Word>From</Word>
+      <Word>Instantiate</Word>
+      
+      <Word>Initialization</Word>
+
+      <Word>If</Word>
+      <Word>Then</Word>
+      <Word>Else</Word>
+      
+      <Word>Repeat</Word>
+      <Word>While</Word>
+      
+      <Word>Return</Word>
+      <Word>Variables</Word>
+      <Word>Is</Word>
+      <Word>Parameter</Word>
+      <Word>WithValue</Word>
+      <Word>Set</Word>
+      <Word>To</Word>
+      <Word>Run</Word>
+      <Word>When</Word>
+      <Word>End</Word>
+
+      <Word>True</Word>
+      <Word>False</Word>
+      <Word>Null</Word>
+
+      <Word>Number</Word>
+      <Word>Boolean</Word>
+      <Word>String</Word>
+      <Word>Reference</Word>
+
+      <Word>Self</Word>
+    </Keywords>
+
+    <Rule color="MethodCall">
+      \b
+      [\d\w_]+  # an identifier
+      (?=\s*\() # followed by (
+    </Rule>
+
+    <Rule color="Number">
+      \d+(\.[0-9]+)?   #number with optional floating point
+    </Rule>
+
+    <Rule color="Reference">
+      \$[A-Za-z0-9]*
+    </Rule>
+
+  </RuleSet>
+</SyntaxDefinition>

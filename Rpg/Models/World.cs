@@ -28,10 +28,10 @@ namespace GameModel.Models
                 messagesDeleteTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
             else
                 messagesDeleteTimer = 0;
-            if (messagesDeleteTimer > 2000) {
+            if (messagesDeleteTimer > 1500) {
                 if (Messages.Count > 0)
                     Messages.Dequeue();
-                messagesDeleteTimer -= 2000;
+                messagesDeleteTimer -= 1500;
             }
         }
 
@@ -75,7 +75,7 @@ namespace GameModel.Models
             GameObjects.Add(otherRoom.Id, otherRoom);
             Spawn("Player", "ExampleRoom", new Vector2(400, 150), "PlayerInstance");
             Spawn("RingOfExample", "ExampleRoom", new Vector2(200, 100), "RingOfExampleInstance");
-            Spawn("RingOfExample", "ExampleRoom", new Vector2(400, 150), "RingOfExampleInstance2");
+            Spawn("RingOfExample", "ExampleRoom", new Vector2(400, 50), "RingOfExampleInstance2");
             Spawn("RingOfExample", "ExampleRoom", new Vector2(100, 30), "RingOfExampleInstance3");
             Player = GameObjects["PlayerInstance"] as Player;
             Player.SetHealth(100);
@@ -83,7 +83,7 @@ namespace GameModel.Models
             {
                 Name = "var1",
                 Type = typeof(string),
-                Value = "player variable value"
+                Value = "This is from Player. "
             };
         }
 

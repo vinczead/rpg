@@ -53,6 +53,7 @@
     <Compile Include="Models\BaseClasses\ItemBase.cs" />
     <Compile Include="Models\BaseClasses\NpcBase.cs" />
     <Compile Include="Models\BaseClasses\PlayerBase.cs" />
+    <Compile Include="Models\BaseClasses\QuestBase.cs" />
     <Compile Include="Models\GameObjectBaseManager.cs" />
     <Compile Include="Models\InstanceClasses\Activator.cs" />
     <Compile Include="Models\InstanceClasses\Character.cs" />
@@ -64,6 +65,7 @@
     <Compile Include="Models\InstanceClasses\Item.cs" />
     <Compile Include="Models\InstanceClasses\Npc.cs" />
     <Compile Include="Models\InstanceClasses\Player.cs" />
+    <Compile Include="Models\InstanceClasses\Quest.cs" />
     <Compile Include="Models\Room.cs" />
     <Compile Include="Models\TextureManager.cs" />
     <Compile Include="Models\World.cs" />

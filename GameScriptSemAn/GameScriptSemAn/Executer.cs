@@ -1,6 +1,5 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
-using GameScript.SymbolTable;
 using System;
 using System.IO;
 using Newtonsoft.Json;
@@ -10,44 +9,56 @@ using GameScript.Visitors;
 using GameModel.Models;
 using GameModel.Models.InstanceInterfaces;
 using System.Linq;
+using GameScript.Listeners;
 
 namespace GameScript
 {
     public class Executer
     {
-        public static IParseTree ReadAST(string fileName)
+        public static IParseTree ReadASTFromFile(string fileName)
         {
-            var code = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, fileName));
-            var inputStream = new AntlrInputStream(code);
-            var lexer = new GameScriptLexer(inputStream);
+            var code = File.ReadAllText(Path.Combine(System.Environment.CurrentDirectory, fileName));
+            return ReadAST(code, out _);
+        }
+
+        public static IParseTree ReadAST(string script, out List<Error> syntaxErrors)
+        {
+            var inputStream = new AntlrInputStream(script);
+            var lexer = new ViGaSLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
-            var parser = new GameScriptParser(tokenStream);
-            var context = parser.program();
+            var parser = new ViGaSParser(tokenStream);
+            var syntaxErrorListener = new SyntaxErrorListener();
+            parser.AddErrorListener(syntaxErrorListener);
+            var context = parser.script();
+            syntaxErrors = syntaxErrorListener.errors;
             return context;
         }
 
-        private static List<Function> ReadFunctionList(string fileName)
+        public static ErrorVisitor CheckErrors(IParseTree tree)
         {
-            var json = File.ReadAllText(Path.Combine(Environment.CurrentDirectory, fileName));
-            return JsonConvert.DeserializeObject(json) as List<Function>;
+            var typeVisitor = new ErrorVisitor();
+
+            typeVisitor.Visit(tree);
+
+            return typeVisitor;
         }
 
         private static IParseTree ParseStatement(string statement)
         {
             var inputStream = new AntlrInputStream(statement);
-            var lexer = new GameScriptLexer(inputStream);
+            var lexer = new ViGaSLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
-            var parser = new GameScriptParser(tokenStream);
+            var parser = new ViGaSParser(tokenStream);
             var context = parser.statement();
             return context;
         }
 
-        private static GameScriptParser GetParser(string script)
+        private static ViGaSParser GetParser(string script)
         {
             var inputStream = new AntlrInputStream(script);
-            var lexer = new GameScriptLexer(inputStream);
+            var lexer = new ViGaSLexer(inputStream);
             var tokenStream = new CommonTokenStream(lexer);
-            var parser = new GameScriptParser(tokenStream);
+            var parser = new ViGaSParser(tokenStream);
             return parser;
         }
 
@@ -60,7 +71,7 @@ namespace GameScript
 
         public static void ExecuteVariableDeclaration(IGameWorldObject gameObject)
         {
-            if (gameObject.Base.Script != "")
+            /*if (gameObject.Base.Script != "")
             {
                 var parser = GetParser(gameObject.Base.Script);
                 var varBlockContext = parser.program().variablesBlock();
@@ -69,12 +80,12 @@ namespace GameScript
                     var executionVisitor = new ExecutionVisitor(gameObject);
                     executionVisitor.Visit(varBlockContext);
                 }
-            }
+            }*/
         }
 
         public static void ExecuteRunBlock(IGameWorldObject gameObject, string runBlockType) //todo: take context based Variables as parameter
         {
-            if (gameObject.Base.Script != "")
+            /*if (gameObject.Base.Script != "")
             {
                 var parser = GetParser(gameObject.Base.Script);
                 var runBlocksContext = parser.program().runBlock();
@@ -87,7 +98,7 @@ namespace GameScript
                         executionVisitor.Visit(runBlock);
                     }
                 }
-            }
+            }*/
         }
 
         /*private static void Main(string[] args)

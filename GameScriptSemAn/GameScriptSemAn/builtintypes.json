@@ -1,0 +1,99 @@
+[
+  {
+    "name": "ErrorType",
+    "parents": [ "NullType", "Boolean", "Number", "String" ],
+    "functions": [],
+    "properties": []
+  },
+  {
+    "name": "String",
+    "parents": [],
+    "functions": [
+      {
+        "name": "Length",
+        "parameters": [],
+        "returnType": "Number"
+      },
+      {
+        "name": "Contains",
+        "parameters": [
+          {
+            "name": "Substring",
+            "type": "String"
+          }
+        ],
+        "returnType": "Boolean"
+      }
+    ],
+    "properties": []
+  },
+  {
+    "name": "Number",
+    "parents": [],
+    "functions": [],
+    "properties": []
+  },
+  {
+    "name": "Boolean",
+    "parents": [],
+    "functions": [],
+    "properties": []
+  },
+  {
+    "name": "NullType",
+    "parents": [ "Activator", "Instance" ],
+    "functions": [],
+    "properties": []
+  },
+  {
+    "name": "GameObject",
+    "properties": [
+      {
+        "name": "Id",
+        "type": "String"
+      },
+      {
+        "name": "Name",
+        "type": "String"
+      },
+      {
+        "name": "Description",
+        "type": "String"
+      }
+    ]
+  },
+  {
+    "name": "GameWorldObject",
+    "parents": [ "GameObject" ],
+    "properties": [
+      {
+        "name": "Texture",
+        "type": "String"
+      }
+    ],
+    "events": [ "InGame", "Created" ]
+  },
+  {
+    "name": "Activator",
+    "parents": [ "GameWorldObject" ],
+    "events": [ "Activated" ]
+  },
+  {
+    "name": "Item",
+    "parents": [ "GameWorldObject" ],
+    "properties": [
+      {
+        "name": "Value",
+        "type": "Number"
+      },
+      {
+        "name": "Weight",
+        "type": "Number"
+      }
+    ],
+    "events": [ "PickedUp", "Dropped" ]
+  },
+  {
+    "name": "Instance"
+  }
+]

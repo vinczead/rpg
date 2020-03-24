@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Antlr4.Runtime.Misc;
 using GameModel.Models;
 using GameModel.Models.InstanceInterfaces;
-using static GameScript.GameScriptParser;
+using static GameScript.ViGaSParser;
 
 namespace GameScript.Visitors
 {
@@ -74,6 +74,11 @@ namespace GameScript.Visitors
                 return typeof(bool);
             else
                 return typeof(ErrorType);
+        }
+
+        public static Type GetTypeOfParenExpression([NotNull] ParenExpressionContext context, IGameWorldObject gameObject)
+        {
+            return GetTypeOf(context.expression(), gameObject);
         }
 
         public static Type GetTypeOfCompExpression([NotNull] CompExpressionContext context, IGameWorldObject gameObject)
@@ -183,6 +188,9 @@ namespace GameScript.Visitors
 
         public static Type GetTypeOf([NotNull]ExpressionContext context, IGameWorldObject gameObject)
         {
+            if (context is ParenExpressionContext)
+                return GetTypeOfParenExpression(context as ParenExpressionContext, gameObject);
+
             if (context is PathExpressionContext)
                 return GetTypeOfPathExpression(context as PathExpressionContext, gameObject);
 

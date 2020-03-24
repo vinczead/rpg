@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using static GameScript.ViGaSParser;
 
 namespace GameScript.Visitors
 {
@@ -14,7 +15,7 @@ namespace GameScript.Visitors
         {
         }
 
-        public override object VisitVariableDeclaration([NotNull] GameScriptParser.VariableDeclarationContext context)
+        public override object VisitVariableDeclaration([NotNull] VariableDeclarationContext context)
         {
             var varName = context.varName().GetText();
             var varType = TypeChecker.GetTypeOfTypeName(context.typeName());
@@ -37,7 +38,7 @@ namespace GameScript.Visitors
             return null;
         }
 
-        public override object VisitStatementList([NotNull] GameScriptParser.StatementListContext context)
+        public override object VisitStatementList([NotNull] StatementListContext context)
         {
             foreach (var statement in context.children)
             {
@@ -47,24 +48,20 @@ namespace GameScript.Visitors
             return null;
         }
 
-        public override object VisitIfStatement([NotNull] GameScriptParser.IfStatementContext context)
+        public override object VisitIfStatement([NotNull] IfStatementContext context)
         {
             var expression = (bool)Visit(context.expression());
 
             if (expression)
-            {
                 Visit(context.statementList());
-            }
             else
-            {
                 if (context.elseStatement() != null)
                     Visit(context.elseStatement().statementList());
-            }
 
             return null;
         }
 
-        public override object VisitAssignmentStatement([NotNull] GameScriptParser.AssignmentStatementContext context)
+        public override object VisitAssignmentStatement([NotNull] AssignmentStatementContext context)
         {
             var expressionType = TypeChecker.GetTypeOf(context.expression(), GameObject);
             var expressionValue = Visit(context.expression());
@@ -78,7 +75,7 @@ namespace GameScript.Visitors
             return null;
         }
 
-        public override object VisitFunctionCallStatement([NotNull] GameScriptParser.FunctionCallStatementContext context)
+        public override object VisitFunctionCallStatement([NotNull] FunctionCallStatementContext context)
         {
             var path = context.path();
             var functionName = context.functionName().GetText();
