@@ -71,12 +71,96 @@
         "type": "String"
       }
     ],
-    "events": [ "InGame", "Created" ]
+    "events": [
+		{
+			"name": "InGame",
+			"parameters": []
+		},
+		{
+			"name": "Created",
+			"parameters": []
+		}
+	]
+  },
+  {
+    "name": "Creature",
+    "parents": [ "GameWorldObject" ],
+	"functions": [],
+    "properties": [
+	  {
+        "name": "Health",
+        "type": "Number"
+      },
+	  {
+        "name": "Strength",
+        "type": "Number"
+      },
+	  {
+        "name": "Mana",
+        "type": "Number"
+      },
+	  {
+        "name": "Dexterity",
+        "type": "Number"
+      }
+    ],
+	"events": [
+		{
+			"name": "Attacked",
+			"parameters": []
+		},
+		{
+			"name": "Damaged",
+			"parameters": []
+		}
+	]
+  },
+  {
+    "name": "Character",
+    "parents": [ "Creature" ],
+	"functions": [
+      {
+        "name": "AddItem",
+        "parameters": [
+          {
+            "name": "ItemToAdd",
+            "type": "Item"
+          }
+        ],
+        "returnType": "Boolean"
+      },
+	  {
+        "name": "RemoveItem",
+        "parameters": [
+          {
+            "name": "ItemToRemove",
+            "type": "Item"
+          }
+        ],
+        "returnType": "Boolean"
+      }
+    ],
+    "properties": [],
+	"events": [
+		{
+			"name": "ItemAdded",
+			"parameters": []
+		},
+		{
+			"name": "ItemRemoved",
+			"parameters": []
+		}
+	]
   },
   {
     "name": "Activator",
     "parents": [ "GameWorldObject" ],
-    "events": [ "Activated" ]
+    "events": [
+		{
+			"name": "Activated",
+			"parameters": []
+		}
+	]
   },
   {
     "name": "Item",
@@ -91,9 +175,75 @@
         "type": "Number"
       }
     ],
-    "events": [ "PickedUp", "Dropped" ]
+	"events": [
+		{
+			"name": "PickedUp",
+			"parameters": []
+		},
+		{
+			"name": "Dropped",
+			"parameters": []
+		}
+	]
   },
   {
-    "name": "Instance"
+    "name": "Equipment",
+    "parents": [ "Item" ],
+    "properties": [
+      {
+        "name": "Type",
+        "type": "Number"
+      }
+    ],
+	"events": [
+		{
+			"name": "Equipped",
+			"parameters": [
+			  {
+				"name": "Actor",
+				"type": "CharacterInstance"
+			  }
+			]
+		},
+		{
+			"name": "Unequipped",
+			"parameters": [
+			  {
+				"name": "Actor",
+				"type": "CharacterInstance"
+			  }
+			]
+		}
+	]
+  },
+  {
+    "name": "Consumable",
+    "parents": [ "Item" ],
+    "properties": [],
+    "events": [
+		{
+			"name": "Consumed",
+			"parameters": []
+		}
+	]
+  },
+  {
+    "name": "Instance",
+	"properties": [
+		{
+			"name":"Base",
+			"type":"GameWorldObject"
+		}
+	]
+  },
+  {
+    "name": "CharacterInstance",
+	"parents": [ "Instance" ],
+	"properties": [
+		{
+			"name":"BonusHealth",
+			"type":"Number"
+		}
+	]
   }
 ]

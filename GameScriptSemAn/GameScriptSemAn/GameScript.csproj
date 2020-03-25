@@ -65,6 +65,7 @@
     </Compile>
     <Compile Include="Listeners\SyntaxErrorListener.cs" />
     <Compile Include="Model\Error.cs" />
+    <Compile Include="Model\Event.cs" />
     <Compile Include="Model\Function.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\Type.cs" />

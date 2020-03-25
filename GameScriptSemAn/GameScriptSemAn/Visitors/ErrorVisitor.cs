@@ -30,17 +30,19 @@ namespace GameScript.Visitors
             var baseId = context.baseHeader().baseId();
 
             Model.Type baseClassType = typeSystem["ErrorType"];
-            try
+            if (baseClass != null)
             {
-                baseClassType = typeSystem[baseClass.GetText()];
+                try
+                {
+                    baseClassType = typeSystem[baseClass.GetText()];
+                }
+                catch (KeyNotFoundException e)
+                {
+                    errors.Add(new Error(baseClass, e.Message));
+                }
+                if (!baseClassType.InheritsFrom(typeSystem["GameObject"]))
+                    errors.Add(new Error(baseClass, $"Type {baseClassType} is not valid here (must inherit from {typeSystem["GameObject"]})."));
             }
-            catch (KeyNotFoundException e)
-            {
-                errors.Add(new Error(baseClass, e.Message));
-            }
-            if (!baseClassType.InheritsFrom(typeSystem["GameObject"]))
-                errors.Add(new Error(baseClass, $"Type {baseClassType} is not valid here (must inherit from {typeSystem["GameObject"]})."));
-
             //TODO: add newly defined type {baseId.GetText()} to type system.
 
             env = new Env(env, baseId.GetText(), baseClassType);
@@ -72,12 +74,27 @@ namespace GameScript.Visitors
 
         public override object VisitRunBlock([NotNull] RunBlockContext context)
         {
-            var eventName = context.eventTypeName();
+            var eventCtx = context.eventTypeName();
 
-            if (!env.Type.Events.Contains(eventName.GetText()))
-                errors.Add(new Error(eventName, $"Event {eventName.GetText()} is not defined on {env.Type}."));
+            var @event = env.Type.Events.FirstOrDefault(e => e.Name == eventCtx.GetText());
 
-            return base.VisitRunBlock(context);
+            if (@event == null)
+            {
+                errors.Add(new Error(eventCtx, $"Event {eventCtx.GetText()} is not defined on {env.Type}."));
+                return base.VisitRunBlock(context);
+            }
+            else
+            {
+                env = new Env(env, eventCtx.GetText(), env.Type);
+
+                foreach (var param in @event.Parameters)
+                    AddSymbolToEnv(eventCtx, new Symbol(param.Name, param.Type));
+
+                var result = base.VisitRunBlock(context);
+
+                env = env.Previous;
+                return base.VisitRunBlock(context);
+            }
         }
 
         public override object VisitIfStatement([NotNull] IfStatementContext context)
@@ -247,7 +264,7 @@ namespace GameScript.Visitors
             {
                 var ctx = context as PathExpressionContext;
                 var variable = GetSymbolFromEnv(ctx, ctx.path().varPath().varName()[0].GetText());
-                return variable.Type;
+                return variable?.Type ?? typeSystem["ErrorType"];
             }
 
             /*if (context is RefExpressionContext)

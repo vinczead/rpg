@@ -7,7 +7,8 @@
         xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:local="clr-namespace:RpgEditor"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800"
+        WindowState="Maximized">
     <DockPanel>
         <Menu x:Name="MainMenu" DockPanel.Dock="Top">
             <MenuItem Header="File">

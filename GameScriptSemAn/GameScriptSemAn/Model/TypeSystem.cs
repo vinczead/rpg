@@ -41,8 +41,28 @@ namespace GameScript.Model
                         var functions = type.Value<JArray>("functions") ?? new JArray();
                         var properties = type.Value<JArray>("properties") ?? new JArray();
 
-                        types[currentTypeName].Events = events.Select(e => e.Value<string>()).ToHashSet();
                         types[currentTypeName].Parents = parents.Select(p => types[p.Value<string>()]).ToHashSet();
+                        types[currentTypeName].Events = events.Select(e =>
+                        {
+                            var @params = e.Value<JArray>("parameters");
+
+                            List<Parameter> parameters = new List<Parameter>();
+                            foreach (var p in @params)
+                            {
+                                parameters.Add(new Parameter()
+                                {
+                                    Name = p.Value<string>("name"),
+                                    Type = types[p.Value<string>("type")]
+                                });
+                            }
+
+                            return new Event()
+                            {
+                                Name = e.Value<string>("name"),
+                                Parameters = parameters
+                            };
+                            }).ToHashSet();
+
                         types[currentTypeName].Properties = properties.Select(p => new Property()
                         {
                             Name = p.Value<string>("name"),

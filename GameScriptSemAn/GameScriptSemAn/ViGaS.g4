@@ -14,7 +14,7 @@ initBlock: INIT statementList END;
 
 variablesBlock: VARIABLES variableDeclaration+ END;
 
-runBlock: RUN eventTypeName statementList END;
+runBlock: RUN WHEN eventTypeName statementList END;
 
 statement: assignmentStatement | assignmentStatementBlock | ifStatement | whileStatement | repeatStatement | functionCallStatement | RETURN | COMMENT;
 

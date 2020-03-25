@@ -29,9 +29,9 @@ namespace GameScript.Model
             set { functions = value; }
         }
 
-        private HashSet<string> events;
+        private HashSet<Event> events;
 
-        public HashSet<string> Events
+        public HashSet<Event> Events
         {
             get {
                 if (Parents.Count > 0)
@@ -69,7 +69,7 @@ namespace GameScript.Model
             Name = name;
 
             Functions = new HashSet<Function>();
-            Events = new HashSet<string>();
+            Events = new HashSet<Event>();
             Properties = new HashSet<Property>();
         }
 
