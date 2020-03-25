@@ -93,7 +93,7 @@ namespace GameScript.Visitors
                 var result = base.VisitRunBlock(context);
 
                 env = env.Previous;
-                return base.VisitRunBlock(context);
+                return result;
             }
         }
 
@@ -165,25 +165,26 @@ namespace GameScript.Visitors
 
         public override object VisitAssignmentStatement([NotNull] AssignmentStatementContext context)
         {
-            var varName = context.path().GetText();                 //TODO: this should check whole path
+            /*var varName = context.path().GetText();                 //TODO: this should check whole path
+            var symbol = GetSymbolFromEnv(context.path(), varName);*/
+
             var expressionType = GetType(context.expression());
+            var symbolType = GetType(context.path());
 
-            var symbol = GetSymbolFromEnv(context.path(), varName);
-
-            if (symbol != null)
+            /*if (symbol != null)
             {
                 if (symbol.Readonly)
                     errors.Add(new Error(context.expression(), $"Invalid assignment: {symbol.Name} is read only."));
                 else
                 {
                     var varType = symbol.Type;
-
-                    if (!expressionType.InheritsFrom(varType))
+                    */
+                    if (!expressionType.InheritsFrom(symbolType))
                     {
-                        errors.Add(new Error(context.expression(), $"Type mismatch: expression of type {expressionType} cannot be assigned to a variable of type {varType}"));
+                        errors.Add(new Error(context.expression(), $"Type mismatch: expression of type {expressionType} cannot be assigned to a variable of type {symbolType}"));
                     }
-                }
-            }
+            //    }
+            //}
             return base.VisitAssignmentStatement(context);
         }
 
@@ -255,6 +256,25 @@ namespace GameScript.Visitors
             return null;
         }
 
+        private Model.Type GetType(PathContext context)
+        {
+            var variable = GetSymbolFromEnv(context, context.varPath().varName()[0].GetText());
+            var type = variable.Type;
+
+            foreach (var varName in context.varPath().varName().Skip(1).ToArray())
+            {
+                var prop = type.Properties.FirstOrDefault(p => p.Name == varName.GetText());
+                if (prop != null)
+                    type = prop.Type;
+                else
+                {
+                    errors.Add(new Error(context, $"{varName.GetText()} is not defined on {type}."));
+                    break;
+                }
+            }
+            return type;
+        }
+
         private Model.Type GetType(ExpressionContext context)
         {
             if (context is ParenExpressionContext)
@@ -264,7 +284,21 @@ namespace GameScript.Visitors
             {
                 var ctx = context as PathExpressionContext;
                 var variable = GetSymbolFromEnv(ctx, ctx.path().varPath().varName()[0].GetText());
-                return variable?.Type ?? typeSystem["ErrorType"];
+                var type = variable.Type;
+
+                foreach (var varName in ctx.path().varPath().varName().Skip(1).ToArray())
+                {
+                    var prop = type.Properties.FirstOrDefault(p => p.Name == varName.GetText());
+                    if (prop != null)
+                        type = prop.Type;
+                    else
+                    {
+                        errors.Add(new Error(context, $"{varName.GetText()} is not defined on {type}."));
+                        break;
+                    }
+                }
+                return type;
+                //return variable?.Type ?? typeSystem["ErrorType"];
             }
 
             /*if (context is RefExpressionContext)
