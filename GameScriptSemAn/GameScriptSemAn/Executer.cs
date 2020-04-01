@@ -100,19 +100,5 @@ namespace GameScript
                 }
             }*/
         }
-
-        /*private static void Main(string[] args)
-        {
-            var ast = ReadAST("example.gsc");
-            var fun = ReadFunctionList("Language.json");    //esetleg lehetne saját nyelvből, avalonedit: szintaxkiemelő
-            var gameScriptVisitor = new GameScriptVisitor(); //semantic highlight
-            gameScriptVisitor.Visit(ast);
-
-            var ast = ParseStatement("Set Var1 To 5 > 2");
-            var executionVisitor = new ExecutionVisitor(null, null);
-            executionVisitor.Visit(ast);
-
-            Console.ReadLine();
-        }*/
     }
 }

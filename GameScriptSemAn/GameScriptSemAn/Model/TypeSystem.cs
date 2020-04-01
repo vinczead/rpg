@@ -9,13 +9,16 @@ using System.Threading.Tasks;
 
 namespace GameScript.Model
 {
-    public class TypeSystem
+    public sealed class TypeSystem
     {
-        Dictionary<string, Type> types;
+        public static TypeSystem Instance { get; } = new TypeSystem();
 
-        public TypeSystem()
+        private Dictionary<string, Type> types;
+
+        private TypeSystem()
         {
             types = new Dictionary<string, Type>();
+            ReadTypes(@"C:\Users\Ady\source\repos\Rpg\GameScriptSemAn\GameScriptSemAn\builtintypes.json");
         }
 
         public void ReadTypes(string filePath)
@@ -38,7 +41,6 @@ namespace GameScript.Model
 
                         var events = type.Value<JArray>("events") ?? new JArray();
                         var parents = type.Value<JArray>("parents") ?? new JArray();
-                        var functions = type.Value<JArray>("functions") ?? new JArray();
                         var properties = type.Value<JArray>("properties") ?? new JArray();
 
                         types[currentTypeName].Parents = parents.Select(p => types[p.Value<string>()]).ToHashSet();
@@ -68,28 +70,6 @@ namespace GameScript.Model
                             Name = p.Value<string>("name"),
                             Type = types[p.Value<string>("type")]
                         }).ToHashSet();
-
-                        types[currentTypeName].Functions = functions.Select(f =>
-                        {
-                            var @params = f.Value<JArray>("parameters");
-
-                            List<Parameter> parameters = new List<Parameter>();
-                            foreach (var p in @params)
-                            {
-                                parameters.Add(new Parameter()
-                                {
-                                    Name = p.Value<string>("name"),
-                                    Type = types[p.Value<string>("type")]
-                                });
-                            }
-
-                            return new Function()
-                            {
-                                Name = f.Value<string>("name"),
-                                ReturnType = types[f.Value<string>("returnType")],
-                                Parameters = parameters
-                            };
-                        }).ToHashSet();
                     }
                 }
             }
@@ -99,6 +79,9 @@ namespace GameScript.Model
         {
             get
             {
+                if (name == null)
+                    return null;
+
                 if (types.ContainsKey(name))
                     return types[name];
                 throw new KeyNotFoundException("Type not found: " + name);

@@ -77,7 +77,7 @@ namespace GameScript.Visitors
 
         public override object VisitFunctionCallStatement([NotNull] FunctionCallStatementContext context)
         {
-            var path = context.path();
+            /*var path = context.path();
             var functionName = context.functionName().GetText();
             var parameterList = context.functionParameterList()?.expression().ToList();
             var parameterListTypes = parameterList?.Select(p => TypeChecker.GetTypeOf(p, GameObject)).ToArray();
@@ -89,7 +89,8 @@ namespace GameScript.Visitors
 
             MethodInfo method = subject.GetType().GetMethod(functionName, parameterListTypes ?? new Type[0]);
 
-            return method.Invoke(subject, parameterListValues);
+            return method.Invoke(subject, parameterListValues);*/
+            return typeof(bool);
         }
 
     }

@@ -15,6 +15,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
 using GameScript;
+using GameScript.Visitors;
 using ICSharpCode.AvalonEdit.Highlighting;
 using Rpg.Models;
 
@@ -48,6 +49,7 @@ namespace RpgEditor
         {
             var syntaxErrors = new List<GameScript.Model.Error>();
             var tree = Executer.ReadAST(textEditor.Text, out syntaxErrors);
+
             var errorVisitor = Executer.CheckErrors(tree);
             errorList.Text = "";
             
@@ -55,7 +57,8 @@ namespace RpgEditor
             {
                 errorList.AppendText(error.ToString() + Environment.NewLine);
             }
-            MessageBox.Show("Error check finished.");
+
+            errorList.AppendText("Error check completed.");
         }
     }
 }

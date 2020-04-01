@@ -21,7 +21,7 @@
       <Word>From</Word>
       <Word>Instantiate</Word>
       
-      <Word>Initialization</Word>
+      <Word>Init</Word>
 
       <Word>If</Word>
       <Word>Then</Word>
@@ -51,6 +51,41 @@
       <Word>Reference</Word>
 
       <Word>Self</Word>
+
+      <Word>define</Word>
+      <Word>from</Word>
+      <Word>instantiate</Word>
+
+      <Word>init</Word>
+
+      <Word>if</Word>
+      <Word>then</Word>
+      <Word>else</Word>
+
+      <Word>repeat</Word>
+      <Word>while</Word>
+
+      <Word>return</Word>
+      <Word>variables</Word>
+      <Word>is</Word>
+      <Word>parameter</Word>
+      <Word>withvalue</Word>
+      <Word>set</Word>
+      <Word>to</Word>
+      <Word>run</Word>
+      <Word>when</Word>
+      <Word>end</Word>
+
+      <Word>true</Word>
+      <Word>false</Word>
+      <Word>null</Word>
+
+      <Word>number</Word>
+      <Word>boolean</Word>
+      <Word>string</Word>
+      <Word>reference</Word>
+
+      <Word>self</Word>
     </Keywords>
 
     <Rule color="MethodCall">

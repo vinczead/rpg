@@ -22,6 +22,8 @@ namespace GameScript.Model
         {
             get
             {
+                if (name == null)
+                    return null;
                 return table.ContainsKey(name) ? table[name] : Previous?[name];
             }
             set

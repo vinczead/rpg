@@ -67,6 +67,7 @@
     <Compile Include="Model\Error.cs" />
     <Compile Include="Model\Event.cs" />
     <Compile Include="Model\Function.cs" />
+    <Compile Include="Model\FunctionManager.cs" />
     <Compile Include="Model\Property.cs" />
     <Compile Include="Model\Type.cs" />
     <Compile Include="Visitors\ErrorType.cs" />
@@ -85,12 +86,13 @@
     <Compile Include="Model\Symbol.cs" />
     <Compile Include="Visitors\InvalidTypeException.cs" />
     <Compile Include="Visitors\ReferenceType.cs" />
-    <Compile Include="Visitors\TypeChecker.cs" />
     <Compile Include="Model\TypeSystem.cs" />
     <Compile Include="Visitors\ErrorVisitor.cs" />
+    <Compile Include="Visitors\TypeChecker.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <None Include="functions.json" />
     <None Include="GameScript.g4">
       <Generator>MSBuild:Compile</Generator>
       <CustomToolNamespace>GameScript</CustomToolNamespace>

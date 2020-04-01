@@ -15,7 +15,7 @@ namespace GameScript.Visitors
     {
         public static Type GetTypeOfFunctionCallStatement([NotNull] FunctionCallStatementContext context, IGameWorldObject gameObject)
         {
-            var path = context.path();
+            /*var path = context.path();
             var functionName = context.functionName().GetText();
             var parameterList = context.functionParameterList()?.expression().ToList();
             var parameterListTypes = parameterList?.Select(p => TypeChecker.GetTypeOf(p, gameObject)).ToArray();
@@ -28,7 +28,8 @@ namespace GameScript.Visitors
             }
 
             MethodInfo method = subject.GetType().GetMethod(functionName, parameterListTypes ?? new Type[0]);
-            return method.ReturnType;
+            return method.ReturnType;*/
+            return typeof(bool);
         }
 
         public static Type GetTypeOfTypeName([NotNull] TypeNameContext context)

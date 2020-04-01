@@ -12,13 +12,13 @@ definitionBody: variablesBlock? initBlock runBlock*;
 
 initBlock: INIT statementList END;
 
-variablesBlock: VARIABLES variableDeclaration+ END;
+variablesBlock: VARIABLES variableDeclaration* END;
 
 runBlock: RUN WHEN eventTypeName statementList END;
 
-statement: assignmentStatement | assignmentStatementBlock | ifStatement | whileStatement | repeatStatement | functionCallStatement | RETURN | COMMENT;
-
 statementList: statement*;
+
+statement: assignmentStatement | ifStatement | whileStatement | repeatStatement | functionCallStatement | RETURN | COMMENT;
 
 expression
 	: functionCallStatement									#funcExpression
@@ -34,6 +34,7 @@ expression
 	| left=expression logicalOperator right=expression		#logicalExpression
 	| left=expression compOperator right=expression			#compExpression
 	| '(' expression ')'									#parenExpression
+	| '[' expression (',' expression)* ']'					#arrayExpression
 	;
 
 path: varPath | refPath;
@@ -45,13 +46,12 @@ functionParameterList: expression (',' expression)*;
 
 variableDeclaration: varName IS typeName ((WITHVALUE expression SHARED?) | PARAMETER )?;
 assignmentStatement: SET path TO expression;
-assignmentStatementBlock: SET (path TO expression)+ END;
 ifStatement: IF expression THEN statementList (elseStatement)? END;
 elseStatement: ELSE statementList;
 whileStatement: WHILE expression statementList REPEAT;
 repeatStatement: REPEAT statementList WHILE expression;
 
-functionCallStatement: path? '=>' functionName '(' functionParameterList? ')';
+functionCallStatement: functionName '(' functionParameterList? ')';
 
 additiveOperator: PLUS | MINUS;
 multiplOperator: MULT | DIV;
@@ -71,7 +71,6 @@ functionName: ID;
 
 //---------------------------OPERATORS--------------------------- 
 
-ARROW: '=>';
 
 LT: '<';
 GT: '>';
@@ -94,43 +93,43 @@ COMMENT: '//' (~[\r\n])* -> skip;
 
 //---------------------------KEYWORDS---------------------------
 
-DEFINE: 'Define';
-INSTANTIATE: 'Instantiate';
-FROM: 'From';
+DEFINE: 'Define' | 'define';
+INSTANTIATE: 'Instantiate' | 'instantiate';
+FROM: 'From' | 'from';
 
-VARIABLES: 'Variables';
-IS: 'Is';
-WITHVALUE: 'WithValue';
-PARAMETER: 'Parameter';
-SHARED: 'Shared';
+VARIABLES: 'Variables' | 'variables';
+IS: 'Is' | 'is';
+WITHVALUE: 'WithValue' | 'withvalue';
+PARAMETER: 'Parameter' | 'parameter';
+SHARED: 'Shared' | 'shared';
 
-INIT: 'Initialization';
+INIT: 'Init' | 'init';
 
-RUN: 'Run';
-WHEN: 'When';
+RUN: 'Run' | 'run';
+WHEN: 'When' | 'when';
 
-IF: 'If';
-THEN: 'Then';
-ELSE: 'Else';
+IF: 'If' | 'if';
+THEN: 'Then' | 'then';
+ELSE: 'Else' | 'else';
 
-WHILE: 'While';
-REPEAT: 'Repeat';
-BREAK: 'Break';
+WHILE: 'While' | 'while';
+REPEAT: 'Repeat' | 'repeat';
+BREAK: 'Break' | 'break';
 
-RETURN: 'Return';
+RETURN: 'Return' | 'return';
 
-SET: 'Set';
-TO: 'To';
+SET: 'Set' | 'set';
+TO: 'To' | 'to';
 
-END: 'End';
+END: 'End' | 'end';
 
 BRACKET_OPEN: '(';
 BRACKET_CLOSE: ')';
 COMMA: ',';
 DOT: '.';
 
-NULL: 'Null';
-BOOLEAN: 'True' | 'False';
+NULL: 'Null' | 'null';
+BOOLEAN: 'True' | 'true' | 'False' | 'false';
 STRING: '"' (~[\r\n])* '"';
 NUMBER: [0-9]+ ('.' [0-9]+)?;
 REFERENCE: '$' ID;

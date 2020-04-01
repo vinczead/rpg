@@ -11,24 +11,6 @@ namespace GameScript.Model
         public string Name { get; set; }
         public HashSet<Type> Parents { get; set; } = new HashSet<Type>();
 
-        private HashSet<Function> functions;
-
-        public HashSet<Function> Functions
-        {
-            get
-            {
-                if (Parents.Count > 0)
-                    return Parents
-                        .Select(p => p.Functions)
-                        .Aggregate((result, item) => result.Concat(item).ToHashSet())
-                        .Concat(functions)
-                        .ToHashSet();
-                else
-                    return functions;
-            }
-            set { functions = value; }
-        }
-
         private HashSet<Event> events;
 
         public HashSet<Event> Events
@@ -68,7 +50,6 @@ namespace GameScript.Model
         {
             Name = name;
 
-            Functions = new HashSet<Function>();
             Events = new HashSet<Event>();
             Properties = new HashSet<Property>();
         }

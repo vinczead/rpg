@@ -1,49 +1,35 @@
 [
   {
     "name": "ErrorType",
-    "parents": [ "NullType", "Boolean", "Number", "String" ],
-    "functions": [],
-    "properties": []
+    "parents": [ "NullType", "Boolean", "Number", "String", "StringArray", "NumberArray", "BooleanArray" ]
   },
   {
     "name": "String",
-    "parents": [],
-    "functions": [
-      {
-        "name": "Length",
-        "parameters": [],
-        "returnType": "Number"
-      },
-      {
-        "name": "Contains",
-        "parameters": [
-          {
-            "name": "Substring",
-            "type": "String"
-          }
-        ],
-        "returnType": "Boolean"
-      }
-    ],
-    "properties": []
+    "parents": []
   },
   {
     "name": "Number",
-    "parents": [],
-    "functions": [],
-    "properties": []
+    "parents": []
   },
   {
     "name": "Boolean",
-    "parents": [],
-    "functions": [],
-    "properties": []
+    "parents": []
+  },
+  {
+    "name": "StringArray",
+    "parents": []
+  },
+  {
+    "name": "NumberArray",
+    "parents": []
+  },
+  {
+    "name": "BooleanArray",
+    "parents": []
   },
   {
     "name": "NullType",
-    "parents": [ "Activator", "Instance" ],
-    "functions": [],
-    "properties": []
+    "parents": [ "Activator", "Instance" ]
   },
   {
     "name": "GameObject",
@@ -72,95 +58,79 @@
       }
     ],
     "events": [
-		{
-			"name": "InGame",
-			"parameters": []
-		},
-		{
-			"name": "Created",
-			"parameters": []
-		}
-	]
+      {
+        "name": "InGame",
+        "parameters": []
+      },
+      {
+        "name": "Created",
+        "parameters": []
+      }
+    ]
   },
   {
     "name": "Creature",
     "parents": [ "GameWorldObject" ],
-	"functions": [],
     "properties": [
-	  {
-        "name": "Health",
-        "type": "Number"
-      },
-	  {
+      {
         "name": "Strength",
         "type": "Number"
       },
-	  {
-        "name": "Mana",
+      {
+        "name": "Dexterity",
         "type": "Number"
       },
-	  {
-        "name": "Dexterity",
+      {
+        "name": "Intelligence",
         "type": "Number"
       }
     ],
-	"events": [
-		{
-			"name": "Attacked",
-			"parameters": []
-		},
-		{
-			"name": "Damaged",
-			"parameters": []
-		}
-	]
+    "events": [
+      {
+        "name": "Attacked",
+        "parameters": []
+      },
+      {
+        "name": "Damaged",
+        "parameters": []
+      }
+    ]
   },
   {
     "name": "Character",
     "parents": [ "Creature" ],
-	"functions": [
-      {
-        "name": "AddItem",
-        "parameters": [
-          {
-            "name": "ItemToAdd",
-            "type": "Item"
-          }
-        ],
-        "returnType": "Boolean"
-      },
-	  {
-        "name": "RemoveItem",
-        "parameters": [
-          {
-            "name": "ItemToRemove",
-            "type": "Item"
-          }
-        ],
-        "returnType": "Boolean"
-      }
-    ],
     "properties": [],
-	"events": [
-		{
-			"name": "ItemAdded",
-			"parameters": []
-		},
-		{
-			"name": "ItemRemoved",
-			"parameters": []
-		}
-	]
+    "events": [
+      {
+        "name": "ItemAdded",
+        "parameters": []
+      },
+      {
+        "name": "ItemRemoved",
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "Npc",
+    "parents": [ "Character" ],
+    "properties": [],
+    "events": [
+      {
+        "name": "TalkedTo",
+        "parameters": []
+      }
+    ]
   },
   {
     "name": "Activator",
     "parents": [ "GameWorldObject" ],
     "events": [
-		{
-			"name": "Activated",
-			"parameters": []
-		}
-	]
+      {
+        "name": "Activated",
+        "parameters": []
+      }
+    ]
   },
   {
     "name": "Item",
@@ -175,16 +145,16 @@
         "type": "Number"
       }
     ],
-	"events": [
-		{
-			"name": "PickedUp",
-			"parameters": []
-		},
-		{
-			"name": "Dropped",
-			"parameters": []
-		}
-	]
+    "events": [
+      {
+        "name": "PickedUp",
+        "parameters": []
+      },
+      {
+        "name": "Dropped",
+        "parameters": []
+      }
+    ]
   },
   {
     "name": "Equipment",
@@ -195,55 +165,55 @@
         "type": "Number"
       }
     ],
-	"events": [
-		{
-			"name": "Equipped",
-			"parameters": [
-			  {
-				"name": "Actor",
-				"type": "CharacterInstance"
-			  }
-			]
-		},
-		{
-			"name": "Unequipped",
-			"parameters": [
-			  {
-				"name": "Actor",
-				"type": "CharacterInstance"
-			  }
-			]
-		}
-	]
+    "events": [
+      {
+        "name": "Equipped",
+        "parameters": [
+          {
+            "name": "Actor",
+            "type": "CharacterInstance"
+          }
+        ]
+      },
+      {
+        "name": "Unequipped",
+        "parameters": [
+          {
+            "name": "Actor",
+            "type": "CharacterInstance"
+          }
+        ]
+      }
+    ]
   },
   {
     "name": "Consumable",
     "parents": [ "Item" ],
     "properties": [],
     "events": [
-		{
-			"name": "Consumed",
-			"parameters": []
-		}
-	]
+      {
+        "name": "Consumed",
+        "parameters": []
+      }
+    ]
   },
   {
     "name": "Instance",
-	"properties": [
-		{
-			"name":"Base",
-			"type":"GameWorldObject"
-		}
-	]
+    "properties": [
+      {
+        "name": "Base",
+        "type": "GameWorldObject"
+      }
+    ]
   },
   {
     "name": "CharacterInstance",
-	"parents": [ "Instance" ],
-	"properties": [
-		{
-			"name":"BonusHealth",
-			"type":"Number"
-		}
-	]
+    "parents": [ "Instance" ],
+    "properties": [
+      {
+        "name": "BonusHealth",
+        "type": "Number"
+      }
+    ]
   }
 ]
