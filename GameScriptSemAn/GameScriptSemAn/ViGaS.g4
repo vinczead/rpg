@@ -92,6 +92,7 @@ DIV: '/';
 COMMENT: '//' (~[\r\n])* -> skip;
 
 //---------------------------KEYWORDS---------------------------
+//[Dd]'efine'
 
 DEFINE: 'Define' | 'define';
 INSTANTIATE: 'Instantiate' | 'instantiate';

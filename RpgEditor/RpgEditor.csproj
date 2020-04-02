@@ -120,10 +120,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GameModel\GameModel.csproj">
-      <Project>{15dcec05-d68c-4549-be1a-fe4ec673fcf8}</Project>
-      <Name>GameModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GameScriptSemAn\GameScriptSemAn\GameScript.csproj">
       <Project>{76195d3a-3c23-4242-aaa0-dc6ccf85999d}</Project>
       <Name>GameScript</Name>

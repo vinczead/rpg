@@ -1,7 +1,7 @@
 [
   {
     "name": "ErrorType",
-    "parents": [ "NullType", "Boolean", "Number", "String", "StringArray", "NumberArray", "BooleanArray" ]
+    "parents": [ "NullType", "Boolean", "Number", "String", "StringArray", "NumberArray", "BooleanArray", "Array" ]
   },
   {
     "name": "String",
@@ -16,16 +16,20 @@
     "parents": []
   },
   {
-    "name": "StringArray",
+    "name": "Array",
     "parents": []
+  },
+  {
+    "name": "StringArray",
+    "parents": ["Array"]
   },
   {
     "name": "NumberArray",
-    "parents": []
+    "parents": [ "Array" ]
   },
   {
     "name": "BooleanArray",
-    "parents": []
+    "parents": [ "Array" ]
   },
   {
     "name": "NullType",

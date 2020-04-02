@@ -42,33 +42,6 @@
     <ApplicationManifest>app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="Models\BaseClasses\ActivatorBase.cs" />
-    <Compile Include="Models\BaseClasses\CharacterBase.cs" />
-    <Compile Include="Models\BaseClasses\ConsumableBase.cs" />
-    <Compile Include="Models\BaseClasses\CreatureBase.cs" />
-    <Compile Include="Models\BaseClasses\EquipmentBase.cs" />
-    <Compile Include="Models\BaseClasses\EquipmentType.cs" />
-    <Compile Include="Models\BaseClasses\GameObjectBase.cs" />
-    <Compile Include="Models\BaseClasses\GameWorldObjectBase.cs" />
-    <Compile Include="Models\BaseClasses\ItemBase.cs" />
-    <Compile Include="Models\BaseClasses\NpcBase.cs" />
-    <Compile Include="Models\BaseClasses\PlayerBase.cs" />
-    <Compile Include="Models\BaseClasses\QuestBase.cs" />
-    <Compile Include="Models\GameObjectBaseManager.cs" />
-    <Compile Include="Models\InstanceClasses\Activator.cs" />
-    <Compile Include="Models\InstanceClasses\Character.cs" />
-    <Compile Include="Models\InstanceClasses\Consumable.cs" />
-    <Compile Include="Models\InstanceClasses\Creature.cs" />
-    <Compile Include="Models\InstanceClasses\Equipment.cs" />
-    <Compile Include="Models\InstanceClasses\GameObject.cs" />
-    <Compile Include="Models\InstanceClasses\GameWorldObject.cs" />
-    <Compile Include="Models\InstanceClasses\Item.cs" />
-    <Compile Include="Models\InstanceClasses\Npc.cs" />
-    <Compile Include="Models\InstanceClasses\Player.cs" />
-    <Compile Include="Models\InstanceClasses\Quest.cs" />
-    <Compile Include="Models\Room.cs" />
-    <Compile Include="Models\TextureManager.cs" />
-    <Compile Include="Models\World.cs" />
     <Compile Include="Screens\InventoryScreen.cs" />
     <Compile Include="Screens\TextInputScreen.cs" />
     <Compile Include="Screens\ConsoleScreen.cs" />
@@ -94,14 +67,9 @@
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.config" />
     <None Include="app.manifest" />
-    <None Include="Models\GameDiagram.cd" />
     <None Include="Screens\ScreenDiagram.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\GameModel\GameModel.csproj">
-      <Project>{15dcec05-d68c-4549-be1a-fe4ec673fcf8}</Project>
-      <Name>GameModel</Name>
-    </ProjectReference>
     <ProjectReference Include="..\GameScriptSemAn\GameScriptSemAn\GameScript.csproj">
       <Project>{76195d3a-3c23-4242-aaa0-dc6ccf85999d}</Project>
       <Name>GameScript</Name>

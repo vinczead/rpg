@@ -6,10 +6,9 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using GameScript.Model;
 using GameScript.Visitors;
-using GameModel.Models;
-using GameModel.Models.InstanceInterfaces;
 using System.Linq;
 using GameScript.Listeners;
+using GameScript.Models.InstanceClasses;
 
 namespace GameScript
 {
@@ -62,14 +61,14 @@ namespace GameScript
             return parser;
         }
 
-        public static void ExecuteStatement(IGameWorldObject gameObject, string statement)
+        public static void ExecuteStatement(ThingInstance thing, string statement)
         {
-            var parseTree = ParseStatement(statement);
-            var executionVisitor = new ExecutionVisitor(gameObject);
-            executionVisitor.Visit(parseTree);
+            //var parseTree = ParseStatement(statement);
+            //var executionVisitor = new ExecutionVisitorOld(gameObject);
+            //executionVisitor.Visit(parseTree);
         }
 
-        public static void ExecuteVariableDeclaration(IGameWorldObject gameObject)
+        public static void ExecuteVariableDeclaration(ThingInstance thing)
         {
             /*if (gameObject.Base.Script != "")
             {
@@ -83,7 +82,7 @@ namespace GameScript
             }*/
         }
 
-        public static void ExecuteRunBlock(IGameWorldObject gameObject, string runBlockType) //todo: take context based Variables as parameter
+        public static void ExecuteRunBlock(ThingInstance thing, string runBlockType)
         {
             /*if (gameObject.Base.Script != "")
             {
