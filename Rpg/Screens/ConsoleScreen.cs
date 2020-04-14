@@ -15,9 +15,9 @@ namespace Rpg.Screens
     public class ConsoleScreen : TextInputScreen
     {
         private List<string> history = new List<string>();
-        private World world;
+        private GameScript.Models.GameModel world;
 
-        public ConsoleScreen(RpgGame game, World world) : base(game)
+        public ConsoleScreen(RpgGame game, GameScript.Models.GameModel world) : base(game)
         {
             IsOverlay = true;
             this.world = world;

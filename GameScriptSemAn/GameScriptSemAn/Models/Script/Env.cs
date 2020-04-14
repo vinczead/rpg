@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace GameScript.Model
+namespace GameScript.Models.Script
 {
     public class Env
     {
         public string Name { get; set; }
         public Env Previous { get; private set; }
-        public Type BaseClassType { get; set; }
 
         private Dictionary<string, Symbol> table = new Dictionary<string, Symbol>();
 
@@ -32,6 +31,11 @@ namespace GameScript.Model
                     throw new ArgumentException($"'{name}' is already defined.", "name");
                 table[name] = value;
             }
+        }
+
+        public void RemoveSymbol(string symbolName)
+        {
+            table.Remove(symbolName);
         }
 
         public override string ToString()

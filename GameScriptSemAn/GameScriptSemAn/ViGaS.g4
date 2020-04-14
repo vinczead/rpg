@@ -1,16 +1,16 @@
 grammar ViGaS;
 
-script: (baseDefinition | instanceDefinition)*;
+script: baseDefinition* | regionDefinition*;
 
-baseDefinition: baseHeader definitionBody;
-baseHeader: DEFINE baseId FROM baseClass;
+baseDefinition: BASE baseId FROM baseClass baseBody END;
+baseBody: initBlock variablesBlock? runBlock*;
 
-instanceDefinition: instanceHeader definitionBody;
-instanceHeader: INSTANTIATE instanceId FROM baseId;
+regionDefinition: REGION regionId regionBody END;
+regionBody: initBlock instanceDefinition*;
 
-definitionBody: variablesBlock? initBlock runBlock*;
+instanceDefinition: INSTANCE instanceId? OF baseId initBlock END;
 
-initBlock: INIT statementList END;
+initBlock: (assignmentStatement | functionCallStatement)*;
 
 variablesBlock: VARIABLES variableDeclaration* END;
 
@@ -45,7 +45,7 @@ varPath: varName ('.' varName)*;
 functionParameterList: expression (',' expression)*;
 
 variableDeclaration: varName IS typeName (WITHVALUE expression)?;
-assignmentStatement: SET path TO expression;
+assignmentStatement: SET path TO? expression;
 ifStatement: IF expression THEN statementList (elseStatement)? END;
 elseStatement: ELSE statementList;
 whileStatement: WHILE expression statementList REPEAT;
@@ -64,6 +64,7 @@ logicalOperator: OR | AND | XOR;
 baseId: ID;
 baseClass: ID;
 instanceId: ID;
+regionId: ID;
 typeName: ID;
 varName: ID;
 eventTypeName: ID;
@@ -93,8 +94,10 @@ COMMENT: '//' (~[\r\n])* -> skip;
 
 //---------------------------KEYWORDS---------------------------
 
-DEFINE: [Dd]'efine';
-INSTANTIATE: [Ii]'nstantiate';
+BASE: [Bb]'ase';
+REGION: [Rr]'egion';
+INSTANCE: [Ii]'nstance';
+OF: [Oo]'f';
 FROM: [Ff]'rom';
 
 VARIABLES: [Vv]'ariables';
@@ -128,6 +131,7 @@ BRACKET_CLOSE: ')';
 COMMA: ',';
 DOT: '.';
 
+THIS: [Tt]'his';
 NULL: 'Null' | 'null';
 BOOLEAN: 'True' | 'true' | 'False' | 'false';
 STRING: '"' (~[\r\n])* '"';

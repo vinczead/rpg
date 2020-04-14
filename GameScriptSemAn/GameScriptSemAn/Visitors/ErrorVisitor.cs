@@ -1,6 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using GameScript.Model;
+using GameScript.Models.Script;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -23,8 +23,8 @@ namespace GameScript.Visitors
 
         public override object VisitBaseDefinition([NotNull] BaseDefinitionContext context)
         {
-            var baseClass = context.baseHeader().baseClass();
-            var baseId = context.baseHeader().baseId();
+            var baseClass = context.baseClass();
+            var baseId = context.baseId();
 
             var baseClassType = TypeSystem.Instance["ErrorType"];
             if (baseClass != null)
@@ -43,7 +43,8 @@ namespace GameScript.Visitors
             //TODO: add newly defined type {baseId.GetText()} to type system.
 
             env = new Env(env, baseId.GetText());
-            AddSymbolToEnv(context, new Symbol("Base", baseClassType));
+            AddSymbolToEnv(context, new Symbol("_Base", baseClassType));
+            AddSymbolToEnv(context, new Symbol("Self", baseClassType));
 
             foreach (var prop in baseClassType.Properties)
                 AddSymbolToEnv(baseClass, new Symbol(prop.Name, prop.Type));
@@ -55,14 +56,24 @@ namespace GameScript.Visitors
             return result;
         }
 
+        public override object VisitInitBlock([NotNull] InitBlockContext context)
+        {
+            var retVal = base.VisitInitBlock(context);
+
+            RemoveSymbolFromEnv(context, "Self");
+
+            return retVal;
+        }
+
         public override object VisitInstanceDefinition([NotNull] InstanceDefinitionContext context)
         {
-            var baseId = context.instanceHeader().baseId();
-            var instanceId = context.instanceHeader().instanceId();
+            var baseId = context.baseId();
+            var instanceId = context.instanceId();
 
             //TODO: check whether {baseId.GetText()} is a defined base type.
+            //store instanceId, if set, so others can reference it
 
-            env = new Env(env, instanceId.GetText());
+            env = new Env(env, instanceId?.GetText() ?? $"Instance of {baseId.GetText()}");
             var result = base.VisitInstanceDefinition(context);
 
             env = env.Previous;
@@ -70,11 +81,17 @@ namespace GameScript.Visitors
             return result;
         }
 
+        public override object VisitRegionDefinition([NotNull] RegionDefinitionContext context)
+        {
+            //todo: configure ENV
+            return base.VisitRegionDefinition(context);
+        }
+
         public override object VisitRunBlock([NotNull] RunBlockContext context)
         {
             var eventCtx = context.eventTypeName();
 
-            var baseType = GetSymbolFromEnv(context, "Base").Type;
+            var baseType = GetSymbolFromEnv(context, "_Base").Type;
 
             var @event = baseType.Events.FirstOrDefault(e => e.Name == eventCtx.GetText());
 
@@ -133,7 +150,7 @@ namespace GameScript.Visitors
             //check whether expression after WithValue matches type
             var varName = context.varName()?.GetText();
 
-            Model.Type varType = TypeSystem.Instance["ErrorType"];
+            Models.Script.Type varType = TypeSystem.Instance["ErrorType"];
 
             try
             {
@@ -220,6 +237,11 @@ namespace GameScript.Visitors
             }
         }
 
+        private void RemoveSymbolFromEnv(ParserRuleContext context, string name)
+        {
+            env.RemoveSymbol(name);
+        }
+
         private Symbol GetSymbolFromEnv(ParserRuleContext context, string symbolName)
         {
             if (symbolName == null)
@@ -233,7 +255,7 @@ namespace GameScript.Visitors
             return null;
         }
 
-        private Model.Type GetType(PathContext context)
+        private Models.Script.Type GetType(PathContext context)
         {
             var variable = GetSymbolFromEnv(context, context.varPath()?.varName()[0].GetText());
 
@@ -256,7 +278,7 @@ namespace GameScript.Visitors
             return type;
         }
 
-        private Model.Type GetType(ExpressionContext context)
+        private Models.Script.Type GetType(ExpressionContext context)
         {
             if (context is FuncExpressionContext)
             {
@@ -401,7 +423,7 @@ namespace GameScript.Visitors
             if (context is ArrayExpressionContext)
             {
                 var ctx = context as ArrayExpressionContext;
-                Model.Type firstType;
+                Models.Script.Type firstType;
 
                 if (ctx.expression() == null || (firstType = GetType(ctx.expression()[0])) == TypeSystem.Instance["ErrorType"])
                 {
@@ -411,7 +433,7 @@ namespace GameScript.Visitors
 
                 foreach (var expr in ctx.expression())
                 {
-                    if(GetType(expr) != firstType)
+                    if (GetType(expr) != firstType)
                     {
                         errors.Add(new Error(expr, $"Invalid array expression: arrays can only contain elements of the same type."));
                         return TypeSystem.Instance["ErrorType"];

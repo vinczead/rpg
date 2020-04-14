@@ -17,9 +17,11 @@
     </Span>
 
     <Keywords color="Keyword">
-      <Word>Define</Word>
+      <Word>Base</Word>
+      <Word>Instance</Word>
+      <Word>Region</Word>
       <Word>From</Word>
-      <Word>Instantiate</Word>
+      <Word>Of</Word>
       
       <Word>Init</Word>
 
@@ -58,9 +60,11 @@
       <Word>Not</Word>
       <Word>Xor</Word>
 
-      <Word>define</Word>
+      <Word>base</Word>
+      <Word>instance</Word>
+      <Word>region</Word>
       <Word>from</Word>
-      <Word>instantiate</Word>
+      <Word>of</Word>
 
       <Word>init</Word>
 

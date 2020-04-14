@@ -4,12 +4,12 @@ using System;
 using System.IO;
 using Newtonsoft.Json;
 using System.Collections.Generic;
-using GameScript.Model;
 using GameScript.Visitors;
 using System.Linq;
 using GameScript.Listeners;
 using GameScript.Models.InstanceClasses;
 using GameScript.Models;
+using GameScript.Models.Script;
 
 namespace GameScript
 {
@@ -49,15 +49,15 @@ namespace GameScript
             return errors;
         }
 
-        public static World BuildWorld(List<string> scripts)
+        public static GameModel BuildWorld(List<string> scripts)
         {
-            var worldBuilder = new WorldBuilderVisitor();
+            var executionVisitor = new ExecutionVisitor();
             foreach (var script in scripts)
             {
-                worldBuilder.Visit(ReadAST(script, out _), script);   
+                executionVisitor.Visit(ReadAST(script, out _), script);   
             }
 
-            return worldBuilder.World;
+            return executionVisitor.GameModel;
         }
 
         private static IParseTree ParseStatement(string statement)
@@ -102,9 +102,9 @@ namespace GameScript
 
         public static void ExecuteRunBlock(ThingInstance thing, string runBlockType)
         {
-            if (gameObject.Base.Script != "")
+            /*if (thing.Base.Script != "")
             {
-                var parser = GetParser(gameObject.Base.Script);
+                var parser = GetParser(thing.Base.Script);
                 var runBlocksContext = parser.program().runBlock();
                 if (runBlocksContext != null)
                 {
@@ -115,7 +115,7 @@ namespace GameScript
                         executionVisitor.Visit(runBlock);
                     }
                 }
-            }
+            }*/
         }
     }
 }

@@ -13,10 +13,10 @@ namespace Rpg.Screens
 {
     public class InventoryScreen : Screen
     {
-        private World world;
+        private GameScript.Models.GameModel world;
         private int selectedItem = 0;
 
-        public InventoryScreen(RpgGame game, World world) : base(game)
+        public InventoryScreen(RpgGame game, GameScript.Models.GameModel world) : base(game)
         {
             IsOverlay = true;
             this.world = world;

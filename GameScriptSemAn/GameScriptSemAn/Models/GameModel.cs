@@ -10,33 +10,32 @@ using Microsoft.Xna.Framework.Graphics;
 
 namespace GameScript.Models
 {
-    public class World
+    public class GameModel
     {
         public Dictionary<string, GameObject> Bases { get; set; } = new Dictionary<string, GameObject>();
         public Dictionary<string, GameObjectInstance> Instances { get; set; } = new Dictionary<string, GameObjectInstance>();
-        public Dictionary<string, Room> Rooms { get; set; } = new Dictionary<string, Room>();
+        public Dictionary<string, Region> Rooms { get; set; } = new Dictionary<string, Region>();
 
         public Queue<string> Messages { get; set; } = new Queue<string>();
         double messagesDeleteTimer = 0;
 
         public PlayerInstance Player { get; set; }
 
-        public World()
+        public GameModel()
         {
-            Rooms.Add("FirstRoom", new Room()
+            Rooms.Add("FirstRoom", new Region()
             {
                 Id = "FirstRoom",
                 Name = "First Room of Dungeon",
-                World = this,
+                GameModel = this,
                 Width = 100,
-                Height = 100,
-                Depth = 100
+                Height = 100
             });
         }
 
         public void Update(GameTime gameTime)
         {
-            Player.Room.Update(gameTime);
+            Player.Region.Update(gameTime);
             if (Messages.Count > 0)
                 messagesDeleteTimer += gameTime.ElapsedGameTime.TotalMilliseconds;
             else
@@ -51,7 +50,7 @@ namespace GameScript.Models
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            Player.Room.Draw(gameTime, spriteBatch);
+            Player.Region.Draw(gameTime, spriteBatch);
 
             SpriteFont font = null;
             int i = 0;
@@ -67,7 +66,7 @@ namespace GameScript.Models
         public GameObjectInstance Spawn(string baseId, string roomId, Vector2 position, string instanceId = null)
         {
             var instance = Spawn(baseId, instanceId) as ThingInstance;
-            instance.Room = Rooms[roomId];
+            instance.Region = Rooms[roomId];
             instance.Position = position;
 
             Rooms[roomId].InsertThing(instance);
@@ -89,7 +88,7 @@ namespace GameScript.Models
 
         public void SpawnAtPlayer(string baseId, string instanceId = null)
         {
-            Spawn(baseId, Player.Room.Id, Player.Position, instanceId);
+            Spawn(baseId, Player.Region.Id, Player.Position, instanceId);
         }
 
         public void Message(string message)

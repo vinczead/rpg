@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace GameScript.Model
+namespace GameScript.Models.Script
 {
     public sealed class TypeSystem
     {

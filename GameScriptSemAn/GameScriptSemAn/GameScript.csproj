@@ -88,7 +88,7 @@
     <Compile Include="Models\InstanceClasses\NpcInstance.cs" />
     <Compile Include="Models\InstanceClasses\PlayerInstance.cs" />
     <Compile Include="Models\InstanceClasses\QuestInstance.cs" />
-    <Compile Include="Models\Room.cs" />
+    <Compile Include="Models\Region.cs" />
     <Compile Include="Models\Script\Error.cs" />
     <Compile Include="Models\Script\Event.cs" />
     <Compile Include="Models\Script\Function.cs" />
@@ -97,9 +97,9 @@
     <Compile Include="Models\Script\Type.cs" />
     <Compile Include="Models\Script\Variable.cs" />
     <Compile Include="Models\TextureManager.cs" />
-    <Compile Include="Models\World.cs" />
+    <Compile Include="Models\GameModel.cs" />
     <Compile Include="Visitors\ErrorType.cs" />
-    <Compile Include="Visitors\WorldBuilderVisitor.cs" />
+    <Compile Include="Visitors\ExecutionVisitor.cs" />
     <Compile Include="Visitors\ExecutionVisitorOld.cs" />
     <Compile Include="Visitors\ExpressionVisitor.cs" />
     <Compile Include="GameScript.g4.lexer.cs">

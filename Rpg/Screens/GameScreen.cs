@@ -12,11 +12,11 @@ namespace Rpg.Screens
 {
     public class GameScreen : Screen
     {
-        public World world { get; set; }
+        public GameScript.Models.GameModel world { get; set; }
 
         public GameScreen(RpgGame game) : base(game)
         {
-            world = new World();
+            world = new GameScript.Models.GameModel();
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

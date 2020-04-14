@@ -59,11 +59,12 @@
                             <MenuItem Header="Rename"/>
                         </ContextMenu>
                     </TreeView.ContextMenu>
-                    <TreeViewItem Header="Creatures">
-                        <TreeViewItem Header="Wolf.vgs"></TreeViewItem>
+                    <TreeViewItem Header="Bases">
+                        <TreeViewItem Header="Creatures.vgs"></TreeViewItem>
+                        <TreeViewItem Header="NPCs.vgs"></TreeViewItem>
                     </TreeViewItem>
-                    <TreeViewItem Header="Characters">
-                        <TreeViewItem Header="TownGuard.vgs"></TreeViewItem>
+                    <TreeViewItem Header="Regions">
+                        <TreeViewItem Header="Dungeon1.vgs"></TreeViewItem>
                     </TreeViewItem>
                 </TreeView>
             </DockPanel>

@@ -8,9 +8,9 @@ using System.Text;
 
 namespace GameScript.Models
 {
-    public class Room
+    public class Region
     {
-        public Room()
+        public Region()
         {
             Things = new Dictionary<string, ThingInstance>();
         }
@@ -19,10 +19,9 @@ namespace GameScript.Models
         public string Name { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
-        public int Depth { get; set; }
         public Texture2D Texture { get; set; }
 
-        public World World { get; set; }
+        public GameModel GameModel { get; set; }
         public Dictionary<string, ThingInstance> Things { get; set; }
 
         private List<ThingInstance> thingsToRemove = new List<ThingInstance>();
@@ -53,13 +52,13 @@ namespace GameScript.Models
         public void InsertThing(ThingInstance gameWorldObject)
         {
             Things.Add(gameWorldObject.Id, gameWorldObject);
-            gameWorldObject.Room = this;
+            gameWorldObject.Region = this;
         }
 
         public void RemoveThing(ThingInstance gameWorldObject)
         {
             thingsToRemove.Add(gameWorldObject);
-            gameWorldObject.Room = null;
+            gameWorldObject.Region = null;
         }
     }
 }

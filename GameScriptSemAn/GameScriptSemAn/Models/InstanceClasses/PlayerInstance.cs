@@ -20,7 +20,7 @@ namespace GameScript.Models.InstanceClasses
 
             if (Keyboard.GetState().IsKeyDown(Keys.Space))
             {
-                foreach (var thing in Room.Things.Values)
+                foreach (var thing in Region.Things.Values)
                 {
                     if (thing is ItemInstance)
                     {

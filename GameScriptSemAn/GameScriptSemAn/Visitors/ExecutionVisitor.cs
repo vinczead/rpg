@@ -12,28 +12,29 @@ using System.Threading.Tasks;
 
 namespace GameScript.Visitors
 {
-    public class WorldBuilderVisitor : ViGaSBaseVisitor<object>
+    public class ExecutionVisitor : ViGaSBaseVisitor<object>
     {
-        public World World { get; private set; }
+        public GameModel GameModel { get; set; }
 
         private string script;
         private GameObject currentBase;
         private GameObjectInstance currentInstance;
+        private Region currentRegion;
 
-        public WorldBuilderVisitor()
+        public ExecutionVisitor()
         {
-            World = new World();
+            GameModel = new GameModel();
         }
 
         public override object VisitBaseDefinition([NotNull] ViGaSParser.BaseDefinitionContext context)
         {
-            var baseId = context.baseHeader().baseId().GetText();
-            var baseClass = context.baseHeader().baseClass().GetText();
+            var baseId = context.baseId().GetText();
+            var baseClass = context.baseClass().GetText();
 
             currentBase = GameObjectFactory.CreateGameObject(baseClass);
             currentBase.Id = baseId;
-            currentBase.Script = script;
-            World.Bases.Add(baseId, currentBase);
+            currentBase.Script = context;
+            GameModel.Bases.Add(baseId, currentBase);
 
             var retVal = base.VisitBaseDefinition(context);
 
@@ -50,12 +51,6 @@ namespace GameScript.Visitors
             return base.VisitVariableDeclaration(context);
         }
 
-        public override object VisitInitBlock([NotNull] ViGaSParser.InitBlockContext context)
-        {
-
-            return base.VisitInitBlock(context);
-        }
-
         public override object VisitRunBlock([NotNull] ViGaSParser.RunBlockContext context)
         {
             //Run blocks are skipped
@@ -64,12 +59,12 @@ namespace GameScript.Visitors
 
         public override object VisitInstanceDefinition([NotNull] ViGaSParser.InstanceDefinitionContext context)
         {
-            var baseId = context.instanceHeader().baseId().GetText();
-            var instanceId = context.instanceHeader().instanceId().GetText();
+            var baseId = context.baseId().GetText();
+            var instanceId = context.instanceId().GetText();
 
-            currentInstance = World.Bases[baseId].Spawn(instanceId);
+            currentInstance = GameModel.Bases[baseId].Spawn(instanceId);
 
-            World.Instances.Add(instanceId, currentInstance);
+            GameModel.Instances.Add(instanceId, currentInstance);
 
             var retVal = base.VisitInstanceDefinition(context);
 

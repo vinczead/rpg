@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static GameScript.ViGaSParser;
 
 namespace GameScript.Models.BaseClasses
 {
@@ -13,7 +14,7 @@ namespace GameScript.Models.BaseClasses
         public string Id { get; set; }
         public string Name { get; set; }
         public string Description { get; set; }
-        public string Script { get; set; }
+        public BaseDefinitionContext Script { get; set; }
 
         public GameObjectInstance Spawn(string instanceId = null)
         {

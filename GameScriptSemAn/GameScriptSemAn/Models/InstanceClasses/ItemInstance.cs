@@ -6,7 +6,7 @@ namespace GameScript.Models.InstanceClasses
     {
         public void PickUp(CharacterInstance character)
         {
-            Room.RemoveThing(this);
+            Region.RemoveThing(this);
             character.InsertItem(this);
             Executer.ExecuteRunBlock(this, "WhenPickedUp");
         }
@@ -14,7 +14,7 @@ namespace GameScript.Models.InstanceClasses
         public void Drop(CharacterInstance character)
         {
             Position = character.Position;
-            character.Room.InsertThing(this);
+            character.Region.InsertThing(this);
             Executer.ExecuteRunBlock(this, "WhenDropped");
         }
     }
