@@ -9,17 +9,12 @@ using GameScript.Visitors;
 using System.Linq;
 using GameScript.Listeners;
 using GameScript.Models.InstanceClasses;
+using GameScript.Models;
 
 namespace GameScript
 {
     public class Executer
     {
-        public static IParseTree ReadASTFromFile(string fileName)
-        {
-            var code = File.ReadAllText(Path.Combine(System.Environment.CurrentDirectory, fileName));
-            return ReadAST(code, out _);
-        }
-
         public static IParseTree ReadAST(string script, out List<Error> syntaxErrors)
         {
             var inputStream = new AntlrInputStream(script);
@@ -33,13 +28,36 @@ namespace GameScript
             return context;
         }
 
-        public static ErrorVisitor CheckErrors(IParseTree tree)
+        public static List<string> CheckErrors(List<string> scripts)
         {
-            var typeVisitor = new ErrorVisitor();
+            List<string> errors = new List<string>();
+            var errorVisitor = new ErrorVisitor();
 
-            typeVisitor.Visit(tree);
+            foreach (var script in scripts)
+            {
+                List<Error> syntaxErrors;
+                var tree = ReadAST(script, out syntaxErrors);
+                errorVisitor.Visit(tree);
+                
+                if (errorVisitor.errors.Count > 0 || syntaxErrors.Count > 0)
+                {
+                    errors.AddRange(syntaxErrors.Select(e => e.ToString()));
+                    errors.AddRange(errorVisitor.errors.Select(e => e.ToString()));
+                }
+            }
 
-            return typeVisitor;
+            return errors;
+        }
+
+        public static World BuildWorld(List<string> scripts)
+        {
+            var worldBuilder = new WorldBuilderVisitor();
+            foreach (var script in scripts)
+            {
+                worldBuilder.Visit(ReadAST(script, out _), script);   
+            }
+
+            return worldBuilder.World;
         }
 
         private static IParseTree ParseStatement(string statement)
@@ -68,7 +86,7 @@ namespace GameScript
             //executionVisitor.Visit(parseTree);
         }
 
-        public static void ExecuteVariableDeclaration(ThingInstance thing)
+        public static void ExecuteVariableDeclaration(GameObjectInstance instance)
         {
             /*if (gameObject.Base.Script != "")
             {
@@ -84,7 +102,7 @@ namespace GameScript
 
         public static void ExecuteRunBlock(ThingInstance thing, string runBlockType)
         {
-            /*if (gameObject.Base.Script != "")
+            if (gameObject.Base.Script != "")
             {
                 var parser = GetParser(gameObject.Base.Script);
                 var runBlocksContext = parser.program().runBlock();
@@ -97,7 +115,7 @@ namespace GameScript
                         executionVisitor.Visit(runBlock);
                     }
                 }
-            }*/
+            }
         }
     }
 }

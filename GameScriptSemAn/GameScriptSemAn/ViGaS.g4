@@ -44,7 +44,7 @@ varPath: varName ('.' varName)*;
 
 functionParameterList: expression (',' expression)*;
 
-variableDeclaration: varName IS typeName ((WITHVALUE expression SHARED?) | PARAMETER )?;
+variableDeclaration: varName IS typeName (WITHVALUE expression)?;
 assignmentStatement: SET path TO expression;
 ifStatement: IF expression THEN statementList (elseStatement)? END;
 elseStatement: ELSE statementList;
@@ -79,10 +79,10 @@ GTE: '>=';
 EQ: '=';
 NEQ: '<>';
 
-OR: 'Or';
-AND: 'And';
-NOT: 'Not';
-XOR: 'Xor';
+OR: 'Or' | 'or';
+AND: 'And' | 'and';
+NOT: 'Not' | 'not';
+XOR: 'Xor' | 'xor';
 
 PLUS: '+';
 MINUS: '-';
@@ -92,22 +92,21 @@ DIV: '/';
 COMMENT: '//' (~[\r\n])* -> skip;
 
 //---------------------------KEYWORDS---------------------------
-//[Dd]'efine'
 
-DEFINE: 'Define' | 'define';
-INSTANTIATE: 'Instantiate' | 'instantiate';
-FROM: 'From' | 'from';
+DEFINE: [Dd]'efine';
+INSTANTIATE: [Ii]'nstantiate';
+FROM: [Ff]'rom';
 
-VARIABLES: 'Variables' | 'variables';
-IS: 'Is' | 'is';
+VARIABLES: [Vv]'ariables';
+IS: [Ii]'s';
 WITHVALUE: 'WithValue' | 'withvalue';
-PARAMETER: 'Parameter' | 'parameter';
-SHARED: 'Shared' | 'shared';
+PARAMETER: [Pp]'arameter';
+SHARED: [Ss]'hared';
 
-INIT: 'Init' | 'init';
+INIT: [Ii]'nit';
 
-RUN: 'Run' | 'run';
-WHEN: 'When' | 'when';
+RUN: [Rr]'un';
+WHEN: [Ww]'hen';
 
 IF: 'If' | 'if';
 THEN: 'Then' | 'then';

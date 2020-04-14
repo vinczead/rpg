@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -16,8 +17,8 @@ using System.Windows.Shapes;
 using System.Xml;
 using GameScript;
 using GameScript.Visitors;
+using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
-using Rpg.Models;
 
 namespace RpgEditor
 {
@@ -26,6 +27,8 @@ namespace RpgEditor
     /// </summary>
     public partial class MainWindow : Window
     {
+        ObservableCollection<ScriptFile> files = new ObservableCollection<ScriptFile>();
+
         public MainWindow()
         {
             //Load highlighting definition
@@ -43,22 +46,49 @@ namespace RpgEditor
             HighlightingManager.Instance.RegisterHighlighting("ViGaS", new string[] { ".vgs" }, vigasHighlighting);
 
             InitializeComponent();
+
+            FilesTabControl.ItemsSource = files;
         }
 
         private void CheckForErrorsClick(object sender, RoutedEventArgs e)
         {
-            var syntaxErrors = new List<GameScript.Model.Error>();
-            var tree = Executer.ReadAST(textEditor.Text, out syntaxErrors);
+            var errors = Executer.CheckErrors(files.Select(f => f.Document.Text).ToList());
+            messages.Text = "";
 
-            var errorVisitor = Executer.CheckErrors(tree);
-            errorList.Text = "";
-            
-            foreach (var error in syntaxErrors.Concat(errorVisitor.errors))
+            foreach (var error in errors)
             {
-                errorList.AppendText(error.ToString() + Environment.NewLine);
+                messages.AppendText(error + Environment.NewLine);
+            }
+            messages.AppendText($"Error check completed, {errors.Count} error(s) were found.");
+        }
+
+        private void BuildWorldClick(object sender, RoutedEventArgs e)
+        {
+            var errors = Executer.CheckErrors(files.Select(f => f.Document.Text).ToList());
+
+            messages.Text = "";
+
+            if (errors.Count > 0)
+            {
+                messages.AppendText("Scripts contain errors, aborting world building...");
+                return;
             }
 
-            errorList.AppendText("Error check completed.");
+            messages.AppendText("Building world...\n");
+
+            var world = Executer.BuildWorld(files.Select(f => f.Document.Text).ToList());
+
+            messages.AppendText("World builded successfully.");
+        }
+
+        private void AddNewScript(object sender, RoutedEventArgs e)
+        {
+            files.Add(new ScriptFile()
+            {
+                ShortFileName = $"File {files.Count}",
+                Document = new TextDocument()
+            });
+            FilesTabControl.SelectedIndex = files.Count - 1;
         }
     }
 }

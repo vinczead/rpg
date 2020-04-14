@@ -7,16 +7,15 @@ namespace GameScript.Model
     public class Env
     {
         public string Name { get; set; }
-        public Type Type { get; set; }
         public Env Previous { get; private set; }
+        public Type BaseClassType { get; set; }
 
         private Dictionary<string, Symbol> table = new Dictionary<string, Symbol>();
 
-        public Env(Env previous = null, string name = "Default Scope", Type type = null)
+        public Env(Env previous = null, string name = "Default Scope")
         {
             Previous = previous;
             Name = name;
-            Type = type;
         }
 
         public Symbol this[string name]

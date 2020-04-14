@@ -1,2 +1,165 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram /> 
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="GameScript.Models.BaseClasses.Activator" Collapsed="true">
+    <Position X="5.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\BaseClasses\Activator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.BaseClasses.Character" Collapsed="true">
+    <Position X="8.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\BaseClasses\Character.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.BaseClasses.Consumable" Collapsed="true">
+    <Position X="14.5" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\BaseClasses\Consumable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.BaseClasses.Creature" Collapsed="true">
+    <Position X="8.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAACAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\BaseClasses\Creature.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.BaseClasses.Equipment" Collapsed="true">
+    <Position X="12.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Models\BaseClasses\Equipment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.BaseClasses.GameObject" Collapsed="true">
+    <Position X="8.75" Y="1.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAACAAAAAAAgAAAAAAEAAAQAAAAAAAAAAAAAAAAgAAA=</HashCode>
+      <FileName>Models\BaseClasses\GameObject.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.BaseClasses.Item" Collapsed="true">
+    <Position X="13.25" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Models\BaseClasses\Item.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.BaseClasses.Npc" Collapsed="true">
+    <Position X="7.75" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\BaseClasses\Npc.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.BaseClasses.Player" Collapsed="true">
+    <Position X="10" Y="7.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\BaseClasses\Player.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.BaseClasses.Quest" Collapsed="true">
+    <Position X="3.25" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\BaseClasses\Quest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.BaseClasses.Thing" Collapsed="true">
+    <Position X="10" Y="3" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAA=</HashCode>
+      <FileName>Models\BaseClasses\Thing.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.InstanceClasses.ActivatorInstance" Collapsed="true">
+    <Position X="20.5" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\InstanceClasses\ActivatorInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.InstanceClasses.CharacterInstance" Collapsed="true">
+    <Position X="28.25" Y="5.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAABAAAAACAAAAAAAAAAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Models\InstanceClasses\CharacterInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.InstanceClasses.ConsumableInstance" Collapsed="true">
+    <Position X="25" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\InstanceClasses\ConsumableInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.InstanceClasses.CreatureInstance" Collapsed="true">
+    <Position X="28.25" Y="4.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAEAAAAAAAAAAAAQAAIAAAAAAAAAAAiAAAAA=</HashCode>
+      <FileName>Models\InstanceClasses\CreatureInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.InstanceClasses.EquipmentInstance" Collapsed="true">
+    <Position X="22.75" Y="5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAA=</HashCode>
+      <FileName>Models\InstanceClasses\EquipmentInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.InstanceClasses.GameObjectInstance" Collapsed="true">
+    <Position X="23.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAABAAAAAAAAAAAAAAAAAAAAAAAAQAAAAgQAA=</HashCode>
+      <FileName>Models\InstanceClasses\GameObjectInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.InstanceClasses.ItemInstance" Collapsed="true">
+    <Position X="23.75" Y="3.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAACAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\InstanceClasses\ItemInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.InstanceClasses.NpcInstance" Collapsed="true">
+    <Position X="29.5" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAA=</HashCode>
+      <FileName>Models\InstanceClasses\NpcInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.InstanceClasses.PlayerInstance" Collapsed="true">
+    <Position X="27.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\InstanceClasses\PlayerInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.InstanceClasses.QuestInstance" Collapsed="true">
+    <Position X="18.25" Y="2.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\InstanceClasses\QuestInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="GameScript.Models.InstanceClasses.ThingInstance" Collapsed="true">
+    <Position X="25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAAAgAgABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\InstanceClasses\ThingInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Enum Name="GameScript.Models.BaseClasses.EquipmentType" Collapsed="true">
+    <Position X="12.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAQAAAAgAEAAAAAAAAAA=</HashCode>
+      <FileName>Models\BaseClasses\Equipment.cs</FileName>
+    </TypeIdentifier>
+  </Enum>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

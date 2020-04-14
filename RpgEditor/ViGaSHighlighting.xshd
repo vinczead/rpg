@@ -51,6 +51,12 @@
       <Word>Reference</Word>
 
       <Word>Self</Word>
+      <Word>Base</Word>
+
+      <Word>Or</Word>
+      <Word>And</Word>
+      <Word>Not</Word>
+      <Word>Xor</Word>
 
       <Word>define</Word>
       <Word>from</Word>
@@ -86,6 +92,12 @@
       <Word>reference</Word>
 
       <Word>self</Word>
+      <Word>base</Word>
+    
+      <Word>or</Word>
+      <Word>and</Word>
+      <Word>not</Word>
+      <Word>xor</Word>
     </Keywords>
 
     <Rule color="MethodCall">

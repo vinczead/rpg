@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GameScript.Models.BaseClasses;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,8 @@ namespace GameScript.Models.InstanceClasses
         public string Id { get; set; }
         public Dictionary<string, Variable> Variables { get; set; } = new Dictionary<string, Variable>();
         public World World { get; set; }
+        public GameObject Base { get; set; }
 
-        public string Script { get; set; }
+        public string Script { get; set; } = "";
     }
 }

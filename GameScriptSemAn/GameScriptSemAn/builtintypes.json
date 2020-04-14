@@ -1,41 +1,5 @@
 [
   {
-    "name": "ErrorType",
-    "parents": [ "NullType", "Boolean", "Number", "String", "StringArray", "NumberArray", "BooleanArray", "Array" ]
-  },
-  {
-    "name": "String",
-    "parents": []
-  },
-  {
-    "name": "Number",
-    "parents": []
-  },
-  {
-    "name": "Boolean",
-    "parents": []
-  },
-  {
-    "name": "Array",
-    "parents": []
-  },
-  {
-    "name": "StringArray",
-    "parents": ["Array"]
-  },
-  {
-    "name": "NumberArray",
-    "parents": [ "Array" ]
-  },
-  {
-    "name": "BooleanArray",
-    "parents": [ "Array" ]
-  },
-  {
-    "name": "NullType",
-    "parents": [ "Activator", "Instance" ]
-  },
-  {
     "name": "GameObject",
     "properties": [
       {
@@ -53,7 +17,7 @@
     ]
   },
   {
-    "name": "GameWorldObject",
+    "name": "Thing",
     "parents": [ "GameObject" ],
     "properties": [
       {
@@ -74,7 +38,7 @@
   },
   {
     "name": "Creature",
-    "parents": [ "GameWorldObject" ],
+    "parents": [ "Thing" ],
     "properties": [
       {
         "name": "Strength",
@@ -118,6 +82,7 @@
   {
     "name": "Npc",
     "parents": [ "Character" ],
+    "parentOfNull": true,
     "properties": [],
     "events": [
       {
@@ -128,7 +93,8 @@
   },
   {
     "name": "Activator",
-    "parents": [ "GameWorldObject" ],
+    "parents": [ "Thing" ],
+    "parentOfNull": true,
     "events": [
       {
         "name": "Activated",
@@ -138,7 +104,7 @@
   },
   {
     "name": "Item",
-    "parents": [ "GameWorldObject" ],
+    "parents": [ "Thing" ],
     "properties": [
       {
         "name": "Value",
@@ -163,6 +129,7 @@
   {
     "name": "Equipment",
     "parents": [ "Item" ],
+    "parentOfNull": true,
     "properties": [
       {
         "name": "Type",
@@ -170,6 +137,15 @@
       }
     ],
     "events": [
+      {
+        "name": "TargetDead",
+        "parameters": [
+          {
+            "name": "Target",
+            "type": "CreatureInstance"
+          }
+        ]
+      },
       {
         "name": "Equipped",
         "parameters": [
@@ -193,31 +169,90 @@
   {
     "name": "Consumable",
     "parents": [ "Item" ],
+    "parentOfNull": true,
     "properties": [],
     "events": [
       {
         "name": "Consumed",
-        "parameters": []
+        "parameters": [
+          {
+            "name": "Actor",
+            "type": "CharacterInstance"
+          }
+        ]
       }
     ]
   },
   {
-    "name": "Instance",
-    "properties": [
-      {
-        "name": "Base",
-        "type": "GameWorldObject"
-      }
-    ]
+    "name": "GameObjectInstance",
+    "properties": []
   },
   {
-    "name": "CharacterInstance",
-    "parents": [ "Instance" ],
+    "name": "ThingInstance",
+    "parents": [ "GameObjectInstance" ],
     "properties": [
       {
-        "name": "BonusHealth",
+        "name": "X",
+        "type": "Number"
+      },
+      {
+        "name": "Y",
         "type": "Number"
       }
     ]
+  },
+  {
+    "name": "ActivatorInstance",
+    "parents": [ "ThingInstance" ],
+    "parentOfNull": true,
+    "properties": []
+  },
+  {
+    "name": "ItemInstance",
+    "parents": [ "ThingInstance" ],
+    "properties": []
+  },
+  {
+    "name": "ConsumableInstance",
+    "parents": [ "ItemInstance" ],
+    "parentOfNull": true,
+    "properties": []
+  },
+  {
+    "name": "EquipmentInstance",
+    "parents": [ "ItemInstance" ],
+    "parentOfNull": true,
+    "properties": []
+  },
+  {
+    "name": "CreatureInstance",
+    "parents": [ "ThingInstance" ],
+    "properties": []
+  },
+  {
+    "name": "CharacterInstance",
+    "parents": [ "CreatureInstance" ],
+    "properties": [
+      {
+        "name": "CurrentHealth",
+        "type": "Number"
+      },
+      {
+        "name": "BonusStrength",
+        "type": "Number"
+      }
+    ]
+  },
+  {
+    "name": "NpcInstance",
+    "parents": [ "CharacterInstance" ],
+    "parentOfNull": true,
+    "properties": []
+  },
+  {
+    "name": "PlayerInstance",
+    "parents": [ "CharacterInstance" ],
+    "parentOfNull": true,
+    "properties": []
   }
 ]

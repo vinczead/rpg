@@ -26,7 +26,7 @@ namespace GameScript.Visitors
             var baseClass = context.baseHeader().baseClass();
             var baseId = context.baseHeader().baseId();
 
-            Model.Type baseClassType = TypeSystem.Instance["ErrorType"];
+            var baseClassType = TypeSystem.Instance["ErrorType"];
             if (baseClass != null)
             {
                 try
@@ -42,7 +42,8 @@ namespace GameScript.Visitors
             }
             //TODO: add newly defined type {baseId.GetText()} to type system.
 
-            env = new Env(env, baseId.GetText(), baseClassType);
+            env = new Env(env, baseId.GetText());
+            AddSymbolToEnv(context, new Symbol("Base", baseClassType));
 
             foreach (var prop in baseClassType.Properties)
                 AddSymbolToEnv(baseClass, new Symbol(prop.Name, prop.Type));
@@ -73,16 +74,19 @@ namespace GameScript.Visitors
         {
             var eventCtx = context.eventTypeName();
 
-            var @event = env.Type.Events.FirstOrDefault(e => e.Name == eventCtx.GetText());
+            var baseType = GetSymbolFromEnv(context, "Base").Type;
+
+            var @event = baseType.Events.FirstOrDefault(e => e.Name == eventCtx.GetText());
 
             if (@event == null)
             {
-                errors.Add(new Error(eventCtx, $"Event {eventCtx.GetText()} is not defined on {env.Type}."));
+                errors.Add(new Error(eventCtx, $"Event {eventCtx.GetText()} is not defined on {baseType}."));
                 return base.VisitRunBlock(context);
             }
             else
             {
-                env = new Env(env, eventCtx.GetText(), env.Type);
+                env = new Env(env, eventCtx.GetText());
+                AddSymbolToEnv(context, new Symbol("Self", TypeSystem.Instance[$"{baseType}Instance"]));
 
                 foreach (var param in @event.Parameters)
                     AddSymbolToEnv(eventCtx, new Symbol(param.Name, param.Type));
@@ -128,8 +132,6 @@ namespace GameScript.Visitors
         {
             //check whether expression after WithValue matches type
             var varName = context.varName()?.GetText();
-            var isParameter = context.PARAMETER() != null;
-            var isShared = context.SHARED() != null;
 
             Model.Type varType = TypeSystem.Instance["ErrorType"];
 
@@ -142,7 +144,7 @@ namespace GameScript.Visitors
                 errors.Add(new Error(context.typeName(), e.Message));
             }
 
-            AddSymbolToEnv(context, new Symbol(varName, varType, isParameter, isShared));
+            AddSymbolToEnv(context, new Symbol(varName, varType));
 
             if (context.expression() != null)
             {
@@ -191,7 +193,7 @@ namespace GameScript.Visitors
                 {
                     for (int i = 0; i < function.Parameters.Count; i++)
                     {
-                        if (function.Parameters[i].Type != GetType(paramsCtx.expression(i)))
+                        if (!GetType(paramsCtx.expression(i)).InheritsFrom(function.Parameters[i].Type))
                             errors.Add(new Error(funcNameCtx, $"Type mismatch: The function {function} expects {function.Parameters[i].Type} as parameter {i + 1}, not {GetType(paramsCtx.expression(i))}."));
                     }
                 }
@@ -371,7 +373,7 @@ namespace GameScript.Visitors
                 var leftType = GetType(ctx.left);
                 var rightType = GetType(ctx.right);
 
-                if (leftType == rightType && leftType == TypeSystem.Instance["Number"])
+                if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
                     return TypeSystem.Instance["Number"];
 
                 var @operator = ctx.multiplOperator();
@@ -385,7 +387,7 @@ namespace GameScript.Visitors
                 var leftType = GetType(ctx.left);
                 var rightType = GetType(ctx.right);
 
-                if (leftType == rightType && leftType == TypeSystem.Instance["Boolean"])
+                if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Boolean"]))
                     return TypeSystem.Instance["Boolean"];
 
                 var @operator = ctx.logicalOperator();

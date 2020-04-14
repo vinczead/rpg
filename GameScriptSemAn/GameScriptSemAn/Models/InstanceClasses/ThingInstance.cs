@@ -7,7 +7,6 @@ namespace GameScript.Models.InstanceClasses
 {
     public abstract class ThingInstance : GameObjectInstance
     {
-        public Thing Base { get; set; }
         public Room Room { get; set; }
         public Vector2 Position { get; set; }
 

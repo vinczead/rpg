@@ -24,6 +24,54 @@
     "returnType": "Number"
   },
   {
+    "name": "SetTexture",
+    "parameters": [
+      {
+        "name": "Thing",
+        "type": "Thing"
+      },
+      {
+        "name": "TextureId",
+        "type": "String"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+  {
+    "name": "SetHealth",
+    "parameters": [
+      {
+        "name": "CreatureInstance",
+        "type": "CreatureInstance"
+      },
+      {
+        "name": "Health",
+        "type": "Number"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+  {
+    "name": "GetHealth",
+    "parameters": [
+      {
+        "name": "CreatureInstance",
+        "type": "CreatureInstance"
+      }
+    ],
+    "returnType": "Number"
+  },
+  {
+    "name": "GetXPValue",
+    "parameters": [
+      {
+        "name": "CreatureInstance",
+        "type": "CreatureInstance"
+      }
+    ],
+    "returnType": "Number"
+  },
+  {
     "name": "AddItem",
     "parameters": [
       {

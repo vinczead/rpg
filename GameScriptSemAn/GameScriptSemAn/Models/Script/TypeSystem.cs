@@ -13,12 +13,36 @@ namespace GameScript.Model
     {
         public static TypeSystem Instance { get; } = new TypeSystem();
 
-        private Dictionary<string, Type> types;
+        private Dictionary<string, Type> types = new Dictionary<string, Type>();
 
         private TypeSystem()
         {
-            types = new Dictionary<string, Type>();
+            AddSimpleTypes();
             ReadTypes(@"C:\Users\Ady\source\repos\Rpg\GameScriptSemAn\GameScriptSemAn\builtintypes.json");
+        }
+
+        public void AddSimpleTypes()
+        {
+            types.Add("ErrorType", new Type("ErrorType"));
+            types.Add("String", new Type("String"));
+            types.Add("Boolean", new Type("Boolean"));
+            types.Add("Number", new Type("Number"));
+            types.Add("NullType", new Type("NullTypfe"));
+            
+            types.Add("Array", new Type("Array"));
+            types.Add("StringArray", new Type("StringArray"));
+            types.Add("BooleanArray", new Type("BooleanArray"));
+            types.Add("NumberArray", new Type("NumberArray"));
+
+            this["ErrorType"].Parents.Add(this["String"]);
+            this["ErrorType"].Parents.Add(this["Boolean"]);
+            this["ErrorType"].Parents.Add(this["Number"]);
+            this["ErrorType"].Parents.Add(this["NullType"]);
+            this["ErrorType"].Parents.Add(this["Array"]);
+
+            this["Array"].Parents.Add(this["StringArray"]);
+            this["Array"].Parents.Add(this["BooleanArray"]);
+            this["Array"].Parents.Add(this["NumberArray"]);
         }
 
         public void ReadTypes(string filePath)
@@ -34,6 +58,8 @@ namespace GameScript.Model
                     {
                         var name = type.Value<string>("name");
                         types.Add(name, new Type(name));
+                        types.Add($"{name}Array", new Type($"{name}Array"));
+                        this["Array"].Parents.Add(this[$"{name}Array"]);
                     }
                     foreach (var type in parsedTypes)
                     {
@@ -41,7 +67,11 @@ namespace GameScript.Model
 
                         var events = type.Value<JArray>("events") ?? new JArray();
                         var parents = type.Value<JArray>("parents") ?? new JArray();
+                        var parentOfNull = type.Value<bool>("parentOfNull");
                         var properties = type.Value<JArray>("properties") ?? new JArray();
+
+                        if (parentOfNull)
+                            types["NullType"].Parents.Add(types[currentTypeName]);
 
                         types[currentTypeName].Parents = parents.Select(p => types[p.Value<string>()]).ToHashSet();
                         types[currentTypeName].Events = events.Select(e =>

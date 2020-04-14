@@ -6,6 +6,8 @@
         xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
         xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
         xmlns:local="clr-namespace:RpgEditor"
+        xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
+        xmlns:behaviors="clr-namespace:RpgEditor.Behavior"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800"
         WindowState="Maximized">
@@ -31,6 +33,8 @@
             </MenuItem>
             <MenuItem Header="Script">
                 <MenuItem Header="Check for errors" Click="CheckForErrorsClick"></MenuItem>
+                <MenuItem Header="Build world" Click="BuildWorldClick"></MenuItem>
+
             </MenuItem>
         </Menu>
         <Grid>
@@ -39,52 +43,59 @@
                 <ColumnDefinition Width="5"/>
                 <ColumnDefinition Width="8*" MinWidth="500"/>
             </Grid.ColumnDefinitions>
-            <DockPanel Grid.Column="0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="200"/>
+            </Grid.RowDefinitions>
+            <DockPanel Grid.Column="0" Grid.RowSpan="2">
                 <xctk:WatermarkTextBox Watermark="Search..." DockPanel.Dock="Top"></xctk:WatermarkTextBox>
                 <TreeView>
+
+                    <TreeView.ContextMenu>
+                        <ContextMenu>
+                            <MenuItem Header="Add new script" Click="AddNewScript"/>
+                            <MenuItem Header="Add new folder"/>
+                            <MenuItem Header="Delete"/>
+                            <MenuItem Header="Rename"/>
+                        </ContextMenu>
+                    </TreeView.ContextMenu>
                     <TreeViewItem Header="Creatures">
-                        <TreeViewItem Header="Wolf"></TreeViewItem>
-                        <TreeViewItem Header="Skeleton"></TreeViewItem>
+                        <TreeViewItem Header="Wolf.vgs"></TreeViewItem>
                     </TreeViewItem>
                     <TreeViewItem Header="Characters">
-                        <TreeViewItem Header="Diego"></TreeViewItem>
-                        <TreeViewItem Header="Thorus"></TreeViewItem>
-                        <TreeViewItem Header="Whistler"></TreeViewItem>
+                        <TreeViewItem Header="TownGuard.vgs"></TreeViewItem>
                     </TreeViewItem>
                 </TreeView>
             </DockPanel>
             <GridSplitter Grid.Column="1" Width="5" HorizontalAlignment="Stretch"/>
-            <TabControl Grid.Column="2">
-                <TabItem>
-                    <TabItem.Header>
-                        <Span>
-                            <TextBlock>Script Editor</TextBlock>
+            <TabControl Grid.Column="2" Name="FilesTabControl">
+                <TabControl.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock>
+                            <TextBlock Text="{Binding ShortFileName}"></TextBlock>
                             <TextBlock FontWeight="Bold">X</TextBlock>
-                        </Span>
-                    </TabItem.Header>
-                    <Grid>
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="1*"/>
-                            <RowDefinition Height="150"/>
-                        </Grid.RowDefinitions>
+                        </TextBlock>
+                    </DataTemplate>
+                </TabControl.ItemTemplate>
+
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
                         <ae:TextEditor
                             Grid.Column="0"
-                            Name="textEditor"
                             FontFamily="Consolas"
                             FontSize="15"
                             ShowLineNumbers="True"
-                            SyntaxHighlighting="ViGaS"
-                            Grid.Row="0"/>
-                        <TextBox
-                            Name="errorList"
-                            Grid.Row="1"
-                            IsReadOnly="True">
-                        </TextBox>
-
-                    </Grid>
-                </TabItem>
+                            Document="{Binding Document}"
+                            SyntaxHighlighting="ViGaS"/>
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
             </TabControl>
-
+            <TextBox
+                Name="messages"
+                Grid.Row="1"
+                Grid.Column="2"
+                IsReadOnly="True">
+            </TextBox>
         </Grid>
     </DockPanel>
 </Window>
