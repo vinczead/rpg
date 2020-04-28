@@ -130,6 +130,8 @@ namespace GameScript.Visitors
             }
         }
 
+        //TODO: leftType == rightType should be changed to leftType.InheritsFrom(rightType) || rightType.InheritsFrom(leftType)
+
         public override Models.Script.Type VisitAdditiveExpression([NotNull] ViGaSParser.AdditiveExpressionContext context)
         {
             var leftType = Visit(context.left);

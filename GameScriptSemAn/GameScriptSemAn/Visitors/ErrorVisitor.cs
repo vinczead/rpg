@@ -1,39 +1,55 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using GameScript.Models.Script;
-using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using static GameScript.ViGaSParser;
 
 namespace GameScript.Visitors
 {
-    public class ErrorVisitor : ViGaSBaseVisitor<object>
+    public sealed class ErrorVisitor : ViGaSBaseVisitor<object>
     {
         Env env;
-        public List<Error> errors;
+        private List<Error> errors;
 
+        private static ErrorVisitor Instance { get; } = new ErrorVisitor();
 
-        public override object VisitScript([NotNull] ScriptContext context)
+        private ErrorVisitor()
         {
             env = new Env();
             errors = new List<Error>();
-            
+        }
 
-            return base.VisitScript(context);
+        public static List<Error> CheckErrors(List<ScriptFile> files)
+        {
+            Instance.env = new Env();
+            Instance.errors = new List<Error>();
+
+            foreach (var file in files)
+            {
+                var tree = Executer.ReadAST(file.Document.Text, out var syntaxErrors);
+                Instance.errors.AddRange(syntaxErrors);
+
+                Instance.Visit(tree);
+            }
+
+            return Instance.errors;
         }
 
         public override object VisitBaseDefinition([NotNull] BaseDefinitionContext context)
         {
             var baseClass = context.baseClass();
-            var baseId = context.baseId();
+            var baseRef = context.baseRef();
 
             var baseClassType = TypeSystem.Instance["ErrorType"];
+            var instanceClassType = TypeSystem.Instance["ErrorType"];
             if (baseClass != null)
             {
                 try
                 {
                     baseClassType = TypeSystem.Instance[baseClass.GetText()];
+                    instanceClassType = TypeSystem.Instance[$"{baseClass.GetText()}Instance"];
                 }
                 catch (KeyNotFoundException e)
                 {
@@ -42,13 +58,15 @@ namespace GameScript.Visitors
                 if (!baseClassType.InheritsFrom(TypeSystem.Instance["GameObject"]))
                     errors.Add(new Error(baseClass, $"Type {baseClassType} is not valid here (must inherit from {TypeSystem.Instance["GameObject"]})."));
             }
-            //TODO: add newly defined type {baseId.GetText()} to type system.
 
-            env = new Env(env, baseId.GetText());
+            AddSymbolToEnv(baseRef, new Symbol(baseRef.GetText(), baseClassType));
+
+            env = new Env(env, baseRef.GetText());
             AddSymbolToEnv(context, new Symbol("_Base", baseClassType));
+            AddSymbolToEnv(context, new Symbol("_Instance", instanceClassType));
 
 
-            env = new Env(env, $"{baseId.GetText()} Initialization");
+            env = new Env(env, $"{baseRef.GetText()} Initialization");
             AddSymbolToEnv(context, new Symbol("Self", baseClassType));
 
             foreach (var prop in baseClassType.Properties)
@@ -66,30 +84,56 @@ namespace GameScript.Visitors
             var retVal = base.VisitInitBlock(context);
 
             env = env.Previous;
-                 
+
             return retVal;
         }
 
         public override object VisitInstanceDefinition([NotNull] InstanceDefinitionContext context)
         {
-            var baseId = context.baseId();
-            var instanceId = context.instanceId();
+            var baseRef = context.baseRef();
+            var baseSymbol = GetSymbolFromEnv(baseRef, baseRef.GetText());
 
-            //TODO: check whether {baseId.GetText()} is a defined base type.
-            //store instanceId, if set, so others can reference it
+            var instanceRef = context.instanceRef();
+            var instanceType = TypeSystem.Instance["ErrorType"];
 
-            env = new Env(env, instanceId?.GetText() ?? $"Instance of {baseId.GetText()}");
-            var result = base.VisitInstanceDefinition(context);
+            if (baseSymbol != null)
+            {
+                if (baseSymbol.Type.InheritsFrom(TypeSystem.Instance["GameObject"]))
+                {
+                    if (baseSymbol.Type != TypeSystem.Instance["ErrorType"])
+                        try
+                        {
+                            instanceType = TypeSystem.Instance[baseSymbol.Type + "Instance"];
+                        }
+                        catch (KeyNotFoundException e)
+                        {
+                            errors.Add(new Error(context, e.Message));
+                        }
+                }
+                else
+                    errors.Add(new Error(baseRef, $"Type of {baseRef.GetText()} must be {TypeSystem.Instance["GameObject"]}"));
+            }
 
-            env = env.Previous;
+            if (instanceRef != null)
+                AddSymbolToEnv(instanceRef, new Symbol(instanceRef.GetText(), instanceType));
 
-            return result;
+            env = new Env(env, (instanceRef?.GetText() ?? $"Instance of {baseRef.GetText()}") + "Initialization");
+            foreach (var prop in instanceType.Properties)
+                AddSymbolToEnv(context, new Symbol(prop.Name, prop.Type));
+
+            return base.VisitInstanceDefinition(context);
         }
 
         public override object VisitRegionDefinition([NotNull] RegionDefinitionContext context)
         {
-            //todo: configure ENV
-            return base.VisitRegionDefinition(context);
+            var regionRef = context.regionRef();
+
+            env = new Env(env, $"{regionRef.GetText()} Initialization");
+            //todo: add region properties to env
+
+            var result = base.VisitRegionDefinition(context);
+
+            return result;
         }
 
         public override object VisitRunBlock([NotNull] RunBlockContext context)
@@ -107,8 +151,9 @@ namespace GameScript.Visitors
             }
             else
             {
+                var instanceType = GetSymbolFromEnv(context, "_Instance").Type;
                 env = new Env(env, eventCtx.GetText());
-                AddSymbolToEnv(context, new Symbol("Self", TypeSystem.Instance[$"{baseType}Instance"]));
+                AddSymbolToEnv(context, new Symbol("Self", instanceType));
 
                 foreach (var param in @event.Parameters)
                     AddSymbolToEnv(eventCtx, new Symbol(param.Name, param.Type));

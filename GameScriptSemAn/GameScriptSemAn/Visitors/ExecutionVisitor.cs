@@ -58,13 +58,13 @@ namespace GameScript.Visitors
         #region World building
         public override object VisitBaseDefinition([NotNull] ViGaSParser.BaseDefinitionContext context)
         {
-            var baseId = context.baseId().GetText();
+            var baseRef = context.baseRef().GetText();
             var baseClass = context.baseClass().GetText();
 
-            env = new Env(env, baseId);
+            env = new Env(env, baseRef);
             currentBase = GameObjectFactory.CreateGameObject(baseClass);
-            currentBase.Id = baseId;
-            gameModel.Bases.Add(baseId, currentBase);
+            currentBase.Id = baseRef;
+            gameModel.Bases.Add(baseRef, currentBase);
 
             var retVal = base.VisitBaseDefinition(context);
 
@@ -99,12 +99,12 @@ namespace GameScript.Visitors
 
         public override object VisitInstanceDefinition([NotNull] ViGaSParser.InstanceDefinitionContext context)
         {
-            var baseId = context.baseId().GetText();
-            var instanceId = context.instanceId().GetText();
+            var baseRef = context.baseRef().GetText();
+            var instanceRef = context.instanceRef().GetText();
 
-            currentInstance = gameModel.Bases[baseId].Spawn(instanceId);
+            currentInstance = gameModel.Bases[baseRef].Spawn(instanceRef);
 
-            gameModel.Instances.Add(instanceId, currentInstance);
+            gameModel.Instances.Add(instanceRef, currentInstance);
 
             var retVal = base.VisitInstanceDefinition(context);
 
@@ -115,10 +115,10 @@ namespace GameScript.Visitors
 
         public override object VisitRegionDefinition([NotNull] ViGaSParser.RegionDefinitionContext context)
         {
-            var regionId = context.regionId().GetText();
+            var regionRef = context.regionRef().GetText();
 
-            currentRegion = new Region() { Id = regionId, GameModel = gameModel };
-            gameModel.Regions.Add(regionId, currentRegion);
+            currentRegion = new Region() { Id = regionRef, GameModel = gameModel };
+            gameModel.Regions.Add(regionRef, currentRegion);
 
             var retVal = base.VisitRegionDefinition(context);
 

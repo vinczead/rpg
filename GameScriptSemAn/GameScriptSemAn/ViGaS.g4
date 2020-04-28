@@ -2,13 +2,13 @@ grammar ViGaS;
 
 script: (baseDefinition | regionDefinition)*;
 
-baseDefinition: BASE baseId FROM baseClass baseBody END;
+baseDefinition: BASE baseRef FROM baseClass baseBody END;
 baseBody: initBlock variablesBlock? runBlock*;
 
-regionDefinition: REGION regionId regionBody END;
+regionDefinition: REGION regionRef regionBody END;
 regionBody: initBlock instanceDefinition*;
 
-instanceDefinition: INSTANCE instanceId? OF baseId initBlock END;
+instanceDefinition: INSTANCE instanceRef? FROM baseRef initBlock END;
 
 initBlock: (assignmentStatement | functionCallStatement)*;
 
@@ -61,10 +61,10 @@ logicalOperator: OR | AND | XOR;
 
 //---------------------------IDS---------------------------
 
-baseId: ID;
+baseRef: REFERENCE;
+instanceRef: REFERENCE;
+regionRef: REFERENCE;
 baseClass: ID;
-instanceId: ID;
-regionId: ID;
 typeName: ID;
 varName: ID;
 eventTypeName: ID;
@@ -97,7 +97,6 @@ COMMENT: '//' (~[\r\n])* -> skip;
 BASE: [Bb]'ase';
 REGION: [Rr]'egion';
 INSTANCE: [Ii]'nstance';
-OF: [Oo]'f';
 FROM: [Ff]'rom';
 
 VARIABLES: [Vv]'ariables';

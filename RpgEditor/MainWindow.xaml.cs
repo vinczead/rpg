@@ -16,6 +16,7 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using System.Xml;
 using GameScript;
+using GameScript.Models.Script;
 using GameScript.Visitors;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
@@ -52,25 +53,24 @@ namespace RpgEditor
 
         private void CheckForErrorsClick(object sender, RoutedEventArgs e)
         {
-            var errors = Executer.CheckErrors(files.Select(f => f.Document.Text).ToList());
             messages.Text = "";
 
-            foreach (var error in errors)
-            {
-                messages.AppendText(error + Environment.NewLine);
-            }
-            messages.AppendText($"Error check completed, {errors.Count} error(s) were found.");
+            var errors = ErrorVisitor.CheckErrors(files.ToList());
+
+            messages.AppendText(string.Concat(errors.Select(error => error + Environment.NewLine)));
+
+            messages.AppendText($"Error check completed.");
         }
 
         private void BuildWorldClick(object sender, RoutedEventArgs e)
         {
-            var errors = Executer.CheckErrors(files.Select(f => f.Document.Text).ToList());
-
             messages.Text = "";
+            var errors = ErrorVisitor.CheckErrors(files.ToList());
 
             if (errors.Count > 0)
             {
-                messages.AppendText("Scripts contain errors, aborting world building...");
+                messages.AppendText(string.Concat(errors.Select(error => error + Environment.NewLine)));
+                messages.AppendText("World building aborted, as scripts contains errors.");
                 return;
             }
 

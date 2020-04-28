@@ -15,7 +15,7 @@ namespace GameScript
 {
     public class Executer
     {
-        public static IParseTree ReadAST(string script, out List<Error> syntaxErrors)
+        public static IParseTree ReadAST(string script, out List<Error> errors)
         {
             var inputStream = new AntlrInputStream(script);
             var lexer = new ViGaSLexer(inputStream);
@@ -24,29 +24,9 @@ namespace GameScript
             var syntaxErrorListener = new SyntaxErrorListener();
             parser.AddErrorListener(syntaxErrorListener);
             var context = parser.script();
-            syntaxErrors = syntaxErrorListener.errors;
+
+            errors = syntaxErrorListener.errors;
             return context;
-        }
-
-        public static List<string> CheckErrors(List<string> scripts)
-        {
-            List<string> errors = new List<string>();
-            var errorVisitor = new ErrorVisitor();
-
-            foreach (var script in scripts)
-            {
-                List<Error> syntaxErrors;
-                var tree = ReadAST(script, out syntaxErrors);
-                errorVisitor.Visit(tree);
-                
-                if (errorVisitor.errors.Count > 0 || syntaxErrors.Count > 0)
-                {
-                    errors.AddRange(syntaxErrors.Select(e => e.ToString()));
-                    errors.AddRange(errorVisitor.errors.Select(e => e.ToString()));
-                }
-            }
-
-            return errors;
         }
 
         public static GameModel BuildWorld(List<string> scripts)
