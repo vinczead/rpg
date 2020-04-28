@@ -10,16 +10,25 @@ namespace GameScript.Models.Script
     {
         public string Name { get; set; }
         public Type Type { get; set; }
+        public string Value { get; set; }
 
-        public Symbol(string name, Type type)
+        public Symbol(Symbol symbol)
+        {
+            Name = symbol.Name;
+            Type = symbol.Type;
+            Value = symbol.Value;
+        }
+
+        public Symbol(string name, Type type, string value = "")
         {
             Name = name;
             Type = type;
+            Value = value;
         }
 
         public override string ToString()
         {
-            return $"{Name} Is {Type.Name}";
+            return $"{Name} : {Type.Name}";
         }
     }
 }

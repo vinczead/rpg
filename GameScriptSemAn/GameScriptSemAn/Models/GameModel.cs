@@ -14,7 +14,7 @@ namespace GameScript.Models
     {
         public Dictionary<string, GameObject> Bases { get; set; } = new Dictionary<string, GameObject>();
         public Dictionary<string, GameObjectInstance> Instances { get; set; } = new Dictionary<string, GameObjectInstance>();
-        public Dictionary<string, Region> Rooms { get; set; } = new Dictionary<string, Region>();
+        public Dictionary<string, Region> Regions { get; set; } = new Dictionary<string, Region>();
 
         public Queue<string> Messages { get; set; } = new Queue<string>();
         double messagesDeleteTimer = 0;
@@ -23,7 +23,7 @@ namespace GameScript.Models
 
         public GameModel()
         {
-            Rooms.Add("FirstRoom", new Region()
+            Regions.Add("FirstRoom", new Region()
             {
                 Id = "FirstRoom",
                 Name = "First Room of Dungeon",
@@ -63,13 +63,13 @@ namespace GameScript.Models
             spriteBatch.DrawString(font, $"Player Health: {Player.CurrentHealth}", new Vector2(0, 300), Color.Red);
         }
 
-        public GameObjectInstance Spawn(string baseId, string roomId, Vector2 position, string instanceId = null)
+        public GameObjectInstance Spawn(string baseId, string regionId, Vector2 position, string instanceId = null)
         {
             var instance = Spawn(baseId, instanceId) as ThingInstance;
-            instance.Region = Rooms[roomId];
+            instance.Region = Regions[regionId];
             instance.Position = position;
 
-            Rooms[roomId].InsertThing(instance);
+            Regions[regionId].InsertThing(instance);
 
             return instance;
         }
@@ -80,8 +80,6 @@ namespace GameScript.Models
             instance.World = this;
 
             Instances.Add(instance.Id, instance);
-
-            Executer.ExecuteVariableDeclaration(instance);
 
             return instance;
         }

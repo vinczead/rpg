@@ -51,13 +51,7 @@ namespace GameScript
 
         public static GameModel BuildWorld(List<string> scripts)
         {
-            var executionVisitor = new ExecutionVisitor();
-            foreach (var script in scripts)
-            {
-                executionVisitor.Visit(ReadAST(script, out _), script);   
-            }
-
-            return executionVisitor.GameModel;
+            return ExecutionVisitor.Build(scripts.Select(s => ReadAST(s, out _)));
         }
 
         private static IParseTree ParseStatement(string statement)

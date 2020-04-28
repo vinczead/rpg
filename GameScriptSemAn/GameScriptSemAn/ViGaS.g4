@@ -1,6 +1,6 @@
 grammar ViGaS;
 
-script: baseDefinition* | regionDefinition*;
+script: (baseDefinition | regionDefinition)*;
 
 baseDefinition: BASE baseId FROM baseClass baseBody END;
 baseBody: initBlock variablesBlock? runBlock*;

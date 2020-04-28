@@ -1,233 +1,219 @@
-﻿//using System;
-//using System.Collections.Generic;
-//using System.Linq;
-//using System.Reflection;
-//using System.Text;
-//using System.Threading.Tasks;
-//using Antlr4.Runtime.Misc;
-//using GameModel.Models;
-//using GameModel.Models.InstanceInterfaces;
-//using static GameScript.ViGaSParser;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using Antlr4.Runtime.Misc;
+using static GameScript.ViGaSParser;
 
-//namespace GameScript.Visitors
-//{
-//    public static class TypeChecker
-//    {
-//        public static Type GetTypeOfFunctionCallStatement([NotNull] FunctionCallStatementContext context, IGameWorldObject gameObject)
-//        {
-//            /*var path = context.path();
-//            var functionName = context.functionName().GetText();
-//            var parameterList = context.functionParameterList()?.expression().ToList();
-//            var parameterListTypes = parameterList?.Select(p => TypeChecker.GetTypeOf(p, gameObject)).ToArray();
+namespace GameScript.Models.Script
+{
+    public static class TypeChecker
+    {
 
-//            object subject = gameObject.World;
-//            if (path != null)
-//            {
-//                var expressionVisitor = new ExpressionVisitor(gameObject);
-//                subject = expressionVisitor.VisitPath(path);
-//            }
+        public static Type GetType(PathContext context)
+        {
+            return GetType(context, new List<Error>());
+        }
 
-//            MethodInfo method = subject.GetType().GetMethod(functionName, parameterListTypes ?? new Type[0]);
-//            return method.ReturnType;*/
-//            return typeof(bool);
-//        }
+        public static Type GetType(ExpressionContext context)
+        {
+            return GetType(context, new List<Error>());
+        }
 
-//        public static Type GetTypeOfTypeName([NotNull] TypeNameContext context)
-//        {
-//            switch (context.GetText())
-//            {
-//                case "Boolean":
-//                    return typeof(bool);
-//                case "Number":
-//                    return typeof(double);
-//                case "String":
-//                    return typeof(string);
-//                case "Reference":
-//                    return typeof(ReferenceType);
-//                default:
-//                    return typeof(ErrorType);
-//            }
-//        }
+        public static Type GetType(PathContext context, List<Error> errors)
+        {
+            /*var variable = GetSymbolFromEnv(context, context.varPath()?.varName()[0].GetText());
 
-//        public static Type GetTypeOfRefExpression([NotNull] RefExpressionContext context)
-//        {
-//            return typeof(ReferenceType);
-//        }
+            if (variable == null)
+                return TypeSystem.Instance["ErrorType"];
 
-//        public static Type GetTypeOfStringExpression([NotNull] StringExpressionContext context)
-//        {
-//            return typeof(string);
-//        }
+            var type = variable.Type;
 
-//        public static Type GetTypeOfBoolExpression([NotNull] BoolExpressionContext context)
-//        {
-//            return typeof(bool);
-//        }
+            foreach (var varName in context.varPath().varName().Skip(1).ToArray())
+            {
+                var prop = type.Properties.FirstOrDefault(p => p.Name == varName.GetText());
+                if (prop == null)
+                {
+                    errors.Add(new Error(context, $"{varName.GetText()} is not defined on {type}."));
+                    return TypeSystem.Instance["ErrorType"];
+                }
 
-//        public static Type GetTypeOfNumberExpression([NotNull] NumberExpressionContext context)
-//        {
-//            return typeof(double);
-//        }
+                type = prop.Type;
+            }
+            return type;*/
+            throw new NotImplementedException();
+        }
 
-//        public static Type GetTypeOfNotExpression([NotNull] NotExpressionContext context, IGameWorldObject gameObject)
-//        {
-//            if (GetTypeOf(context.expression(), gameObject) == typeof(bool))
-//                return typeof(bool);
-//            else
-//                return typeof(ErrorType);
-//        }
+        public static Type GetType(ExpressionContext context, List<Error> errors)
+        {
+            if (context is FuncExpressionContext)
+            {
+                var ctx = (context as FuncExpressionContext).functionCallStatement();
+                //check whether function exists and parameter types match
+                var funcNameCtx = ctx.functionName();
 
-//        public static Type GetTypeOfParenExpression([NotNull] ParenExpressionContext context, IGameWorldObject gameObject)
-//        {
-//            return GetTypeOf(context.expression(), gameObject);
-//        }
+                try
+                {
+                    var function = FunctionManager.Instance[funcNameCtx.GetText()];
+                    return function.ReturnType;
+                }
+                catch (KeyNotFoundException)
+                {
+                    return TypeSystem.Instance["ErrorType"];
+                }
+            }
 
-//        public static Type GetTypeOfCompExpression([NotNull] CompExpressionContext context, IGameWorldObject gameObject)
-//        {
-//            var leftType = GetTypeOf(context.left, gameObject);
-//            var rightType = GetTypeOf(context.right, gameObject);
-//            var @operator = context.compOperator();
+            if (context is PathExpressionContext)
+            {
+                /*var ctx = context as PathExpressionContext;
+                var variable = GetSymbolFromEnv(ctx, ctx.path().varPath().varName()[0].GetText());
 
-//            if (leftType != rightType)
-//                return typeof(ErrorType);
+                if (variable == null)
+                    return TypeSystem.Instance["ErrorType"];
 
-//            //operators other than == and != are only valid on numbers
-//            if (@operator.EQ() == null && @operator.NEQ() == null && leftType != typeof(double))
-//                return typeof(ErrorType);
+                var type = variable.Type;
 
-//            return typeof(bool);
-//        }
+                foreach (var varName in ctx.path().varPath().varName().Skip(1).ToArray())
+                {
+                    var prop = type.Properties.FirstOrDefault(p => p.Name == varName.GetText());
+                    if (prop == null)
+                    {
+                        errors.Add(new Error(context, $"{varName.GetText()} is not defined on {type}."));
+                        return TypeSystem.Instance["ErrorType"];
+                    }
 
-//        public static Type GetTypeOfAdditiveExpression([NotNull] AdditiveExpressionContext context, IGameWorldObject gameObject)
-//        {
-//            var leftType = GetTypeOf(context.left, gameObject);
-//            var rightType = GetTypeOf(context.right, gameObject);
-//            var @operator = context.additiveOperator();
+                    type = prop.Type;
+                }
+                return type;*/
+                throw new NotImplementedException();
+            }
 
-//            if (leftType == typeof(string) && @operator.PLUS() != null)
-//                return leftType;
+            if (context is StringExpressionContext)
+                return TypeSystem.Instance["String"];
 
-//            if (leftType == rightType && leftType == typeof(double))
-//                return leftType;
+            if (context is RefExpressionContext)
+                throw new NotImplementedException();
 
-//            return typeof(ErrorType);
-//        }
+            if (context is BoolExpressionContext)
+                return TypeSystem.Instance["Boolean"];
 
-//        public static Type GetTypeOfMultiplExpression([NotNull] MultiplExpressionContext context, IGameWorldObject gameObject)
-//        {
-//            var leftType = GetTypeOf(context.left, gameObject);
-//            var rightType = GetTypeOf(context.right, gameObject);
+            if (context is NumberExpressionContext)
+                return TypeSystem.Instance["Number"];
 
-//            if (leftType == rightType && leftType == typeof(double))
-//                return leftType;
+            if (context is NullExpressionContext)
+                return TypeSystem.Instance["NullType"];
 
-//            return typeof(ErrorType);
-//        }
+            if (context is NotExpressionContext)
+            {
+                var type = GetType((context as NotExpressionContext).expression(), errors);
 
-//        public static Type GetTypeOfLogicalExpression([NotNull] LogicalExpressionContext context, IGameWorldObject gameObject)
-//        {
-//            var leftType = GetTypeOf(context.left, gameObject);
-//            var rightType = GetTypeOf(context.right, gameObject);
+                if (!type.InheritsFrom(TypeSystem.Instance["Boolean"]))
+                {
+                    errors.Add(new Error(context, $"Type mismatch: expression type must be {TypeSystem.Instance["Boolean"]}"));
+                    return TypeSystem.Instance["ErrorType"];
+                }
 
-//            if (leftType == rightType && leftType == typeof(bool))
-//                return leftType;
+                return type;
+            }
 
-//            return typeof(ErrorType);
-//        }
+            if (context is CompExpressionContext)
+            {
+                var ctx = context as CompExpressionContext;
+                var leftType = GetType(ctx.left, errors);
+                var rightType = GetType(ctx.right, errors);
+                var @operator = ctx.compOperator();
 
-//        public static Type GetTypeOfPathExpression([NotNull] PathExpressionContext context, IGameWorldObject gameObject)
-//        {
-//            return GetTypeOfPath(context.path(), gameObject);
-//        }
+                if (!leftType.InheritsFrom(rightType) && !rightType.InheritsFrom(leftType))
+                {
+                    errors.Add(new Error(ctx, $"Illegal operator: operator {@operator.GetText()} cannot be applied to types {leftType} and {rightType}"));
+                    return TypeSystem.Instance["ErrorType"];
+                }
 
-//        private static Type GetTypeOfPath(PathContext context, IGameWorldObject gameObject)
-//        {
-//            var varPath = context.varPath();
-//            var refPath = context.refPath();
+                //operators <, >, <=, >= are only defined on numbers
+                if (@operator.EQ() == null && @operator.NEQ() == null && !leftType.InheritsFrom(TypeSystem.Instance["Number"]))
+                {
+                    errors.Add(new Error(ctx, $"Illegal operator: operator {@operator.GetText()} cannot be applied to types {leftType} and {rightType}"));
+                    return TypeSystem.Instance["ErrorType"];
+                }
 
-//            if (varPath != null)
-//            {
-//                return VisitVarPath(varPath, gameObject).Type;
-//            }
+                return TypeSystem.Instance["Boolean"];
+            }
 
-//            if (refPath != null)
-//            {
-//                return VisitRefPath(refPath, gameObject).Type;
-//            }
+            if (context is AdditiveExpressionContext)
+            {
+                var ctx = context as AdditiveExpressionContext;
+                var leftType = GetType(ctx.left, errors);
+                var rightType = GetType(ctx.right, errors);
+                var @operator = ctx.additiveOperator();
 
-//            return null;
-//        }
+                if (leftType.InheritsFrom(TypeSystem.Instance["String"]) && @operator.PLUS() != null)
+                    return TypeSystem.Instance["String"];
 
-//        private static Variable VisitRefPath(RefPathContext refPath, IGameWorldObject gameObject)
-//        {
-//            throw new NotImplementedException();
-//        }
+                if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
+                    return TypeSystem.Instance["Number"];
 
-//        private static Variable VisitVarPath(VarPathContext context, IGameWorldObject gameObject)
-//        {
-//            Variable variable = null;
-//            IGameWorldObject currentObject = gameObject;
+                errors.Add(new Error(@operator, $"Illegal operator: operator {@operator.GetText()} cannot be applied to types {leftType} and {rightType}"));// (TODO: check inheritance too)
+                return TypeSystem.Instance["ErrorType"];
+            }
 
-//            foreach (var varName in context.varName())
-//            {
-//                if (currentObject == null)
-//                    throw new IdNotFoundException(varName.GetText());
+            if (context is MultiplExpressionContext)
+            {
+                var ctx = context as MultiplExpressionContext;
+                var leftType = GetType(ctx.left, errors);
+                var rightType = GetType(ctx.right, errors);
 
-//                if (currentObject.Variables.TryGetValue(varName.GetText(), out variable))
-//                {
-//                    if (variable.Type == typeof(ReferenceType))
-//                        currentObject = (IGameWorldObject)gameObject.World.GetById(variable.Name);
-//                    else
-//                        currentObject = null;
-//                }
-//                else
-//                    throw new IdNotFoundException(varName.GetText());
-//            }
+                if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
+                    return TypeSystem.Instance["Number"];
 
-//            return variable;
-//        }
+                var @operator = ctx.multiplOperator();
+                errors.Add(new Error(@operator, $"Illegal operator: operator {@operator.GetText()} cannot be applied to types {leftType} and {rightType}")); // (TODO: check inheritance too)
+                return TypeSystem.Instance["ErrorType"];
+            }
 
-//        public static Type GetTypeOf([NotNull]ExpressionContext context, IGameWorldObject gameObject)
-//        {
-//            if (context is ParenExpressionContext)
-//                return GetTypeOfParenExpression(context as ParenExpressionContext, gameObject);
+            if (context is LogicalExpressionContext)
+            {
+                var ctx = context as LogicalExpressionContext;
+                var leftType = GetType(ctx.left, errors);
+                var rightType = GetType(ctx.right, errors);
 
-//            if (context is PathExpressionContext)
-//                return GetTypeOfPathExpression(context as PathExpressionContext, gameObject);
+                if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Boolean"]))
+                    return TypeSystem.Instance["Boolean"];
 
-//            if (context is RefExpressionContext)
-//                return GetTypeOfRefExpression(context as RefExpressionContext);
+                var @operator = ctx.logicalOperator();
+                errors.Add(new Error(@operator, $"Illegal operator: operator {@operator.GetText()} cannot be applied to types {leftType} and {rightType}"));// (TODO: check inheritance too)
+                return TypeSystem.Instance["ErrorType"];
+            }
 
-//            if (context is StringExpressionContext)
-//                return GetTypeOfStringExpression(context as StringExpressionContext);
+            if (context is ParenExpressionContext)
+                return GetType((context as ParenExpressionContext).expression(), errors);
 
-//            if (context is BoolExpressionContext)
-//                return GetTypeOfBoolExpression(context as BoolExpressionContext);
+            if (context is ArrayExpressionContext)
+            {
+                var ctx = context as ArrayExpressionContext;
+                Models.Script.Type firstType;
 
-//            if (context is NumberExpressionContext)
-//                return GetTypeOfNumberExpression(context as NumberExpressionContext);
+                if (ctx.expression() == null || (firstType = GetType(ctx.expression()[0], errors)) == TypeSystem.Instance["ErrorType"])
+                {
+                    errors.Add(new Error(ctx, $"Invalid array expression."));
+                    return TypeSystem.Instance["ErrorType"];
+                }
 
-//            if (context is NotExpressionContext)
-//                return GetTypeOfNotExpression(context as NotExpressionContext, gameObject);
+                foreach (var expr in ctx.expression())
+                {
+                    if (GetType(expr, errors) != firstType)
+                    {
+                        errors.Add(new Error(expr, $"Invalid array expression: arrays can only contain elements of the same type."));
+                        return TypeSystem.Instance["ErrorType"];
+                    }
+                }
+                return TypeSystem.Instance[$"{firstType}Array"];
 
-//            if (context is CompExpressionContext)
-//                return GetTypeOfCompExpression(context as CompExpressionContext, gameObject);
+            }
 
-//            if (context is AdditiveExpressionContext)
-//                return GetTypeOfAdditiveExpression(context as AdditiveExpressionContext, gameObject);
+            return TypeSystem.Instance["ErrorType"];
+        }
 
-//            if (context is MultiplExpressionContext)
-//                return GetTypeOfMultiplExpression(context as MultiplExpressionContext, gameObject);
-
-//            if (context is LogicalExpressionContext)
-//                return GetTypeOfLogicalExpression(context as LogicalExpressionContext, gameObject);
-
-//            if (context is FuncExpressionContext)
-//                return GetTypeOfFunctionCallStatement((context as FuncExpressionContext).functionCallStatement(), gameObject);
-
-//            throw new ArgumentException("Invalid parameter", "context");
-
-//        }
-
-//    }
-//}
+    }
+}

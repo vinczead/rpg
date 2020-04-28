@@ -10,7 +10,6 @@ namespace GameScript.Models.Script
     {
         public string Name { get; set; }
         public HashSet<Type> Parents { get; set; } = new HashSet<Type>();
-        
 
         private HashSet<Event> events;
 

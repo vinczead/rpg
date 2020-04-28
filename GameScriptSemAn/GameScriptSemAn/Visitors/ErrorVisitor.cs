@@ -13,10 +13,12 @@ namespace GameScript.Visitors
         Env env;
         public List<Error> errors;
 
+
         public override object VisitScript([NotNull] ScriptContext context)
         {
             env = new Env();
             errors = new List<Error>();
+            
 
             return base.VisitScript(context);
         }
@@ -44,6 +46,9 @@ namespace GameScript.Visitors
 
             env = new Env(env, baseId.GetText());
             AddSymbolToEnv(context, new Symbol("_Base", baseClassType));
+
+
+            env = new Env(env, $"{baseId.GetText()} Initialization");
             AddSymbolToEnv(context, new Symbol("Self", baseClassType));
 
             foreach (var prop in baseClassType.Properties)
@@ -60,8 +65,8 @@ namespace GameScript.Visitors
         {
             var retVal = base.VisitInitBlock(context);
 
-            RemoveSymbolFromEnv(context, "Self");
-
+            env = env.Previous;
+                 
             return retVal;
         }
 
@@ -117,7 +122,7 @@ namespace GameScript.Visitors
 
         public override object VisitIfStatement([NotNull] IfStatementContext context)
         {
-            var type = GetType(context.expression());
+            var type = new TypeVisitor(env, errors).Visit(context.expression());
 
             if (!type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 errors.Add(new Error(context, $"Expression type must be {TypeSystem.Instance["Boolean"]}"));
@@ -127,7 +132,7 @@ namespace GameScript.Visitors
 
         public override object VisitRepeatStatement([NotNull] RepeatStatementContext context)
         {
-            var type = GetType(context.expression());
+            var type = new TypeVisitor(env, errors).Visit(context.expression());
 
             if (!type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 errors.Add(new Error(context, $"Expression type must be {TypeSystem.Instance["Boolean"]}"));
@@ -137,7 +142,7 @@ namespace GameScript.Visitors
 
         public override object VisitWhileStatement([NotNull] WhileStatementContext context)
         {
-            var type = GetType(context.expression());
+            var type = new TypeVisitor(env, errors).Visit(context.expression());
 
             if (!type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 errors.Add(new Error(context, $"Expression type must be {TypeSystem.Instance["Boolean"]}"));
@@ -165,7 +170,7 @@ namespace GameScript.Visitors
 
             if (context.expression() != null)
             {
-                var expressionType = GetType(context.expression());
+                var expressionType = new TypeVisitor(env, errors).Visit(context.expression());
 
                 var symbol = GetSymbolFromEnv(context, varName);
 
@@ -183,8 +188,8 @@ namespace GameScript.Visitors
 
         public override object VisitAssignmentStatement([NotNull] AssignmentStatementContext context)
         {
-            var expressionType = GetType(context.expression()) ?? TypeSystem.Instance["ErrorType"];
-            var symbolType = GetType(context.path());
+            var expressionType = new TypeVisitor(env, errors).Visit(context.expression()) ?? TypeSystem.Instance["ErrorType"];
+            var symbolType = new TypeVisitor(env, errors).Visit(context.path());
 
             if (symbolType != TypeSystem.Instance["ErrorType"] && !expressionType.InheritsFrom(symbolType))
             {
@@ -210,8 +215,9 @@ namespace GameScript.Visitors
                 {
                     for (int i = 0; i < function.Parameters.Count; i++)
                     {
-                        if (!GetType(paramsCtx.expression(i)).InheritsFrom(function.Parameters[i].Type))
-                            errors.Add(new Error(funcNameCtx, $"Type mismatch: The function {function} expects {function.Parameters[i].Type} as parameter {i + 1}, not {GetType(paramsCtx.expression(i))}."));
+                        var paramType = new TypeVisitor(env, errors).Visit(paramsCtx.expression(i));
+                        if (!paramType.InheritsFrom(function.Parameters[i].Type))
+                            errors.Add(new Error(funcNameCtx, $"Type mismatch: The function {function} expects {function.Parameters[i].Type} as parameter {i + 1}, not {paramType}."));
                     }
                 }
                 else
@@ -237,11 +243,6 @@ namespace GameScript.Visitors
             }
         }
 
-        private void RemoveSymbolFromEnv(ParserRuleContext context, string name)
-        {
-            env.RemoveSymbol(name);
-        }
-
         private Symbol GetSymbolFromEnv(ParserRuleContext context, string symbolName)
         {
             if (symbolName == null)
@@ -254,197 +255,5 @@ namespace GameScript.Visitors
             errors.Add(new Error(context, $"{symbolName} does not exist in this context."));
             return null;
         }
-
-        private Models.Script.Type GetType(PathContext context)
-        {
-            var variable = GetSymbolFromEnv(context, context.varPath()?.varName()[0].GetText());
-
-            if (variable == null)
-                return TypeSystem.Instance["ErrorType"];
-
-            var type = variable.Type;
-
-            foreach (var varName in context.varPath().varName().Skip(1).ToArray())
-            {
-                var prop = type.Properties.FirstOrDefault(p => p.Name == varName.GetText());
-                if (prop == null)
-                {
-                    errors.Add(new Error(context, $"{varName.GetText()} is not defined on {type}."));
-                    return TypeSystem.Instance["ErrorType"];
-                }
-
-                type = prop.Type;
-            }
-            return type;
-        }
-
-        private Models.Script.Type GetType(ExpressionContext context)
-        {
-            if (context is FuncExpressionContext)
-            {
-                var ctx = (context as FuncExpressionContext).functionCallStatement();
-                //check whether function exists and parameter types match
-                var funcNameCtx = ctx.functionName();
-
-                try
-                {
-                    var function = FunctionManager.Instance[funcNameCtx.GetText()];
-                    return function.ReturnType;
-                }
-                catch (KeyNotFoundException)
-                {
-                    return TypeSystem.Instance["ErrorType"];
-                }
-            }
-
-            if (context is PathExpressionContext)
-            {
-                var ctx = context as PathExpressionContext;
-                var variable = GetSymbolFromEnv(ctx, ctx.path().varPath().varName()[0].GetText());
-
-                if (variable == null)
-                    return TypeSystem.Instance["ErrorType"];
-
-                var type = variable.Type;
-
-                foreach (var varName in ctx.path().varPath().varName().Skip(1).ToArray())
-                {
-                    var prop = type.Properties.FirstOrDefault(p => p.Name == varName.GetText());
-                    if (prop == null)
-                    {
-                        errors.Add(new Error(context, $"{varName.GetText()} is not defined on {type}."));
-                        return TypeSystem.Instance["ErrorType"];
-                    }
-
-                    type = prop.Type;
-                }
-                return type;
-            }
-
-            if (context is StringExpressionContext)
-                return TypeSystem.Instance["String"];
-
-            if (context is RefExpressionContext)
-                throw new NotImplementedException();
-
-            if (context is BoolExpressionContext)
-                return TypeSystem.Instance["Boolean"];
-
-            if (context is NumberExpressionContext)
-                return TypeSystem.Instance["Number"];
-
-            if (context is NullExpressionContext)
-                return TypeSystem.Instance["NullType"];
-
-            if (context is NotExpressionContext)
-            {
-                var type = GetType((context as NotExpressionContext).expression());
-
-                if (!type.InheritsFrom(TypeSystem.Instance["Boolean"]))
-                {
-                    errors.Add(new Error(context, $"Type mismatch: expression type must be {TypeSystem.Instance["Boolean"]}"));
-                    return TypeSystem.Instance["ErrorType"];
-                }
-
-                return type;
-            }
-
-            if (context is CompExpressionContext)
-            {
-                var ctx = context as CompExpressionContext;
-                var leftType = GetType(ctx.left);
-                var rightType = GetType(ctx.right);
-                var @operator = ctx.compOperator();
-
-                if (!leftType.InheritsFrom(rightType) && !rightType.InheritsFrom(leftType))
-                {
-                    errors.Add(new Error(ctx, $"Illegal operator: operator {@operator.GetText()} cannot be applied to types {leftType} and {rightType}"));
-                    return TypeSystem.Instance["ErrorType"];
-                }
-
-                //operators <, >, <=, >= are only defined on numbers
-                if (@operator.EQ() == null && @operator.NEQ() == null && !leftType.InheritsFrom(TypeSystem.Instance["Number"]))
-                {
-                    errors.Add(new Error(ctx, $"Illegal operator: operator {@operator.GetText()} cannot be applied to types {leftType} and {rightType}"));
-                    return TypeSystem.Instance["ErrorType"];
-                }
-
-                return TypeSystem.Instance["Boolean"];
-            }
-
-            if (context is AdditiveExpressionContext)
-            {
-                var ctx = context as AdditiveExpressionContext;
-                var leftType = GetType(ctx.left);
-                var rightType = GetType(ctx.right);
-                var @operator = ctx.additiveOperator();
-
-                if (leftType.InheritsFrom(TypeSystem.Instance["String"]) && @operator.PLUS() != null)
-                    return TypeSystem.Instance["String"];
-
-                if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
-                    return TypeSystem.Instance["Number"];
-
-                errors.Add(new Error(@operator, $"Illegal operator: operator {@operator.GetText()} cannot be applied to types {leftType} and {rightType}"));// (TODO: check inheritance too)
-                return TypeSystem.Instance["ErrorType"];
-            }
-
-            if (context is MultiplExpressionContext)
-            {
-                var ctx = context as MultiplExpressionContext;
-                var leftType = GetType(ctx.left);
-                var rightType = GetType(ctx.right);
-
-                if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
-                    return TypeSystem.Instance["Number"];
-
-                var @operator = ctx.multiplOperator();
-                errors.Add(new Error(@operator, $"Illegal operator: operator {@operator.GetText()} cannot be applied to types {leftType} and {rightType}")); // (TODO: check inheritance too)
-                return TypeSystem.Instance["ErrorType"];
-            }
-
-            if (context is LogicalExpressionContext)
-            {
-                var ctx = context as LogicalExpressionContext;
-                var leftType = GetType(ctx.left);
-                var rightType = GetType(ctx.right);
-
-                if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Boolean"]))
-                    return TypeSystem.Instance["Boolean"];
-
-                var @operator = ctx.logicalOperator();
-                errors.Add(new Error(@operator, $"Illegal operator: operator {@operator.GetText()} cannot be applied to types {leftType} and {rightType}"));// (TODO: check inheritance too)
-                return TypeSystem.Instance["ErrorType"];
-            }
-
-            if (context is ParenExpressionContext)
-                return GetType((context as ParenExpressionContext).expression());
-
-            if (context is ArrayExpressionContext)
-            {
-                var ctx = context as ArrayExpressionContext;
-                Models.Script.Type firstType;
-
-                if (ctx.expression() == null || (firstType = GetType(ctx.expression()[0])) == TypeSystem.Instance["ErrorType"])
-                {
-                    errors.Add(new Error(ctx, $"Invalid array expression."));
-                    return TypeSystem.Instance["ErrorType"];
-                }
-
-                foreach (var expr in ctx.expression())
-                {
-                    if (GetType(expr) != firstType)
-                    {
-                        errors.Add(new Error(expr, $"Invalid array expression: arrays can only contain elements of the same type."));
-                        return TypeSystem.Instance["ErrorType"];
-                    }
-                }
-                return TypeSystem.Instance[$"{firstType}Array"];
-
-            }
-
-            return TypeSystem.Instance["ErrorType"];
-        }
-
     }
 }

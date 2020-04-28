@@ -1,5 +1,10 @@
 [
   {
+    "name": "Random",
+    "parameters": [],
+    "returnType": "Number"
+  },
+  {
     "name": "StrLength",
     "parameters": [
       {
