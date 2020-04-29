@@ -75,7 +75,7 @@ namespace RpgEditor
             }
 
             messages.AppendText("Building world...\n");
-
+            
             var world = Executer.BuildWorld(files.Select(f => f.Document.Text).ToList());
 
             messages.AppendText("World builded successfully.");

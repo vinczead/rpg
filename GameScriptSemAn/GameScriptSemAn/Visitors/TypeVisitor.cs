@@ -1,5 +1,6 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using GameScript.Models;
 using GameScript.Models.Script;
 using System;
@@ -10,16 +11,25 @@ using System.Threading.Tasks;
 
 namespace GameScript.Visitors
 {
-    public class TypeVisitor : ViGaSBaseVisitor<Models.Script.Type>
+    public sealed class TypeVisitor : ViGaSBaseVisitor<Models.Script.Type>
     {
-        Env env = new Env();
-        List<Error> errors = new List<Error>();
-        GameModel gameModel;
+        Env env;
+        List<Error> errors;
 
-        public TypeVisitor(Env env, List<Error> errors)
+        public static TypeVisitor Instance { get; } = new TypeVisitor();
+
+        private TypeVisitor()
         {
-            this.env = env;
-            this.errors = errors;
+            env = new Env();
+            errors = new List<Error>();
+        }
+
+        public static Models.Script.Type GetType(IParseTree parseTree, Env env, List<Error> errors)
+        {
+            Instance.env = env;
+            Instance.errors = errors;
+
+            return Instance.Visit(parseTree);
         }
 
         public override Models.Script.Type VisitPath([NotNull] ViGaSParser.PathContext context)

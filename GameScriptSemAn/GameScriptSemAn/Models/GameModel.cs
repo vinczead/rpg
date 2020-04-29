@@ -23,14 +23,6 @@ namespace GameScript.Models
 
         public GameModel()
         {
-            Regions.Add("FirstRoom", new Region()
-            {
-                Id = "FirstRoom",
-                Name = "First Room of Dungeon",
-                GameModel = this,
-                Width = 100,
-                Height = 100
-            });
         }
 
         public void Update(GameTime gameTime)
@@ -65,19 +57,18 @@ namespace GameScript.Models
 
         public GameObjectInstance Spawn(string baseId, string regionId, Vector2 position, string instanceId = null)
         {
-            var instance = Spawn(baseId, instanceId) as ThingInstance;
-            instance.Region = Regions[regionId];
-            instance.Position = position;
+            var instance = Spawn(baseId, regionId, instanceId) as ThingInstance;
 
-            Regions[regionId].InsertThing(instance);
+            instance.Position = position;
 
             return instance;
         }
 
-        public GameObjectInstance Spawn(string baseId, string instanceId = null)
+        public GameObjectInstance Spawn(string baseId, string regionId, string instanceId = null)
         {
-            var instance = Bases[baseId].Spawn(instanceId);
+            var instance = Bases[baseId].Spawn(instanceId) as ThingInstance;
             instance.World = this;
+            Regions[regionId].InsertThing(instance);
 
             Instances.Add(instance.Id, instance);
 

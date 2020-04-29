@@ -49,16 +49,16 @@ namespace GameScript.Models
             thingsToRemove.Clear();
         }
 
-        public void InsertThing(ThingInstance gameWorldObject)
+        public void InsertThing(ThingInstance thingInstance)
         {
-            Things.Add(gameWorldObject.Id, gameWorldObject);
-            gameWorldObject.Region = this;
+            Things.Add(thingInstance.Id, thingInstance);
+            thingInstance.Region = this;
         }
 
-        public void RemoveThing(ThingInstance gameWorldObject)
+        public void RemoveThing(ThingInstance thingInstance)
         {
-            thingsToRemove.Add(gameWorldObject);
-            gameWorldObject.Region = null;
+            thingsToRemove.Add(thingInstance);
+            thingInstance.Region = null;
         }
     }
 }

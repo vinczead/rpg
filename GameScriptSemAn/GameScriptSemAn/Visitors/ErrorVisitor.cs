@@ -167,7 +167,7 @@ namespace GameScript.Visitors
 
         public override object VisitIfStatement([NotNull] IfStatementContext context)
         {
-            var type = new TypeVisitor(env, errors).Visit(context.expression());
+            var type = TypeVisitor.GetType(context.expression(), env, errors);
 
             if (!type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 errors.Add(new Error(context, $"Expression type must be {TypeSystem.Instance["Boolean"]}"));
@@ -177,7 +177,7 @@ namespace GameScript.Visitors
 
         public override object VisitRepeatStatement([NotNull] RepeatStatementContext context)
         {
-            var type = new TypeVisitor(env, errors).Visit(context.expression());
+            var type = TypeVisitor.GetType(context.expression(), env, errors);
 
             if (!type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 errors.Add(new Error(context, $"Expression type must be {TypeSystem.Instance["Boolean"]}"));
@@ -187,7 +187,7 @@ namespace GameScript.Visitors
 
         public override object VisitWhileStatement([NotNull] WhileStatementContext context)
         {
-            var type = new TypeVisitor(env, errors).Visit(context.expression());
+            var type = TypeVisitor.GetType(context.expression(), env, errors);
 
             if (!type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 errors.Add(new Error(context, $"Expression type must be {TypeSystem.Instance["Boolean"]}"));
@@ -215,7 +215,7 @@ namespace GameScript.Visitors
 
             if (context.expression() != null)
             {
-                var expressionType = new TypeVisitor(env, errors).Visit(context.expression());
+                var expressionType = TypeVisitor.GetType(context.expression(), env, errors);
 
                 var symbol = GetSymbolFromEnv(context, varName);
 
@@ -233,8 +233,8 @@ namespace GameScript.Visitors
 
         public override object VisitAssignmentStatement([NotNull] AssignmentStatementContext context)
         {
-            var expressionType = new TypeVisitor(env, errors).Visit(context.expression()) ?? TypeSystem.Instance["ErrorType"];
-            var symbolType = new TypeVisitor(env, errors).Visit(context.path());
+            var expressionType = TypeVisitor.GetType(context.expression(), env, errors) ?? TypeSystem.Instance["ErrorType"];
+            var symbolType = TypeVisitor.GetType(context.path(), env, errors);
 
             if (symbolType != TypeSystem.Instance["ErrorType"] && !expressionType.InheritsFrom(symbolType))
             {
@@ -260,7 +260,7 @@ namespace GameScript.Visitors
                 {
                     for (int i = 0; i < function.Parameters.Count; i++)
                     {
-                        var paramType = new TypeVisitor(env, errors).Visit(paramsCtx.expression(i));
+                        var paramType = TypeVisitor.GetType(paramsCtx.expression(i), env, errors);
                         if (!paramType.InheritsFrom(function.Parameters[i].Type))
                             errors.Add(new Error(funcNameCtx, $"Type mismatch: The function {function} expects {function.Parameters[i].Type} as parameter {i + 1}, not {paramType}."));
                     }

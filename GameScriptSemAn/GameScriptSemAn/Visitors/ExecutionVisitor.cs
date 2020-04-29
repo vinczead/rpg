@@ -77,7 +77,9 @@ namespace GameScript.Visitors
         {
             Visit(context.initBlock());
 
-            Visit(context.variablesBlock());
+            if (context.variablesBlock() != null)
+                Visit(context.variablesBlock());
+
 
             foreach (var runBlock in context.runBlock())
             {
@@ -91,7 +93,10 @@ namespace GameScript.Visitors
         {
             var name = context.varName().GetText();
             var type = context.typeName().GetText();
-            var value = Visit(context.expression());
+            string value = "";
+
+            if (context.expression() != null)
+                value = Visit(context.expression()).ToString();
 
             currentBase.Variables[name] = new Symbol(name, TypeSystem.Instance[type], value.ToString());
             return null;
@@ -100,11 +105,9 @@ namespace GameScript.Visitors
         public override object VisitInstanceDefinition([NotNull] ViGaSParser.InstanceDefinitionContext context)
         {
             var baseRef = context.baseRef().GetText();
-            var instanceRef = context.instanceRef().GetText();
+            var instanceRef = context.instanceRef()?.GetText();
 
-            currentInstance = gameModel.Bases[baseRef].Spawn(instanceRef);
-
-            gameModel.Instances.Add(instanceRef, currentInstance);
+            currentInstance = gameModel.Spawn(baseRef, currentRegion.Id, instanceRef);
 
             var retVal = base.VisitInstanceDefinition(context);
 
@@ -181,10 +184,8 @@ namespace GameScript.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var typeVisitor = new TypeVisitor(env, errors);
-
-            var leftType = typeVisitor.Visit(context.left);
-            var rightType = typeVisitor.Visit(context.right);
+            var leftType = TypeVisitor.GetType(context.left, env, errors);
+            var rightType = TypeVisitor.GetType(context.right, env, errors);
 
             var @operator = context.additiveOperator();
 
@@ -208,10 +209,8 @@ namespace GameScript.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var typeVisitor = new TypeVisitor(env, errors);
-
-            var leftType = typeVisitor.Visit(context.left);
-            var rightType = typeVisitor.Visit(context.right);
+            var leftType = TypeVisitor.GetType(context.left, env, errors);
+            var rightType = TypeVisitor.GetType(context.right, env, errors);
 
             var @operator = context.multiplOperator();
 
@@ -232,10 +231,8 @@ namespace GameScript.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var typeVisitor = new TypeVisitor(env, errors);
-
-            var leftType = typeVisitor.Visit(context.left);
-            var rightType = typeVisitor.Visit(context.right);
+            var leftType = TypeVisitor.GetType(context.left, env, errors);
+            var rightType = TypeVisitor.GetType(context.right, env, errors);
 
             var op = context.compOperator();
 
@@ -268,10 +265,8 @@ namespace GameScript.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var typeVisitor = new TypeVisitor(env, errors);
-
-            var leftType = typeVisitor.Visit(context.left);
-            var rightType = typeVisitor.Visit(context.right);
+            var leftType = TypeVisitor.GetType(context.left, env, errors);
+            var rightType = TypeVisitor.GetType(context.right, env, errors);
 
             var op = context.logicalOperator();
 
@@ -291,7 +286,7 @@ namespace GameScript.Visitors
         public override object VisitNotExpression([NotNull] ViGaSParser.NotExpressionContext context)
         {
             var expression = Visit(context.expression());
-            var type = new TypeVisitor(env, errors).Visit(context.expression());
+            var type = TypeVisitor.GetType(context.expression(), env, errors);
 
             if (type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 return !(bool)expression;
@@ -321,7 +316,7 @@ namespace GameScript.Visitors
 
             MethodInfo method = typeof(FunctionLibrary).GetMethod(functionName);
 
-            return method.Invoke(null, parameterListValues);
+            return method.Invoke(null, parameterListValues == null ? null : new object[] { parameterListValues });
         }
 
         public override object VisitAssignmentStatement([NotNull] ViGaSParser.AssignmentStatementContext context)
