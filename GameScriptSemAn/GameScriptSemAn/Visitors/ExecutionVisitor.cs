@@ -1,19 +1,23 @@
-﻿using Antlr4.Runtime.Misc;
+﻿using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using GameScript.Models;
 using GameScript.Models.BaseClasses;
 using GameScript.Models.InstanceClasses;
 using GameScript.Models.Script;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace GameScript.Visitors
 {
-    public class ExecutionVisitor : ViGaSBaseVisitor<object>
+    public sealed class ExecutionVisitor : ViGaSBaseVisitor<object>
     {
         private Env env;
 
@@ -24,7 +28,9 @@ namespace GameScript.Visitors
 
         private List<Error> errors;
 
-        /// <summary>
+        private static ExecutionVisitor Instance { get; } = new ExecutionVisitor();
+
+        /*/// <summary>
         /// This constructor should be used in game code when executing Run blocks
         /// </summary>
         /// <param name="gameModel"></param>
@@ -36,7 +42,7 @@ namespace GameScript.Visitors
             this.errors = errors ?? new List<Error>();
             this.gameModel = gameModel;
             this.currentInstance = currentInstance;
-        }
+        }*/
 
         private ExecutionVisitor()
         {
@@ -45,14 +51,30 @@ namespace GameScript.Visitors
             errors = new List<Error>();
         }
 
-        public static GameModel Build(IEnumerable<IParseTree> trees)
+        public static GameModel Build(IEnumerable<ScriptFile> files, out List<Error> errors)
         {
             var worldBuilder = new ExecutionVisitor();
-            foreach (var tree in trees)
+            foreach (var file in files)
             {
+                var tree = Executer.ReadAST(file.Document.Text, out _);
                 worldBuilder.Visit(tree);
             }
+
+            errors = Instance.errors;
             return worldBuilder.gameModel;
+        }
+
+        //todo: pass run block parameters too
+        public static List<Error> ExecuteRunBlock(GameModel gameModel, GameObjectInstance currentInstance, string runBlockId)
+        {
+            Instance.gameModel = gameModel;
+            Instance.env = gameModel.ToEnv();
+            Instance.currentInstance = currentInstance;
+
+            if (currentInstance.Base.RunBlocks.TryGetValue(runBlockId, out var runBlock))
+                Instance.Visit(runBlock);
+
+            return Instance.errors;
         }
 
         #region World building
@@ -151,7 +173,8 @@ namespace GameScript.Visitors
 
         public override object VisitStringExpression([NotNull] ViGaSParser.StringExpressionContext context)
         {
-            return context.GetText();
+            var str = context.GetText();
+            return str.Substring(1, str.Length - 2);
         }
 
         public override object VisitRefExpression([NotNull] ViGaSParser.RefExpressionContext context)
@@ -310,7 +333,6 @@ namespace GameScript.Visitors
             var paramsCtx = context.functionParameterList();
 
             var functionName = context.functionName().GetText();
-            Console.WriteLine($"Function call {functionName}");
             var parameterList = context.functionParameterList()?.expression().ToList();
             var parameterListValues = parameterList?.Select(p => Visit(p)).ToArray();
 

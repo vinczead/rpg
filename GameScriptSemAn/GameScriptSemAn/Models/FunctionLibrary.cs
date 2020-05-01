@@ -1,4 +1,5 @@
 ﻿using GameScript.Models.BaseClasses;
+using GameScript.Models.InstanceClasses;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +23,11 @@ namespace GameScript.Models
 
         public static bool SetTexture(object[] parameters)
         {
-            //todo: implement SetTexture
+            var baseObject = parameters[0] as Thing;
+            var textureId = parameters[1] as string;
+
+            baseObject.Texture = TextureManager.Textures[textureId];
+
             return true;
         }
     }

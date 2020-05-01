@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using GameScript.Models.BaseClasses;
 using GameScript.Models.InstanceClasses;
+using GameScript.Models.Script;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
@@ -44,7 +45,7 @@ namespace GameScript.Models
         {
             Player.Region.Draw(gameTime, spriteBatch);
 
-            SpriteFont font = null;
+            SpriteFont font = TextureManager.font;
             int i = 0;
             foreach (var message in Messages)
             {
@@ -98,6 +99,29 @@ namespace GameScript.Models
             }
 
             throw new ArgumentException("No GameObject was found with the specified id.", "id");
+        }
+
+        public Env ToEnv()
+        {
+            //ezt nem kell mindig létrehozni
+            var env = new Env(null, "Game Model");
+            foreach (var b in Bases)
+            {
+                env[b.Key] = new Symbol(b.Key, TypeSystem.Instance[b.Value.GetType().Name]);
+            }
+
+            foreach (var i in Instances)
+            {
+                env[i.Key] = new Symbol(i.Key, TypeSystem.Instance[i.Value.GetType().Name]);
+            }
+
+            foreach (var r in Regions)
+            {
+                //todo: add region type
+                //env[r.Key] = new Symbol(r.Key, TypeSystem.Instance[b.Value.GetType().Name]);
+            }
+
+            return env;
         }
     }
 }

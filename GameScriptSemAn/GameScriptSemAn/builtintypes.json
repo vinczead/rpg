@@ -92,6 +92,14 @@
     ]
   },
   {
+    "name": "Player",
+    "parents": [ "Character" ],
+    "parentOfNull": true,
+    "properties": [],
+    "events": [
+    ]
+  },
+  {
     "name": "Activator",
     "parents": [ "Thing" ],
     "parentOfNull": true,

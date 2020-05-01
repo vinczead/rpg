@@ -22,9 +22,9 @@ statement: assignmentStatement | ifStatement | whileStatement | repeatStatement 
 
 expression
 	: functionCallStatement									#funcExpression
+	| REFERENCE												#refExpression
 	| path													#pathExpression
 	| STRING												#stringExpression
-	| REFERENCE												#refExpression
 	| NUMBER												#numberExpression
 	| BOOLEAN												#boolExpression
 	| NULL													#nullExpression

@@ -29,11 +29,6 @@ namespace GameScript
             return context;
         }
 
-        public static GameModel BuildWorld(List<string> scripts)
-        {
-            return ExecutionVisitor.Build(scripts.Select(s => ReadAST(s, out _)));
-        }
-
         private static IParseTree ParseStatement(string statement)
         {
             var inputStream = new AntlrInputStream(statement);
@@ -60,22 +55,8 @@ namespace GameScript
             //executionVisitor.Visit(parseTree);
         }
 
-        public static void ExecuteVariableDeclaration(GameObjectInstance instance)
-        {
-            /*if (gameObject.Base.Script != "")
-            {
-                var parser = GetParser(gameObject.Base.Script);
-                var varBlockContext = parser.program().variablesBlock();
-                if (varBlockContext != null)
-                {
-                    var executionVisitor = new ExecutionVisitor(gameObject);
-                    executionVisitor.Visit(varBlockContext);
-                }
-            }*/
-        }
-
-        public static void ExecuteRunBlock(ThingInstance thing, string runBlockType)
-        {
+        //public static void ExecuteRunBlock(ThingInstance thing, string runBlockType)
+        //{
             /*if (thing.Base.Script != "")
             {
                 var parser = GetParser(thing.Base.Script);
@@ -90,6 +71,6 @@ namespace GameScript
                     }
                 }
             }*/
-        }
+        //}
     }
 }

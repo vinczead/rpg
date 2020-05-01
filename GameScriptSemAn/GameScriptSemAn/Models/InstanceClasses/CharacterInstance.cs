@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using GameScript.Visitors;
+using System.Collections.Generic;
 
 namespace GameScript.Models.InstanceClasses
 {
@@ -9,14 +10,14 @@ namespace GameScript.Models.InstanceClasses
         public void InsertItem(ItemInstance item)
         {
             Items.Add(item);
-            Executer.ExecuteRunBlock(this, "WhenItemPickedUp");
+            ExecutionVisitor.ExecuteRunBlock(Region.GameModel, this, "ItemPickedUp");
         }
 
         public void DropItem(ItemInstance item)
         {
             Items.Remove(item);
             item.Drop(this);
-            Executer.ExecuteRunBlock(this, "WhenItemDropped");
+            ExecutionVisitor.ExecuteRunBlock(Region.GameModel, this, "ItemDropped");
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using GameScript.Models.BaseClasses;
+using GameScript.Visitors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
@@ -17,7 +18,7 @@ namespace GameScript.Models.InstanceClasses
 
         public virtual void Update(GameTime gameTime)
         {
-            Executer.ExecuteRunBlock(this, "WhenInGame");
+            ExecutionVisitor.ExecuteRunBlock(Region.GameModel, this, "InGame");
         }
     }
 }

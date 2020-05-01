@@ -48,5 +48,6 @@ namespace GameScript.Models.Script
                 bld.AppendLine(symbol.ToString());
             return bld.ToString();
         }
+
     }
 }

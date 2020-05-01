@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using GameModel;
 using GameScript.Models;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;

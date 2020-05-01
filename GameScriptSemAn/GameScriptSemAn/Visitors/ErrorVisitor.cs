@@ -21,7 +21,7 @@ namespace GameScript.Visitors
             errors = new List<Error>();
         }
 
-        public static List<Error> CheckErrors(List<ScriptFile> files)
+        public static List<Error> CheckErrors(IEnumerable<ScriptFile> files)
         {
             Instance.env = new Env();
             Instance.errors = new List<Error>();

@@ -13,22 +13,21 @@ namespace GameScript.Models
 
         public static ContentManager Content;
 
-        public static Texture2D gray { get; set; }
-        public static Texture2D green { get; set; }
-        public static Texture2D npc { get; set; }
-        public static Texture2D player { get; set; }
-        public static Texture2D ring { get; set; }
-        public static Texture2D door { get; set; }
+        public static Dictionary<string, Texture2D> Textures { get; set; } = new Dictionary<string, Texture2D>();
+
         public static SpriteFont font { get; set; }
 
         public static void LoadContent()
         {
-            gray = Content.Load<Texture2D>("gray");
-            green = Content.Load<Texture2D>("green");
-            npc = Content.Load<Texture2D>("npc");
-            player = Content.Load<Texture2D>("player");
-            ring = Content.Load<Texture2D>("ring");
-            door = Content.Load<Texture2D>("door");
+            Textures.Add("Gray", Content.Load<Texture2D>("gray"));
+            Textures.Add("Green", Content.Load<Texture2D>("green"));
+            Textures.Add("Npc", Content.Load<Texture2D>("npc"));
+            Textures.Add("Player", Content.Load<Texture2D>("player"));
+            Textures.Add("Ring", Content.Load<Texture2D>("ring"));
+            Textures.Add("Door", Content.Load<Texture2D>("door"));
+            Textures.Add("Potion", Content.Load<Texture2D>("potion"));
+            Textures.Add("Sword", Content.Load<Texture2D>("sword"));
+
             font = Content.Load<SpriteFont>("Alkhemikal");
         }
     }

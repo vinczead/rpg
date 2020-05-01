@@ -1,4 +1,5 @@
 ﻿using GameScript;
+using GameScript.Visitors;
 
 namespace GameScript.Models.InstanceClasses
 {
@@ -8,14 +9,14 @@ namespace GameScript.Models.InstanceClasses
         {
             Region.RemoveThing(this);
             character.InsertItem(this);
-            Executer.ExecuteRunBlock(this, "WhenPickedUp");
+            ExecutionVisitor.ExecuteRunBlock(Region.GameModel, this, "PickedUp");
         }
 
         public void Drop(CharacterInstance character)
         {
             Position = character.Position;
             character.Region.InsertThing(this);
-            Executer.ExecuteRunBlock(this, "WhenDropped");
+            ExecutionVisitor.ExecuteRunBlock(Region.GameModel, this, "Dropped");
         }
     }
 }

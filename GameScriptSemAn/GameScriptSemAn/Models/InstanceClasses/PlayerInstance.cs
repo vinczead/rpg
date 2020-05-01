@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using GameScript.Visitors;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
 using System.Linq;
 
@@ -28,7 +29,8 @@ namespace GameScript.Models.InstanceClasses
                         if ((item.Position - Position).Length() < 10)
                         {
                             item.PickUp(this);
-                            Executer.ExecuteRunBlock(this, "WhenPickedUpItem");
+
+                            ExecutionVisitor.ExecuteRunBlock(Region.GameModel, this, "ItemPickedUp");
                             break;
                         }
                     }

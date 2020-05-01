@@ -13,6 +13,9 @@ namespace GameScript.Models
         public Region()
         {
             Things = new Dictionary<string, ThingInstance>();
+            Texture = TextureManager.Textures["Gray"];
+            Width = 100;
+            Height = 100;
         }
 
         public string Id { get; set; }

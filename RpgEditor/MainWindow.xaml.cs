@@ -53,9 +53,9 @@ namespace RpgEditor
 
         private void CheckForErrorsClick(object sender, RoutedEventArgs e)
         {
-            messages.Text = "";
+            messages.Text = "Checking for errors...\n";
 
-            var errors = ErrorVisitor.CheckErrors(files.ToList());
+            var errors = ErrorVisitor.CheckErrors(files);
 
             messages.AppendText(string.Concat(errors.Select(error => error + Environment.NewLine)));
 
@@ -64,8 +64,8 @@ namespace RpgEditor
 
         private void BuildWorldClick(object sender, RoutedEventArgs e)
         {
-            messages.Text = "";
-            var errors = ErrorVisitor.CheckErrors(files.ToList());
+            messages.Text = "Checking for errors...\n";
+            var errors = ErrorVisitor.CheckErrors(files);
 
             if (errors.Count > 0)
             {
@@ -74,9 +74,9 @@ namespace RpgEditor
                 return;
             }
 
-            messages.AppendText("Building world...\n");
-            
-            var world = Executer.BuildWorld(files.Select(f => f.Document.Text).ToList());
+            messages.AppendText("No error found, building world...\n");
+
+            var world = ExecutionVisitor.Build(files, out var buildTimeErrors);
 
             messages.AppendText("World builded successfully.");
         }
