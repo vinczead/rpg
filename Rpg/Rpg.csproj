@@ -68,12 +68,26 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\door.png" />
+    <Content Include="Content\gray.png" />
+    <Content Include="Content\green.png" />
+    <Content Include="Content\npc.png" />
+    <Content Include="Content\player.png" />
+    <Content Include="Content\potion.png" />
+    <Content Include="Content\ring.png" />
+    <Content Include="Content\sword.png" />
     <Content Include="Icon.ico" />
   </ItemGroup>
   <ItemGroup>
     <MonoGameContentReference Include="Content\Content.mgcb" />
     <None Include="app.config" />
     <None Include="app.manifest" />
+    <None Include="Content\Alkhemikal.spritefont" />
+    <None Include="Content\Alkhemikal.ttf" />
+    <None Include="Content\doorOtherRoomExampleRoom.gsc" />
+    <None Include="Content\exampleNpcScript.gsc" />
+    <None Include="Content\exampleQuestScript.gsc" />
+    <None Include="Content\ringOfExample.gsc" />
     <None Include="packages.config" />
     <None Include="Screens\ScreenDiagram.cd" />
   </ItemGroup>
