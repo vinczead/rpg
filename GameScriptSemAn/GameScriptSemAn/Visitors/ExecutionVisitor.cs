@@ -232,15 +232,52 @@ namespace GameScript.Visitors
 
         public override object VisitVarPath([NotNull] ViGaSParser.VarPathContext context)
         {
-            return base.VisitVarPath(context);
+            Symbol item = null;
+            PropertyInfo propInfo = null;
+
+            if (context.param != null)
+                item = GetSymbolFromEnv(context.param, context.param.Text);
+            if (context.@ref != null)
+                item = GetSymbolFromEnv(context.@ref, context.@ref.Text);
+
+            if (item == null)
+                return null;
+
+            foreach (var part in context._parts)
+            {
+                if (char.IsLower(part.Text[0]))
+                {
+                    if (item.Type.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
+                    {
+                        var gameObject = gameModel.GetById(item.Value) as GameObjectInstance;
+
+                        item = gameObject.Variables[part.Text];
+                    }
+                }
+                else
+                {
+                    var gameObject = gameModel.GetById(item.Value);
+                    propInfo = gameObject.GetType().GetProperty(part.Text);
+                    if (propInfo.PropertyType.IsAssignableFrom(typeof(GameObject)) || propInfo.PropertyType.IsAssignableFrom(typeof(GameObjectInstance)))
+                    {
+                        //if the property referenced by 'part' is inherits from GameObject or GameObjectInstance
+                        //then get it's Id
+                        //and store the corressponding symbol into item
+
+                        var gameObjectIdPropertyInfo = propInfo.PropertyType.GetProperty("Id");
+                        var propertyValue = propInfo.GetValue(gameObject);
+
+                        item = GetSymbolFromEnv(part, gameObjectIdPropertyInfo.GetValue(propertyValue).ToString());
+                    }
+                }
+            }
+
+            return item;
         }
 
         public override object VisitPropPath([NotNull] ViGaSParser.PropPathContext context)
         {
             Symbol item = null;
-
-            Console.WriteLine(context);
-            Console.WriteLine(env);
 
             PropertyInfo propInfo = null;
 
@@ -254,9 +291,14 @@ namespace GameScript.Visitors
 
             foreach (var part in context._parts)
             {
-                if (part.Text.StartsWith("@"))
+                if (char.IsLower(part.Text[0]))
                 {
+                    if (item.Type.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
+                    {
+                        var gameObject = gameModel.GetById(item.Value) as GameObjectInstance;
 
+                        item = gameObject.Variables[part.Text];
+                    }
                 }
                 else
                 {
@@ -266,7 +308,7 @@ namespace GameScript.Visitors
                     {
                         //if the property referenced by 'part' is inherits from GameObject or GameObjectInstance
                         //then get it's Id
-                        //and get the corressponding symbol to item
+                        //and store the corressponding symbol into item
 
                         var gameObjectIdPropertyInfo = propInfo.PropertyType.GetProperty("Id");
                         var propertyValue = propInfo.GetValue(gameObject);
@@ -281,9 +323,6 @@ namespace GameScript.Visitors
                 PropertyInfo = propInfo,
                 Symbol = item
             };
-
-            //propertyinfo-t kell visszaadnom
-            //varpath eseteben symbolt
         }
 
         public override object VisitParenExpression([NotNull] ViGaSParser.ParenExpressionContext context)
@@ -310,7 +349,7 @@ namespace GameScript.Visitors
                     return (double)Convert.ChangeType(left, typeof(double)) + (double)Convert.ChangeType(right, typeof(double));
 
                 if (@operator.MINUS() != null)
-                    return (double)left - (double)right;
+                    return (double)Convert.ChangeType(left, typeof(double)) - (double)Convert.ChangeType(right, typeof(double));
             }
 
             throw new InvalidOperationException($"Cannot evaluate additive operation.");
@@ -436,6 +475,9 @@ namespace GameScript.Visitors
             var propPathValue = (PropPathValue)Visit(context.propPath());
             var value = Visit(context.expression());
 
+            Console.WriteLine(env);
+            Console.WriteLine(context.GetText());
+
             var gameObject = gameModel.GetById(propPathValue.Symbol.Value);
             var propInfo = propPathValue.PropertyInfo;
 
@@ -446,10 +488,10 @@ namespace GameScript.Visitors
 
         public override object VisitVariableAssignmentStatement([NotNull] ViGaSParser.VariableAssignmentStatementContext context)
         {
-            var path = context.varPath().GetText();
+            var symbol = (Symbol)Visit(context.varPath());
             var value = Visit(context.expression());
 
-            Console.WriteLine($"Variable assignment: {path} = {value}");
+            symbol.Value = value.ToString();
 
             return null;
         }

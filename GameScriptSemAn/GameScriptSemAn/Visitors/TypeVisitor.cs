@@ -46,7 +46,7 @@ namespace GameScript.Visitors
 
             foreach (var part in context._parts)
             {
-                if (part.Text.StartsWith("@"))
+                if (char.IsLower(part.Text[0]))
                 {
                     if (type.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
                     {

@@ -130,6 +130,6 @@ STRING: '"' (~[\r\n])* '"';
 NUMBER: [0-9]+ ('.' [0-9]+)?;
 
 REFERENCE: '$' ID;
-VARNAME: '@' ID;
-ID: [a-zA-Z][a-zA-Z0-9_]*;
+ID: [A-Z][a-zA-Z0-9_]*;
+VARNAME: [a-z][a-zA-Z0-9_]*;
 WS: (' '| '\t' | '\n' | '\r') -> skip;
