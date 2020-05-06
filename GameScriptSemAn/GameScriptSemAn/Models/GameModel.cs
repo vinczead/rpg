@@ -98,27 +98,31 @@ namespace GameScript.Models
                 return gameObjectInstance;
             }
 
+            if (Regions.TryGetValue(id, out Region region))
+            {
+                return region;
+            }
+
             throw new ArgumentException("No GameObject was found with the specified id.", "id");
         }
 
         public Env ToEnv()
         {
-            //ezt nem kell mindig létrehozni
+            //ezt eleg lenne egyszer letrehozni
             var env = new Env(null, "Game Model");
             foreach (var b in Bases)
             {
-                env[b.Key] = new Symbol(b.Key, TypeSystem.Instance[b.Value.GetType().Name]);
+                env[b.Key] = new Symbol(b.Key, TypeSystem.Instance[b.Value.GetType().Name], b.Key);
             }
 
             foreach (var i in Instances)
             {
-                env[i.Key] = new Symbol(i.Key, TypeSystem.Instance[i.Value.GetType().Name]);
+                env[i.Key] = new Symbol(i.Key, TypeSystem.Instance[i.Value.GetType().Name], i.Key);
             }
 
             foreach (var r in Regions)
             {
-                //todo: add region type
-                //env[r.Key] = new Symbol(r.Key, TypeSystem.Instance[b.Value.GetType().Name]);
+                env[r.Key] = new Symbol(r.Key, TypeSystem.Instance[r.Value.GetType().Name], r.Key);
             }
 
             return env;

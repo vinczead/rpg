@@ -35,10 +35,9 @@ namespace GameScript.Models.Script
             get
             {
                 if (Parents.Count > 0)
-                    return Parents
+                    return properties.Concat(Parents
                         .Select(p => p.Properties)
-                        .Aggregate((result, item) => result.Concat(item).ToHashSet())
-                        .Concat(properties)
+                        .Aggregate((result, item) => result.Concat(item).ToHashSet()))
                         .ToHashSet();
                 else
                     return properties;

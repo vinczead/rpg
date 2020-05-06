@@ -193,7 +193,12 @@
   },
   {
     "name": "GameObjectInstance",
-    "properties": []
+    "properties": [
+      {
+        "name": "BASE",
+        "type": "GameObject"
+      }
+    ]
   },
   {
     "name": "ThingInstance",
@@ -206,6 +211,10 @@
       {
         "name": "Y",
         "type": "Number"
+      },
+      {
+        "name": "BASE",
+        "type": "Thing"
       }
     ]
   },
@@ -213,41 +222,70 @@
     "name": "ActivatorInstance",
     "parents": [ "ThingInstance" ],
     "parentOfNull": true,
-    "properties": []
+    "properties": [
+      {
+        "name": "BASE",
+        "type": "Activator"
+      }
+    ]
   },
   {
     "name": "ItemInstance",
     "parents": [ "ThingInstance" ],
-    "properties": []
+    "properties": [
+      {
+        "name": "BASE",
+        "type": "Item"
+      }
+    ]
   },
   {
     "name": "ConsumableInstance",
     "parents": [ "ItemInstance" ],
     "parentOfNull": true,
-    "properties": []
+    "properties": [
+      {
+        "name": "BASE",
+        "type": "Consumable"
+      }
+    ]
   },
   {
     "name": "EquipmentInstance",
     "parents": [ "ItemInstance" ],
     "parentOfNull": true,
-    "properties": []
+    "properties": [
+      {
+        "name": "BASE",
+        "type": "Equipment"
+      }
+    ]
   },
   {
     "name": "CreatureInstance",
     "parents": [ "ThingInstance" ],
-    "properties": []
-  },
-  {
-    "name": "CharacterInstance",
-    "parents": [ "CreatureInstance" ],
     "properties": [
       {
         "name": "CurrentHealth",
         "type": "Number"
       },
       {
+        "name": "BASE",
+        "type": "Creature"
+      }
+    ]
+  },
+  {
+    "name": "CharacterInstance",
+    "parents": [ "CreatureInstance" ],
+    "properties": [
+      {
         "name": "BonusStrength",
         "type": "Number"
+      },
+      {
+        "name": "BASE",
+        "type": "Character"
       }
     ]
   },
@@ -255,12 +293,35 @@
     "name": "NpcInstance",
     "parents": [ "CharacterInstance" ],
     "parentOfNull": true,
-    "properties": []
+    "properties": [
+      {
+        "name": "BASE",
+        "type": "Npc"
+      }
+    ]
   },
   {
     "name": "PlayerInstance",
     "parents": [ "CharacterInstance" ],
     "parentOfNull": true,
-    "properties": []
+    "properties": [
+      {
+        "name": "BASE",
+        "type": "Player"
+      }
+    ]
+  },
+  {
+    "name": "Region",
+    "properties": [
+      {
+        "name": "Width",
+        "type": "Number"
+      },
+      {
+        "name": "Height",
+        "type": "Number"
+      }
+    ]
   }
 ]

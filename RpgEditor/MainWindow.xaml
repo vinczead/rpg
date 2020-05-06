@@ -87,6 +87,7 @@
                             FontSize="15"
                             ShowLineNumbers="True"
                             Document="{Binding Document}"
+                            Name="editor"
                             SyntaxHighlighting="ViGaS"/>
                     </DataTemplate>
                 </TabControl.ContentTemplate>

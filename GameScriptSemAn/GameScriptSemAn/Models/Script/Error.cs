@@ -20,6 +20,13 @@ namespace GameScript.Models.Script
             Message = message;
         }
 
+        public Error(IToken token, string message)
+        {
+            Line = token.Line;
+            Column = token.Column;
+            Message = message;
+        }
+
         public Error(int line, int column, string message)
         {
             Line = line;

@@ -25,7 +25,7 @@ namespace GameScript.Models.BaseClasses
             {
                 instance.Variables.Add(var.Name, new Symbol(var));
             }
-            instance.Base = this;
+            instance.BASE = this;
             instance.Id = instanceId ?? Guid.NewGuid().ToString();
             return instance;
         }

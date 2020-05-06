@@ -13,6 +13,6 @@ namespace GameScript.Models.InstanceClasses
         public string Id { get; set; }
         public Dictionary<string, Symbol> Variables { get; set; } = new Dictionary<string, Symbol>();
         public GameModel World { get; set; }
-        public GameObject Base { get; set; }
+        public GameObject BASE { get; set; }
     }
 }

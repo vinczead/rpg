@@ -29,7 +29,7 @@ namespace Rpg.Screens
             spriteBatch.DrawString(font, "Inventory", new Vector2(0, 200), Color.Gray);
             foreach (var item in world.Player.Items)
             {
-                spriteBatch.DrawString(font, item.Base.Name, new Vector2(0, i * font.LineSpacing), i == selectedItem ? Color.Yellow : Color.White);
+                spriteBatch.DrawString(font, item.BASE.Name, new Vector2(0, i * font.LineSpacing), i == selectedItem ? Color.Yellow : Color.White);
                 i++;
             }
         }

@@ -32,7 +32,53 @@ namespace GameScript.Visitors
             return Instance.Visit(parseTree);
         }
 
-        public override Models.Script.Type VisitPath([NotNull] ViGaSParser.PathContext context)
+        public override Models.Script.Type VisitPropPath([NotNull] ViGaSParser.PropPathContext context)
+        {
+            Models.Script.Type type = TypeSystem.Instance["ErrorType"];
+
+            if (context.param != null)
+                type = GetSymbolFromEnv(context.param, context.param.Text)?.Type ?? TypeSystem.Instance["ErrorType"];
+            if (context.@ref != null)
+                type = GetSymbolFromEnv(context.@ref, context.@ref.Text)?.Type ?? TypeSystem.Instance["ErrorType"];
+
+            if (type == TypeSystem.Instance["ErrorType"])
+                return type;
+
+            foreach (var part in context._parts)
+            {
+                if (part.Text.StartsWith("@"))
+                {
+                    if (type.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
+                    {
+                        throw new NotImplementedException();
+                    }
+                    else
+                    {
+                        errors.Add(new Error(part, $"Variables can only be accessed inside instances."));
+                        return TypeSystem.Instance["ErrorType"];
+                    }
+                }
+                else
+                {
+                    var prop = type.Properties.FirstOrDefault(p => p.Name == part.Text);
+                    if (prop == null)
+                    {
+                        errors.Add(new Error(part, $"Property {part.Text} is not defined on {type}."));
+                        return TypeSystem.Instance["ErrorType"];
+                    }
+                    type = prop.Type;
+                }
+            }
+
+            return type;
+        }
+
+        public override Models.Script.Type VisitVarPath([NotNull] ViGaSParser.VarPathContext context)
+        {
+            return TypeSystem.Instance["ErrorType"];
+        }
+
+        /*public override Models.Script.Type VisitPath([NotNull] ViGaSParser.PathContext context)
         {
             var variable = GetSymbolFromEnv(context, context.varPath()?.varName()[0].GetText());
 
@@ -53,7 +99,7 @@ namespace GameScript.Visitors
                 type = prop.Type;
             }
             return type;
-        }
+        }*/
 
         public override Models.Script.Type VisitArrayExpression([NotNull] ViGaSParser.ArrayExpressionContext context)
         {
@@ -114,24 +160,37 @@ namespace GameScript.Visitors
             return Visit(context.expression());
         }
 
-        public override Models.Script.Type VisitPathExpression([NotNull] ViGaSParser.PathExpressionContext context)
-        {
-            return base.Visit(context.path());
-        }
-
         public override Models.Script.Type VisitRefExpression([NotNull] ViGaSParser.RefExpressionContext context)
         {
-            //Get Id from GameModel
-            throw new NotImplementedException();
+            var symbol = GetSymbolFromEnv(context, context.GetText());
+
+            return symbol?.Type;
+        }
+
+        public override Models.Script.Type VisitParamExpression([NotNull] ViGaSParser.ParamExpressionContext context)
+        {
+            var symbol = GetSymbolFromEnv(context, context.param.Text);
+
+            return symbol?.Type;
+        }
+
+        public override Models.Script.Type VisitPropPathExpression([NotNull] ViGaSParser.PropPathExpressionContext context)
+        {
+            return VisitPropPath(context.propPath());
+        }
+
+        public override Models.Script.Type VisitVarPathExpression([NotNull] ViGaSParser.VarPathExpressionContext context)
+        {
+            return VisitVarPath(context.varPath());
         }
 
         public override Models.Script.Type VisitFuncExpression([NotNull] ViGaSParser.FuncExpressionContext context)
         {
-            var funcNameCtx = context.functionCallStatement().functionName();
+            var funcName = context.functionCallStatement().functionName.Text;
 
             try
             {
-                var function = FunctionManager.Instance[funcNameCtx.GetText()];
+                var function = FunctionManager.Instance[funcName];
                 return function.ReturnType;
             }
             catch (KeyNotFoundException)
@@ -151,7 +210,7 @@ namespace GameScript.Visitors
             if (leftType.InheritsFrom(TypeSystem.Instance["String"]) && op.PLUS() != null)
                 return TypeSystem.Instance["String"];
 
-            if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
+            if (rightType.InheritsFrom(leftType) && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
                 return TypeSystem.Instance["Number"];
 
             errors.Add(new Error(op, $"Illegal operator: operator {op.GetText()} cannot be applied to types {leftType} and {rightType}"));
@@ -218,6 +277,19 @@ namespace GameScript.Visitors
                 return symbol;
 
             errors.Add(new Error(context, $"{symbolName} does not exist in this context."));
+            return null;
+        }
+
+        private Symbol GetSymbolFromEnv(IToken token, string symbolName)
+        {
+            if (symbolName == null)
+                return null;
+
+            var symbol = env[symbolName];
+            if (symbol != null)
+                return symbol;
+
+            errors.Add(new Error(token, $"{symbolName} does not exist in this context."));
             return null;
         }
     }

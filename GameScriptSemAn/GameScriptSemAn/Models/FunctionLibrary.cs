@@ -1,5 +1,6 @@
 ﻿using GameScript.Models.BaseClasses;
 using GameScript.Models.InstanceClasses;
+using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -26,7 +27,24 @@ namespace GameScript.Models
             var baseObject = parameters[0] as Thing;
             var textureId = parameters[1] as string;
 
-            baseObject.Texture = TextureManager.Textures[textureId];
+            try
+            {
+                baseObject.Texture = TextureManager.Textures[textureId];
+                return true;
+            }
+            catch (KeyNotFoundException)
+            {
+                return false;
+            }
+        }
+
+        public static bool SetPos(object[] parameters)
+        {
+            var baseObject = parameters[0] as ThingInstance;
+            var x = Convert.ToSingle(parameters[1]);
+            var y = Convert.ToSingle(parameters[2]);
+
+            baseObject.Position = new Vector2(x, y);
 
             return true;
         }

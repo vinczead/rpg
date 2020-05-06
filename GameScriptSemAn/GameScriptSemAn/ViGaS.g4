@@ -2,28 +2,30 @@ grammar ViGaS;
 
 script: (baseDefinition | regionDefinition)*;
 
-baseDefinition: BASE baseRef FROM baseClass baseBody END;
+baseDefinition: BASE baseRef=REFERENCE FROM baseClass=ID baseBody END;
 baseBody: initBlock variablesBlock? runBlock*;
 
-regionDefinition: REGION regionRef regionBody END;
+regionDefinition: REGION regionRef=REFERENCE regionBody END;
 regionBody: initBlock instanceDefinition*;
 
-instanceDefinition: INSTANCE instanceRef? FROM baseRef initBlock END;
+instanceDefinition: INSTANCE instanceRef=REFERENCE? FROM baseRef=REFERENCE initBlock END;
 
-initBlock: (assignmentStatement | functionCallStatement)*;
+initBlock: (propertyAssignmentStatement | variableAssignmentStatement | functionCallStatement)*;
 
 variablesBlock: VARIABLES variableDeclaration* END;
 
-runBlock: RUN WHEN eventTypeName statementList END;
+runBlock: RUN WHEN eventTypeName=ID statementList END;
 
 statementList: statement*;
 
-statement: assignmentStatement | ifStatement | whileStatement | repeatStatement | functionCallStatement | RETURN | COMMENT;
+statement: propertyAssignmentStatement | variableAssignmentStatement | ifStatement | whileStatement | repeatStatement | functionCallStatement | RETURN | COMMENT;
 
 expression
 	: functionCallStatement									#funcExpression
 	| REFERENCE												#refExpression
-	| path													#pathExpression
+	| param=ID												#paramExpression
+	| varPath												#varPathExpression
+	| propPath												#propPathExpression
 	| STRING												#stringExpression
 	| NUMBER												#numberExpression
 	| BOOLEAN												#boolExpression
@@ -37,38 +39,28 @@ expression
 	| '[' expression (',' expression)* ']'					#arrayExpression
 	;
 
-path: varPath | refPath;
+varPath: (ref=REFERENCE | param=ID) '.' ((parts+=VARNAME | parts+=ID) '.')* parts+=VARNAME;
 
-refPath: REFERENCE ('.' varName)*;
-varPath: varName ('.' varName)*;
+propPath: (ref=REFERENCE | param=ID) '.' ((parts+=VARNAME | parts+=ID) '.')* parts+=ID;
 
 functionParameterList: expression (',' expression)*;
 
-variableDeclaration: varName IS typeName (WITHVALUE expression)?;
-assignmentStatement: SET path TO? expression;
+variableDeclaration: varName=VARNAME IS typeName=ID (WITHVALUE expression)?;
+propertyAssignmentStatement: SET propPath TO? expression;
+variableAssignmentStatement: SETVAR varPath TO? expression;
+
 ifStatement: IF expression THEN statementList (elseStatement)? END;
 elseStatement: ELSE statementList;
 whileStatement: WHILE expression statementList REPEAT;
 repeatStatement: REPEAT statementList WHILE expression;
 
-functionCallStatement: functionName '(' functionParameterList? ')';
+functionCallStatement: functionName=ID '(' functionParameterList? ')';
 
 additiveOperator: PLUS | MINUS;
 multiplOperator: MULT | DIV;
 
 compOperator: LT | GT | LTE | GTE | EQ | NEQ;
 logicalOperator: OR | AND | XOR;
-
-//---------------------------IDS---------------------------
-
-baseRef: REFERENCE;
-instanceRef: REFERENCE;
-regionRef: REFERENCE;
-baseClass: ID;
-typeName: ID;
-varName: ID;
-eventTypeName: ID;
-functionName: ID;
 
 //---------------------------OPERATORS--------------------------- 
 
@@ -121,6 +113,7 @@ BREAK: 'Break' | 'break';
 RETURN: 'Return' | 'return';
 
 SET: 'Set' | 'set';
+SETVAR: 'SetVar' | 'setvar';
 TO: 'To' | 'to';
 
 END: 'End' | 'end';
@@ -135,7 +128,8 @@ NULL: 'Null' | 'null';
 BOOLEAN: 'True' | 'true' | 'False' | 'false';
 STRING: '"' (~[\r\n])* '"';
 NUMBER: [0-9]+ ('.' [0-9]+)?;
-REFERENCE: '$' ID;
 
+REFERENCE: '$' ID;
+VARNAME: '@' ID;
 ID: [a-zA-Z][a-zA-Z0-9_]*;
 WS: (' '| '\t' | '\n' | '\r') -> skip;

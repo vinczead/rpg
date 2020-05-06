@@ -69,9 +69,9 @@ namespace GameScript.Visitors
         {
             Instance.gameModel = gameModel;
             Instance.env = gameModel.ToEnv();
-            Instance.currentInstance = currentInstance;
+            //Instance.currentInstance = currentInstance;
 
-            if (currentInstance.Base.RunBlocks.TryGetValue(runBlockId, out var runBlock))
+            if (currentInstance.BASE.RunBlocks.TryGetValue(runBlockId, out var runBlock))
                 Instance.Visit(runBlock);
 
             return Instance.errors;
@@ -80,13 +80,16 @@ namespace GameScript.Visitors
         #region World building
         public override object VisitBaseDefinition([NotNull] ViGaSParser.BaseDefinitionContext context)
         {
-            var baseRef = context.baseRef().GetText();
-            var baseClass = context.baseClass().GetText();
+            var baseRef = context.baseRef.Text;
+            var baseClass = context.baseClass.Text;
 
+            AddSymbolToEnv(context, new Symbol(baseRef, TypeSystem.Instance[baseClass], baseRef));
             env = new Env(env, baseRef);
             currentBase = GameObjectFactory.CreateGameObject(baseClass);
             currentBase.Id = baseRef;
             gameModel.Bases.Add(baseRef, currentBase);
+
+            AddSymbolToEnv(context, new Symbol("Self", TypeSystem.Instance[baseClass], baseRef));
 
             var retVal = base.VisitBaseDefinition(context);
 
@@ -105,7 +108,7 @@ namespace GameScript.Visitors
 
             foreach (var runBlock in context.runBlock())
             {
-                currentBase.RunBlocks[runBlock.eventTypeName().GetText()] = runBlock;
+                currentBase.RunBlocks[runBlock.eventTypeName.Text] = runBlock;
             }
 
             return null;
@@ -113,8 +116,8 @@ namespace GameScript.Visitors
 
         public override object VisitVariableDeclaration([NotNull] ViGaSParser.VariableDeclarationContext context)
         {
-            var name = context.varName().GetText();
-            var type = context.typeName().GetText();
+            var name = context.varName.Text;
+            var type = context.typeName.Text;
             string value = "";
 
             if (context.expression() != null)
@@ -126,10 +129,17 @@ namespace GameScript.Visitors
 
         public override object VisitInstanceDefinition([NotNull] ViGaSParser.InstanceDefinitionContext context)
         {
-            var baseRef = context.baseRef().GetText();
-            var instanceRef = context.instanceRef()?.GetText();
+            var baseRef = context.baseRef.Text;
+            var instanceRef = context.instanceRef?.Text;
 
+            var baseSymbol = GetSymbolFromEnv(context, baseRef);
+            var instanceType = TypeSystem.Instance[baseSymbol.Type + "Instance"];
+
+            AddSymbolToEnv(context, new Symbol(instanceRef, instanceType, instanceRef));
+            env = new Env(env, instanceRef ?? $"Instance of {baseRef}");
             currentInstance = gameModel.Spawn(baseRef, currentRegion.Id, instanceRef);
+
+            AddSymbolToEnv(context, new Symbol("Self", instanceType, currentInstance.Id));
 
             var retVal = base.VisitInstanceDefinition(context);
 
@@ -140,14 +150,27 @@ namespace GameScript.Visitors
 
         public override object VisitRegionDefinition([NotNull] ViGaSParser.RegionDefinitionContext context)
         {
-            var regionRef = context.regionRef().GetText();
+            var regionRef = context.regionRef.Text;
 
+            AddSymbolToEnv(context, new Symbol(regionRef, TypeSystem.Instance["Region"], regionRef));
+            env = new Env(env, regionRef);
             currentRegion = new Region() { Id = regionRef, GameModel = gameModel };
             gameModel.Regions.Add(regionRef, currentRegion);
+
+            AddSymbolToEnv(context, new Symbol("Self", TypeSystem.Instance["Region"], currentRegion.Id));
 
             var retVal = base.VisitRegionDefinition(context);
 
             currentRegion = null;
+
+            return retVal;
+        }
+
+        public override object VisitInitBlock([NotNull] ViGaSParser.InitBlockContext context)
+        {
+            var retVal = base.VisitInitBlock(context);
+
+            env = env.Previous;
 
             return retVal;
         }
@@ -179,12 +202,23 @@ namespace GameScript.Visitors
 
         public override object VisitRefExpression([NotNull] ViGaSParser.RefExpressionContext context)
         {
-            return gameModel.GetById(context.REFERENCE().GetText());    //todo: remove possible $ from start of string
+            return gameModel.GetById(context.REFERENCE().GetText());
         }
 
-        public override object VisitPathExpression([NotNull] ViGaSParser.PathExpressionContext context)
+        public override object VisitParamExpression([NotNull] ViGaSParser.ParamExpressionContext context)
         {
-            return base.VisitPathExpression(context);
+            var symbol = GetSymbolFromEnv(context, context.param.Text);
+            return gameModel.GetById(symbol?.Value);
+        }
+
+        public override object VisitPropPathExpression([NotNull] ViGaSParser.PropPathExpressionContext context)
+        {
+            return base.VisitPropPathExpression(context);
+        }
+
+        public override object VisitVarPathExpression([NotNull] ViGaSParser.VarPathExpressionContext context)
+        {
+            return base.VisitVarPathExpression(context);
         }
 
         public override object VisitVarPath([NotNull] ViGaSParser.VarPathContext context)
@@ -192,9 +226,55 @@ namespace GameScript.Visitors
             return base.VisitVarPath(context);
         }
 
-        public override object VisitPath([NotNull] ViGaSParser.PathContext context)
+        public override object VisitPropPath([NotNull] ViGaSParser.PropPathContext context)
         {
-            return base.VisitPath(context);
+            Symbol item = null;
+
+            Console.WriteLine(context);
+            Console.WriteLine(env);
+
+            PropertyInfo propInfo = null;
+
+            if (context.param != null)
+                item = GetSymbolFromEnv(context.param, context.param.Text);
+            if (context.@ref != null)
+                item = GetSymbolFromEnv(context.@ref, context.@ref.Text);
+
+            if (item == null)
+                return null;
+
+            foreach (var part in context._parts)
+            {
+                if (part.Text.StartsWith("@"))
+                {
+
+                }
+                else
+                {
+                    var gameObject = gameModel.GetById(item.Value);
+                    propInfo = gameObject.GetType().GetProperty(part.Text);
+                    if (propInfo.PropertyType.IsAssignableFrom(typeof(GameObject)) || propInfo.PropertyType.IsAssignableFrom(typeof(GameObjectInstance)))
+                    {
+                        //if the property referenced by 'part' is inherits from GameObject or GameObjectInstance
+                        //then get it's Id
+                        //and get the corressponding symbol to item
+
+                        var gameObjectIdPropertyInfo = propInfo.PropertyType.GetProperty("Id");
+                        var propertyValue = propInfo.GetValue(gameObject);
+
+                        item = GetSymbolFromEnv(part, gameObjectIdPropertyInfo.GetValue(propertyValue).ToString());
+                    }
+                }
+            }
+
+            return new PropPathValue()
+            {
+                PropertyInfo = propInfo,
+                Symbol = item
+            };
+
+            //propertyinfo-t kell visszaadnom
+            //varpath eseteben symbolt
         }
 
         public override object VisitParenExpression([NotNull] ViGaSParser.ParenExpressionContext context)
@@ -329,10 +409,10 @@ namespace GameScript.Visitors
         public override object VisitFunctionCallStatement([NotNull] ViGaSParser.FunctionCallStatementContext context)
         {
             //check whether function exists and parameter types match
-            var funcNameCtx = context.functionName();
             var paramsCtx = context.functionParameterList();
+            var ctxstr = context.GetText();
 
-            var functionName = context.functionName().GetText();
+            var functionName = context.functionName.Text;
             var parameterList = context.functionParameterList()?.expression().ToList();
             var parameterListValues = parameterList?.Select(p => Visit(p)).ToArray();
 
@@ -341,12 +421,29 @@ namespace GameScript.Visitors
             return method.Invoke(null, parameterListValues == null ? null : new object[] { parameterListValues });
         }
 
-        public override object VisitAssignmentStatement([NotNull] ViGaSParser.AssignmentStatementContext context)
+
+        public override object VisitPropertyAssignmentStatement([NotNull] ViGaSParser.PropertyAssignmentStatementContext context)
         {
-            var path = context.path().GetText();
+            var path = context.propPath().GetText();
+            var propPathValue = (PropPathValue)Visit(context.propPath());
             var value = Visit(context.expression());
 
-            Console.WriteLine($"Assignment: {path} = {value}");
+            var gameObject = gameModel.GetById(propPathValue.Symbol.Value);
+            var propInfo = propPathValue.PropertyInfo;
+
+            propInfo.SetValue(gameObject, Convert.ChangeType(value, propInfo.PropertyType));
+            
+            Console.WriteLine($"Property assignment: {path} = {value}");
+
+            return null;
+        }
+
+        public override object VisitVariableAssignmentStatement([NotNull] ViGaSParser.VariableAssignmentStatementContext context)
+        {
+            var path = context.varPath().GetText();
+            var value = Visit(context.expression());
+
+            Console.WriteLine($"Variable assignment: {path} = {value}");
 
             return null;
         }
@@ -384,5 +481,43 @@ namespace GameScript.Visitors
             return null;
         }
         #endregion
+
+        private Symbol GetSymbolFromEnv(IToken token, string symbolName)
+        {
+            if (symbolName == null)
+                return null;
+
+            var symbol = env[symbolName];
+            if (symbol != null)
+                return symbol;
+
+            errors.Add(new Error(token, $"{symbolName} does not exist in this context."));
+            return null;
+        }
+
+        private Symbol GetSymbolFromEnv(ParserRuleContext context, string symbolName)
+        {
+            if (symbolName == null)
+                return null;
+
+            var symbol = env[symbolName];
+            if (symbol != null)
+                return symbol;
+
+            errors.Add(new Error(context, $"{symbolName} does not exist in this context."));
+            return null;
+        }
+
+        private void AddSymbolToEnv(ParserRuleContext context, Symbol symbol)
+        {
+            try
+            {
+                env[symbol.Name] = symbol;
+            }
+            catch
+            {
+                errors.Add(new Error(context, $"{symbol.Name} is already defined."));
+            }
+        }
     }
 }

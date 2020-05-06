@@ -28,7 +28,7 @@ namespace GameScript.Models.Script
 
         public override string ToString()
         {
-            return $"{Name} : {Type.Name}";
+            return $"{Name} : {Type.Name}" + (Value == "" ? "" : (" = " + Value));
         }
     }
 }

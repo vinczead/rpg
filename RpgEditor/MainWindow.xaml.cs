@@ -18,6 +18,7 @@ using System.Xml;
 using GameScript;
 using GameScript.Models.Script;
 using GameScript.Visitors;
+using ICSharpCode.AvalonEdit;
 using ICSharpCode.AvalonEdit.Document;
 using ICSharpCode.AvalonEdit.Highlighting;
 

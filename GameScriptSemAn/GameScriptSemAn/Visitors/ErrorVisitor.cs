@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using GameScript.Models.Script;
+using System;
 using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
@@ -39,8 +40,8 @@ namespace GameScript.Visitors
 
         public override object VisitBaseDefinition([NotNull] BaseDefinitionContext context)
         {
-            var baseClass = context.baseClass();
-            var baseRef = context.baseRef();
+            var baseClass = context.baseClass;
+            var baseRef = context.baseRef;
 
             var baseClassType = TypeSystem.Instance["ErrorType"];
             var instanceClassType = TypeSystem.Instance["ErrorType"];
@@ -48,8 +49,8 @@ namespace GameScript.Visitors
             {
                 try
                 {
-                    baseClassType = TypeSystem.Instance[baseClass.GetText()];
-                    instanceClassType = TypeSystem.Instance[$"{baseClass.GetText()}Instance"];
+                    baseClassType = TypeSystem.Instance[baseClass.Text];
+                    instanceClassType = TypeSystem.Instance[$"{baseClass.Text}Instance"];
                 }
                 catch (KeyNotFoundException e)
                 {
@@ -59,18 +60,18 @@ namespace GameScript.Visitors
                     errors.Add(new Error(baseClass, $"Type {baseClassType} is not valid here (must inherit from {TypeSystem.Instance["GameObject"]})."));
             }
 
-            AddSymbolToEnv(baseRef, new Symbol(baseRef.GetText(), baseClassType));
+            AddSymbolToEnv(baseRef, new Symbol(baseRef.Text, baseClassType));
 
-            env = new Env(env, baseRef.GetText());
+            env = new Env(env, baseRef.Text);
             AddSymbolToEnv(context, new Symbol("_Base", baseClassType));
             AddSymbolToEnv(context, new Symbol("_Instance", instanceClassType));
 
 
-            env = new Env(env, $"{baseRef.GetText()} Initialization");
+            env = new Env(env, $"{baseRef.Text} Initialization");
             AddSymbolToEnv(context, new Symbol("Self", baseClassType));
 
-            foreach (var prop in baseClassType.Properties)
-                AddSymbolToEnv(baseClass, new Symbol(prop.Name, prop.Type));
+//            foreach (var prop in baseClassType.Properties)
+//                AddSymbolToEnv(baseClass, new Symbol(prop.Name, prop.Type));
 
             var result = base.VisitBaseDefinition(context);
 
@@ -90,10 +91,10 @@ namespace GameScript.Visitors
 
         public override object VisitInstanceDefinition([NotNull] InstanceDefinitionContext context)
         {
-            var baseRef = context.baseRef();
-            var baseSymbol = GetSymbolFromEnv(baseRef, baseRef.GetText());
+            var baseRef = context.baseRef;
+            var baseSymbol = GetSymbolFromEnv(baseRef, baseRef.Text);
 
-            var instanceRef = context.instanceRef();
+            var instanceRef = context.instanceRef;
             var instanceType = TypeSystem.Instance["ErrorType"];
 
             if (baseSymbol != null)
@@ -111,52 +112,89 @@ namespace GameScript.Visitors
                         }
                 }
                 else
-                    errors.Add(new Error(baseRef, $"Type of {baseRef.GetText()} must be {TypeSystem.Instance["GameObject"]}"));
+                    errors.Add(new Error(baseRef, $"Type of {baseRef.Text} must be {TypeSystem.Instance["GameObject"]}"));
             }
 
             if (instanceRef != null)
-                AddSymbolToEnv(instanceRef, new Symbol(instanceRef.GetText(), instanceType));
+                AddSymbolToEnv(instanceRef, new Symbol(instanceRef.Text, instanceType));
 
-            env = new Env(env, (instanceRef?.GetText() ?? $"Instance of {baseRef.GetText()}") + "Initialization");
-            foreach (var prop in instanceType.Properties)
-                AddSymbolToEnv(context, new Symbol(prop.Name, prop.Type));
+            env = new Env(env, (instanceRef?.Text ?? $"Instance of {baseRef.Text}") + "Initialization");
+            AddSymbolToEnv(context, new Symbol("Self", instanceType, instanceRef?.Text ?? ""));
+//            foreach (var prop in instanceType.Properties)
+//                AddSymbolToEnv(context, new Symbol(prop.Name, prop.Type));
 
             return base.VisitInstanceDefinition(context);
         }
 
         public override object VisitRegionDefinition([NotNull] RegionDefinitionContext context)
         {
-            var regionRef = context.regionRef();
+            var regionRef = context.regionRef;
 
-            env = new Env(env, $"{regionRef.GetText()} Initialization");
-            //todo: add region properties to env
+            env = new Env(env, $"{regionRef.Text} Initialization");
+            AddSymbolToEnv(context, new Symbol("Self", TypeSystem.Instance["Region"]));
 
             var result = base.VisitRegionDefinition(context);
 
             return result;
         }
+        
+        public override object VisitVariableDeclaration([NotNull] VariableDeclarationContext context)
+        {
+            //check whether expression after WithValue matches type
+            var varName = context.VARNAME()?.GetText();
+
+            Models.Script.Type varType = TypeSystem.Instance["ErrorType"];
+
+            try
+            {
+                varType = TypeSystem.Instance[context.typeName?.Text];
+            }
+            catch (KeyNotFoundException e)
+            {
+                errors.Add(new Error(context.typeName, e.Message));
+            }
+
+            AddSymbolToEnv(context, new Symbol(varName, varType));
+
+            if (context.expression() != null)
+            {
+                var expressionType = TypeVisitor.GetType(context.expression(), env, errors);
+
+                var symbol = GetSymbolFromEnv(context, varName);
+
+                if (symbol != null)
+                {
+                    if (!expressionType.InheritsFrom(varType))
+                    {
+                        errors.Add(new Error(context.expression(), $"Type mismatch: expression of type {expressionType} cannot be assigned to a variable of type {varType}"));
+                    }
+                }
+            }
+
+            return base.VisitVariableDeclaration(context);
+        }
 
         public override object VisitRunBlock([NotNull] RunBlockContext context)
         {
-            var eventCtx = context.eventTypeName();
+            var eventToken = context.eventTypeName;
 
             var baseType = GetSymbolFromEnv(context, "_Base").Type;
 
-            var @event = baseType.Events.FirstOrDefault(e => e.Name == eventCtx.GetText());
+            var @event = baseType.Events.FirstOrDefault(e => e.Name == eventToken.Text);
 
             if (@event == null)
             {
-                errors.Add(new Error(eventCtx, $"Event {eventCtx.GetText()} is not defined on {baseType}."));
+                errors.Add(new Error(eventToken, $"Event {eventToken.Text} is not defined on {baseType}."));
                 return base.VisitRunBlock(context);
             }
             else
             {
                 var instanceType = GetSymbolFromEnv(context, "_Instance").Type;
-                env = new Env(env, eventCtx.GetText());
+                env = new Env(env, eventToken.Text);
                 AddSymbolToEnv(context, new Symbol("Self", instanceType));
 
                 foreach (var param in @event.Parameters)
-                    AddSymbolToEnv(eventCtx, new Symbol(param.Name, param.Type));
+                    AddSymbolToEnv(eventToken, new Symbol(param.Name, param.Type));
 
                 var result = base.VisitRunBlock(context);
 
@@ -194,63 +232,15 @@ namespace GameScript.Visitors
 
             return base.VisitWhileStatement(context);
         }
-
-        public override object VisitVariableDeclaration([NotNull] VariableDeclarationContext context)
-        {
-            //check whether expression after WithValue matches type
-            var varName = context.varName()?.GetText();
-
-            Models.Script.Type varType = TypeSystem.Instance["ErrorType"];
-
-            try
-            {
-                varType = TypeSystem.Instance[context.typeName()?.GetText()];
-            }
-            catch (KeyNotFoundException e)
-            {
-                errors.Add(new Error(context.typeName(), e.Message));
-            }
-
-            AddSymbolToEnv(context, new Symbol(varName, varType));
-
-            if (context.expression() != null)
-            {
-                var expressionType = TypeVisitor.GetType(context.expression(), env, errors);
-
-                var symbol = GetSymbolFromEnv(context, varName);
-
-                if (symbol != null)
-                {
-                    if (!expressionType.InheritsFrom(varType))
-                    {
-                        errors.Add(new Error(context.expression(), $"Type mismatch: expression of type {expressionType} cannot be assigned to a variable of type {varType}"));
-                    }
-                }
-            }
-
-            return base.VisitVariableDeclaration(context);
-        }
-
-        public override object VisitAssignmentStatement([NotNull] AssignmentStatementContext context)
-        {
-            var expressionType = TypeVisitor.GetType(context.expression(), env, errors) ?? TypeSystem.Instance["ErrorType"];
-            var symbolType = TypeVisitor.GetType(context.path(), env, errors);
-
-            if (symbolType != TypeSystem.Instance["ErrorType"] && !expressionType.InheritsFrom(symbolType))
-            {
-                errors.Add(new Error(context.expression(), $"Type mismatch: expression of type {expressionType} cannot be assigned to a variable of type {symbolType}"));
-            }
-            return base.VisitAssignmentStatement(context);
-        }
-
+        
         public override object VisitFunctionCallStatement([NotNull] FunctionCallStatementContext context)
         {
             //check whether function exists and parameter types match
-            var funcNameCtx = context.functionName();
+            var funcNameToken = context.functionName;
 
             try
             {
-                var function = FunctionManager.Instance[funcNameCtx.GetText()];
+                var function = FunctionManager.Instance[funcNameToken.Text];
 
                 var paramsCtx = context.functionParameterList();
                 var requiredParamCount = function.Parameters.Count;
@@ -262,18 +252,56 @@ namespace GameScript.Visitors
                     {
                         var paramType = TypeVisitor.GetType(paramsCtx.expression(i), env, errors);
                         if (!paramType.InheritsFrom(function.Parameters[i].Type))
-                            errors.Add(new Error(funcNameCtx, $"Type mismatch: The function {function} expects {function.Parameters[i].Type} as parameter {i + 1}, not {paramType}."));
+                            errors.Add(new Error(funcNameToken, $"Type mismatch: The function {function} expects {function.Parameters[i].Type} as parameter {i + 1}, not {paramType}."));
                     }
                 }
                 else
-                    errors.Add(new Error(funcNameCtx, $"The function {function} requires {requiredParamCount} parameter(s), not {actualParamCount}."));
+                    errors.Add(new Error(funcNameToken, $"The function {function} requires {requiredParamCount} parameter(s), not {actualParamCount}."));
             }
             catch (KeyNotFoundException e)
             {
-                errors.Add(new Error(funcNameCtx, e.Message));
+                errors.Add(new Error(funcNameToken, e.Message));
             }
 
             return base.VisitFunctionCallStatement(context);
+        }
+
+        public override object VisitPropertyAssignmentStatement([NotNull] PropertyAssignmentStatementContext context)
+        {
+            var expressionType = TypeVisitor.GetType(context.expression(), env, errors) ?? TypeSystem.Instance["ErrorType"];
+            var propType = TypeVisitor.GetType(context.propPath(), env, errors);
+
+            if (propType != TypeSystem.Instance["ErrorType"] && !expressionType.InheritsFrom(propType))
+            {
+                errors.Add(new Error(context.expression(), $"Type mismatch: expression of type {expressionType} cannot be assigned to a property of type {propType}."));
+            }
+
+            return base.VisitPropertyAssignmentStatement(context);
+        }
+
+        public override object VisitVariableAssignmentStatement([NotNull] VariableAssignmentStatementContext context)
+        {
+            var expressionType = TypeVisitor.GetType(context.expression(), env, errors) ?? TypeSystem.Instance["ErrorType"];
+            var varType = TypeVisitor.GetType(context.varPath(), env, errors);
+
+            if (varType != TypeSystem.Instance["ErrorType"] && !expressionType.InheritsFrom(varType))
+            {
+                errors.Add(new Error(context.expression(), $"Type mismatch: expression of type {expressionType} cannot be assigned to a variable of type {varType}"));
+            }
+
+            return base.VisitVariableAssignmentStatement(context);
+        }
+
+        private void AddSymbolToEnv(IToken token, Symbol symbol)
+        {
+            try
+            {
+                env[symbol.Name] = symbol;
+            }
+            catch
+            {
+                errors.Add(new Error(token, $"{symbol.Name} is already defined."));
+            }
         }
 
         private void AddSymbolToEnv(ParserRuleContext context, Symbol symbol)
@@ -286,6 +314,19 @@ namespace GameScript.Visitors
             {
                 errors.Add(new Error(context, $"{symbol.Name} is already defined."));
             }
+        }
+
+        private Symbol GetSymbolFromEnv(IToken token, string symbolName)
+        {
+            if (symbolName == null)
+                return null;
+
+            var symbol = env[symbolName];
+            if (symbol != null)
+                return symbol;
+
+            errors.Add(new Error(token, $"{symbolName} does not exist in this context."));
+            return null;
         }
 
         private Symbol GetSymbolFromEnv(ParserRuleContext context, string symbolName)

@@ -27,6 +27,7 @@ namespace GameScript.Models
             Textures.Add("Door", Content.Load<Texture2D>("door"));
             Textures.Add("Potion", Content.Load<Texture2D>("potion"));
             Textures.Add("Sword", Content.Load<Texture2D>("sword"));
+            Textures.Add("Button", Content.Load<Texture2D>("button"));
 
             font = Content.Load<SpriteFont>("Alkhemikal");
         }

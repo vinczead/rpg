@@ -99,6 +99,7 @@
     <Compile Include="Models\Script\Function.cs" />
     <Compile Include="Models\Script\FunctionManager.cs" />
     <Compile Include="Models\Script\Property.cs" />
+    <Compile Include="Models\Script\PropPathValue.cs" />
     <Compile Include="Models\Script\ScriptFile.cs" />
     <Compile Include="Models\Script\Type.cs" />
     <Compile Include="Models\TextureManager.cs" />

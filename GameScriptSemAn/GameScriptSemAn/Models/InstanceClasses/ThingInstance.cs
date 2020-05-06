@@ -13,7 +13,7 @@ namespace GameScript.Models.InstanceClasses
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)
         {
-            spriteBatch.Draw((Base as Thing).Texture, Position, Color.White);
+            spriteBatch.Draw((BASE as Thing).Texture, Position, Color.White);
         }
 
         public virtual void Update(GameTime gameTime)
