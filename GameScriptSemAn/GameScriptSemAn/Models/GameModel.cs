@@ -68,7 +68,7 @@ namespace GameScript.Models
         public GameObjectInstance Spawn(string baseId, string regionId, string instanceId = null)
         {
             var instance = Bases[baseId].Spawn(instanceId) as ThingInstance;
-            instance.World = this;
+            instance.GameModel = this;
             Regions[regionId].InsertThing(instance);
 
             Instances.Add(instance.Id, instance);

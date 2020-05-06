@@ -8,7 +8,6 @@ namespace GameScript.Models.InstanceClasses
 {
     public abstract class ThingInstance : GameObjectInstance
     {
-        public Region Region { get; set; }
         public Vector2 Position { get; set; }
 
         public void Draw(GameTime gameTime, SpriteBatch spriteBatch)

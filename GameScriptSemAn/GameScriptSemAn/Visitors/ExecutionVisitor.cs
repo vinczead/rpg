@@ -64,12 +64,14 @@ namespace GameScript.Visitors
             return worldBuilder.gameModel;
         }
 
-        //todo: pass run block parameters too
-        public static List<Error> ExecuteRunBlock(GameModel gameModel, GameObjectInstance currentInstance, string runBlockId)
+        public static List<Error> ExecuteRunBlock(GameModel gameModel, GameObjectInstance currentInstance, string runBlockId, List<Symbol> parameters = null)
         {
             Instance.gameModel = gameModel;
-            Instance.env = gameModel.ToEnv();
-            //Instance.currentInstance = currentInstance;
+            Instance.env = new Env(gameModel.ToEnv(), runBlockId);
+
+            if (parameters != null)
+                foreach (var p in parameters)
+                    Instance.env[p.Name] = p;
 
             if (currentInstance.BASE.RunBlocks.TryGetValue(runBlockId, out var runBlock))
                 Instance.Visit(runBlock);
@@ -138,6 +140,7 @@ namespace GameScript.Visitors
             AddSymbolToEnv(context, new Symbol(instanceRef, instanceType, instanceRef));
             env = new Env(env, instanceRef ?? $"Instance of {baseRef}");
             currentInstance = gameModel.Spawn(baseRef, currentRegion.Id, instanceRef);
+            currentInstance.Region = currentRegion;
 
             AddSymbolToEnv(context, new Symbol("Self", instanceType, currentInstance.Id));
 
@@ -156,6 +159,7 @@ namespace GameScript.Visitors
             env = new Env(env, regionRef);
             currentRegion = new Region() { Id = regionRef, GameModel = gameModel };
             gameModel.Regions.Add(regionRef, currentRegion);
+            currentRegion.GameModel = gameModel;
 
             AddSymbolToEnv(context, new Symbol("Self", TypeSystem.Instance["Region"], currentRegion.Id));
 
@@ -213,7 +217,12 @@ namespace GameScript.Visitors
 
         public override object VisitPropPathExpression([NotNull] ViGaSParser.PropPathExpressionContext context)
         {
-            return base.VisitPropPathExpression(context);
+            var propPathValue = (PropPathValue)Visit(context.propPath());
+
+            var gameObject = gameModel.GetById(propPathValue.Symbol.Value);
+            var propInfo = propPathValue.PropertyInfo;
+
+            return propInfo.GetValue(gameObject);
         }
 
         public override object VisitVarPathExpression([NotNull] ViGaSParser.VarPathExpressionContext context)
@@ -298,7 +307,7 @@ namespace GameScript.Visitors
             if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
             {
                 if (@operator.PLUS() != null)
-                    return (double)left + (double)right;
+                    return (double)Convert.ChangeType(left, typeof(double)) + (double)Convert.ChangeType(right, typeof(double));
 
                 if (@operator.MINUS() != null)
                     return (double)left - (double)right;
@@ -424,7 +433,6 @@ namespace GameScript.Visitors
 
         public override object VisitPropertyAssignmentStatement([NotNull] ViGaSParser.PropertyAssignmentStatementContext context)
         {
-            var path = context.propPath().GetText();
             var propPathValue = (PropPathValue)Visit(context.propPath());
             var value = Visit(context.expression());
 
@@ -432,8 +440,6 @@ namespace GameScript.Visitors
             var propInfo = propPathValue.PropertyInfo;
 
             propInfo.SetValue(gameObject, Convert.ChangeType(value, propInfo.PropertyType));
-            
-            Console.WriteLine($"Property assignment: {path} = {value}");
 
             return null;
         }

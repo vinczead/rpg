@@ -7,9 +7,9 @@ namespace GameScript.Models.InstanceClasses
     {
         public void PickUp(CharacterInstance character)
         {
+            ExecutionVisitor.ExecuteRunBlock(Region.GameModel, this, "PickedUp");
             Region.RemoveThing(this);
             character.InsertItem(this);
-            ExecutionVisitor.ExecuteRunBlock(Region.GameModel, this, "PickedUp");
         }
 
         public void Drop(CharacterInstance character)

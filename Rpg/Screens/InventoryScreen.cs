@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using GameScript.Models;
+using GameScript.Models.InstanceClasses;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
@@ -55,6 +56,20 @@ namespace Rpg.Screens
                     world.Player.DropItem(world.Player.Items[selectedItem]);
                     if (world.Player.Items.Count - 1 < selectedItem)
                         selectedItem = world.Player.Items.Count - 1;
+                }
+            }
+
+            if (WasKeyPressed(Keys.Enter))
+            {
+                if (world.Player.Items.Count > 0)
+                {
+                    if (world.Player.Items[selectedItem].GetType() == typeof(ConsumableInstance))
+                    {
+                        (world.Player.Items[selectedItem] as ConsumableInstance).Consume(world.Player);
+                        if (world.Player.Items.Count - 1 < selectedItem)
+                            selectedItem = world.Player.Items.Count - 1;
+                    }
+
                 }
             }
 
