@@ -4,6 +4,7 @@ using GameScript.Models.Script;
 using System;
 using System.CodeDom;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using static GameScript.ViGaSParser;
 
@@ -266,30 +267,17 @@ namespace GameScript.Visitors
             return base.VisitFunctionCallStatement(context);
         }
 
-        public override object VisitPropertyAssignmentStatement([NotNull] PropertyAssignmentStatementContext context)
+        public override object VisitAssignmentStatement([NotNull] AssignmentStatementContext context)
         {
+            var pathType = TypeVisitor.GetType(context.path(), env, errors);
             var expressionType = TypeVisitor.GetType(context.expression(), env, errors) ?? TypeSystem.Instance["ErrorType"];
-            var propType = TypeVisitor.GetType(context.propPath(), env, errors);
 
-            if (propType != TypeSystem.Instance["ErrorType"] && !expressionType.InheritsFrom(propType))
+            if (pathType != TypeSystem.Instance["ErrorType"] && !expressionType.InheritsFrom(pathType))
             {
-                errors.Add(new Error(context.expression(), $"Type mismatch: expression of type {expressionType} cannot be assigned to a property of type {propType}."));
+                errors.Add(new Error(context.expression(), $"Type mismatch: {expressionType} cannot be converted to {pathType}."));
             }
 
-            return base.VisitPropertyAssignmentStatement(context);
-        }
-
-        public override object VisitVariableAssignmentStatement([NotNull] VariableAssignmentStatementContext context)
-        {
-            var expressionType = TypeVisitor.GetType(context.expression(), env, errors) ?? TypeSystem.Instance["ErrorType"];
-            var varType = TypeVisitor.GetType(context.varPath(), env, errors);
-
-            if (varType != TypeSystem.Instance["ErrorType"] && !expressionType.InheritsFrom(varType))
-            {
-                errors.Add(new Error(context.expression(), $"Type mismatch: expression of type {expressionType} cannot be assigned to a variable of type {varType}"));
-            }
-
-            return base.VisitVariableAssignmentStatement(context);
+            return base.VisitAssignmentStatement(context);
         }
 
         private void AddSymbolToEnv(IToken token, Symbol symbol)

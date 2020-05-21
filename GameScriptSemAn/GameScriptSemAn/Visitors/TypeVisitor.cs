@@ -6,6 +6,7 @@ using GameScript.Models.Script;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -32,6 +33,73 @@ namespace GameScript.Visitors
             return Instance.Visit(parseTree);
         }
 
+        public override Models.Script.Type VisitPath([NotNull] ViGaSParser.PathContext context)
+        {
+            var currentType = TypeSystem.Instance["ErrorType"];
+            Symbol currentSymbol = null;
+
+            if (context.param != null)
+                currentSymbol = GetSymbolFromEnv(context.param, context.param.Text);
+            if (context.@ref != null)
+                currentSymbol = GetSymbolFromEnv(context.@ref, context.@ref.Text);
+
+            if (currentSymbol == null)
+                return TypeSystem.Instance["ErrorType"];
+
+            currentType = currentSymbol.Type;
+
+            for (int i = 0; i < context._parts.Count; i++)
+            {
+                IToken part = context._parts[i];
+                bool isLastPart = i == context._parts.Count - 1;
+
+                //this part is a variable
+                if (char.IsLower(part.Text[0]))
+                {
+                    //only variables of Instance classes can be accessed
+                    if (currentType.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
+                    {
+                        errors.Add(new Error(part, $"Warning: Expression type cannot be determined, instance may not have this variable."));
+                        return TypeSystem.Instance["AnyType"];
+                    }
+                    else
+                    {
+                        errors.Add(new Error(part, $"Only variables of Instances can be accessed."));
+                        return TypeSystem.Instance["ErrorType"];
+                    }
+                }
+                else //this part is a property
+                {
+                    var property = currentType.Properties.FirstOrDefault(p => p.Name == part.Text);
+
+                    if (property == null)
+                        return TypeSystem.Instance["ErrorType"];
+
+                    if (isLastPart)
+                        return property.Type;
+
+                    if(property.Type.InheritsFrom(TypeSystem.Instance["GameObject"]) ||
+                        property.Type.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
+                    {
+                        currentType = property.Type;
+                    }
+                    else
+                    {
+                        errors.Add(new Error(part, $"Only properties of Instances and Bases can be accessed."));
+                        return TypeSystem.Instance["ErrorType"];
+                    }
+                }
+            }
+
+            return TypeSystem.Instance["ErrorType"];
+        }
+
+        public override Models.Script.Type VisitPathExpression([NotNull] ViGaSParser.PathExpressionContext context)
+        {
+            return base.Visit(context.path());
+        }
+
+        /*
         public override Models.Script.Type VisitPropPath([NotNull] ViGaSParser.PropPathContext context)
         {
             Models.Script.Type type = TypeSystem.Instance["ErrorType"];
@@ -76,7 +144,7 @@ namespace GameScript.Visitors
         public override Models.Script.Type VisitVarPath([NotNull] ViGaSParser.VarPathContext context)
         {
             return TypeSystem.Instance["ErrorType"];
-        }
+        }*/
 
         /*public override Models.Script.Type VisitPath([NotNull] ViGaSParser.PathContext context)
         {
@@ -172,16 +240,6 @@ namespace GameScript.Visitors
             var symbol = GetSymbolFromEnv(context, context.param.Text);
 
             return symbol?.Type;
-        }
-
-        public override Models.Script.Type VisitPropPathExpression([NotNull] ViGaSParser.PropPathExpressionContext context)
-        {
-            return VisitPropPath(context.propPath());
-        }
-
-        public override Models.Script.Type VisitVarPathExpression([NotNull] ViGaSParser.VarPathExpressionContext context)
-        {
-            return VisitVarPath(context.varPath());
         }
 
         public override Models.Script.Type VisitFuncExpression([NotNull] ViGaSParser.FuncExpressionContext context)

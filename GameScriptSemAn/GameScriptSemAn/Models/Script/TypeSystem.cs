@@ -24,6 +24,7 @@ namespace GameScript.Models.Script
         public void AddSimpleTypes()
         {
             types.Add("ErrorType", new Type("ErrorType"));
+            types.Add("AnyType", new Type("AnyType"));
             types.Add("String", new Type("String"));
             types.Add("Boolean", new Type("Boolean"));
             types.Add("Number", new Type("Number"));
@@ -34,11 +35,13 @@ namespace GameScript.Models.Script
             types.Add("BooleanArray", new Type("BooleanArray"));
             types.Add("NumberArray", new Type("NumberArray"));
 
-            this["ErrorType"].Parents.Add(this["String"]);
-            this["ErrorType"].Parents.Add(this["Boolean"]);
-            this["ErrorType"].Parents.Add(this["Number"]);
-            this["ErrorType"].Parents.Add(this["NullType"]);
-            this["ErrorType"].Parents.Add(this["Array"]);
+            this["ErrorType"].Parents.Add(this["AnyType"]);
+            
+            this["AnyType"].Parents.Add(this["String"]);
+            this["AnyType"].Parents.Add(this["Boolean"]);
+            this["AnyType"].Parents.Add(this["Number"]);
+            this["AnyType"].Parents.Add(this["NullType"]);
+            this["AnyType"].Parents.Add(this["Array"]);
 
             this["Array"].Parents.Add(this["StringArray"]);
             this["Array"].Parents.Add(this["BooleanArray"]);

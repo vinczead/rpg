@@ -10,7 +10,7 @@ regionBody: initBlock instanceDefinition*;
 
 instanceDefinition: INSTANCE instanceRef=REFERENCE? FROM baseRef=REFERENCE initBlock END;
 
-initBlock: (propertyAssignmentStatement | variableAssignmentStatement | functionCallStatement)*;
+initBlock: (assignmentStatement | functionCallStatement)*;
 
 variablesBlock: VARIABLES variableDeclaration* END;
 
@@ -18,14 +18,13 @@ runBlock: RUN WHEN eventTypeName=ID statementList END;
 
 statementList: statement*;
 
-statement: propertyAssignmentStatement | variableAssignmentStatement | ifStatement | whileStatement | repeatStatement | functionCallStatement | RETURN | COMMENT;
+statement: assignmentStatement | ifStatement | whileStatement | repeatStatement | functionCallStatement | RETURN | COMMENT;
 
 expression
 	: functionCallStatement									#funcExpression
 	| REFERENCE												#refExpression
 	| param=ID												#paramExpression
-	| varPath												#varPathExpression
-	| propPath												#propPathExpression
+	| path													#pathExpression
 	| STRING												#stringExpression
 	| NUMBER												#numberExpression
 	| BOOLEAN												#boolExpression
@@ -39,15 +38,12 @@ expression
 	| '[' expression (',' expression)* ']'					#arrayExpression
 	;
 
-varPath: (ref=REFERENCE | param=ID) '.' ((parts+=VARNAME | parts+=ID) '.')* parts+=VARNAME;
-
-propPath: (ref=REFERENCE | param=ID) '.' ((parts+=VARNAME | parts+=ID) '.')* parts+=ID;
+path: (ref=REFERENCE | param=ID) ('.' (parts+=VARNAME | parts+=ID))+;
 
 functionParameterList: expression (',' expression)*;
 
 variableDeclaration: varName=VARNAME IS typeName=ID (WITHVALUE expression)?;
-propertyAssignmentStatement: SET propPath TO? expression;
-variableAssignmentStatement: SETVAR varPath TO? expression;
+assignmentStatement: SET path TO? expression;
 
 ifStatement: IF expression THEN statementList (elseStatement)? END;
 elseStatement: ELSE statementList;

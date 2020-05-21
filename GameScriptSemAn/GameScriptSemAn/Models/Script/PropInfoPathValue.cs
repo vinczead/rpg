@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace GameScript.Models.Script
 {
-    public class PropPathValue
+    public class PropInfoPathValue
     {
         public PropertyInfo PropertyInfo { get; set; }
         public Symbol Symbol { get; set; }

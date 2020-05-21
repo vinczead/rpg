@@ -215,114 +215,99 @@ namespace GameScript.Visitors
             return gameModel.GetById(symbol?.Value);
         }
 
-        public override object VisitPropPathExpression([NotNull] ViGaSParser.PropPathExpressionContext context)
+        public override object VisitPathExpression([NotNull] ViGaSParser.PathExpressionContext context)
         {
-            var propPathValue = (PropPathValue)Visit(context.propPath());
+            var pathValue = Visit(context.path());
 
-            var gameObject = gameModel.GetById(propPathValue.Symbol.Value);
-            var propInfo = propPathValue.PropertyInfo;
+            if(pathValue is PropInfoPathValue)
+            {
+                var propInfoPathValue = pathValue as PropInfoPathValue;
 
-            return propInfo.GetValue(gameObject);
+                var gameObject = gameModel.GetById(propInfoPathValue.Symbol.Value);
+                var propInfo = propInfoPathValue.PropertyInfo;
+
+                return propInfo.GetValue(gameObject);
+            }
+            
+            if(pathValue is Symbol)
+            {
+                return pathValue;
+            }
+
+            return null;
         }
 
-        public override object VisitVarPathExpression([NotNull] ViGaSParser.VarPathExpressionContext context)
+        public override object VisitPath([NotNull] ViGaSParser.PathContext context)
         {
-            return base.VisitVarPathExpression(context);
-        }
+            Symbol currentSymbol = null;
 
-        public override object VisitVarPath([NotNull] ViGaSParser.VarPathContext context)
-        {
-            Symbol item = null;
-            PropertyInfo propInfo = null;
+            PropertyInfo thisPropertyInfo = null;
 
             if (context.param != null)
-                item = GetSymbolFromEnv(context.param, context.param.Text);
+                currentSymbol = GetSymbolFromEnv(context.param, context.param.Text);
             if (context.@ref != null)
-                item = GetSymbolFromEnv(context.@ref, context.@ref.Text);
+                currentSymbol = GetSymbolFromEnv(context.@ref, context.@ref.Text);
 
-            if (item == null)
+            if (currentSymbol == null)
                 return null;
 
-            foreach (var part in context._parts)
+            for (int i = 0; i < context._parts.Count; i++)
             {
+                IToken part = context._parts[i];
+                bool isLastPart = i == context._parts.Count - 1;
+
+                //this part is a variable
                 if (char.IsLower(part.Text[0]))
                 {
-                    if (item.Type.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
+                    //only variables of Instance classes can be accessed
+                    if (currentSymbol.Type.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
                     {
-                        var gameObject = gameModel.GetById(item.Value) as GameObjectInstance;
+                        var gameObject = gameModel.GetById(currentSymbol.Value) as GameObjectInstance;
 
-                        item = gameObject.Variables[part.Text];
+                        currentSymbol = gameObject.Variables[part.Text];
+
+                        if (isLastPart)
+                            return currentSymbol;
+                    }
+                    else
+                    {
+                        errors.Add(new Error(part, $"Only variables of Instances can be accessed."));
+                        return null;
                     }
                 }
-                else
+                else //this part is a property
                 {
-                    var gameObject = gameModel.GetById(item.Value);
-                    propInfo = gameObject.GetType().GetProperty(part.Text);
-                    if (propInfo.PropertyType.IsAssignableFrom(typeof(GameObject)) || propInfo.PropertyType.IsAssignableFrom(typeof(GameObjectInstance)))
+                    var gameObject = gameModel.GetById(currentSymbol.Value); //Get the GameObject that corresponds to the current symbol
+
+                    thisPropertyInfo = gameObject.GetType().GetProperty(part.Text); //The PropertyInfo that is being referenced by 'part'
+
+                    if (isLastPart)
+                        return new PropInfoPathValue()
+                        {
+                            PropertyInfo = thisPropertyInfo,
+                            Symbol = currentSymbol
+                        };
+
+                    //if this isn't the last part, and the property referenced by part is a Base or Instance, resolve the corresponding symbol
+                    var thisPropertyType = thisPropertyInfo.PropertyType;
+                    if (thisPropertyType.IsAssignableFrom(typeof(GameObject)) || thisPropertyType.IsAssignableFrom(typeof(GameObjectInstance)))
                     {
-                        //if the property referenced by 'part' is inherits from GameObject or GameObjectInstance
-                        //then get it's Id
-                        //and store the corressponding symbol into item
+                        //get the Id of this gameObject or GameObjectInstance
+                        var gameObjectIdPropertyInfo = thisPropertyInfo.PropertyType.GetProperty("Id");
+                        var currentPropertyValue = thisPropertyInfo.GetValue(gameObject);
 
-                        var gameObjectIdPropertyInfo = propInfo.PropertyType.GetProperty("Id");
-                        var propertyValue = propInfo.GetValue(gameObject);
-
-                        item = GetSymbolFromEnv(part, gameObjectIdPropertyInfo.GetValue(propertyValue).ToString());
+                        //and get the symbol for this id
+                        currentSymbol = GetSymbolFromEnv(part, gameObjectIdPropertyInfo.GetValue(currentPropertyValue).ToString());
+                    }
+                    else
+                    {
+                        errors.Add(new Error(part, $"Only properties of Instances and Bases can be accessed."));
+                        return null;
                     }
                 }
             }
 
-            return item;
-        }
-
-        public override object VisitPropPath([NotNull] ViGaSParser.PropPathContext context)
-        {
-            Symbol item = null;
-
-            PropertyInfo propInfo = null;
-
-            if (context.param != null)
-                item = GetSymbolFromEnv(context.param, context.param.Text);
-            if (context.@ref != null)
-                item = GetSymbolFromEnv(context.@ref, context.@ref.Text);
-
-            if (item == null)
-                return null;
-
-            foreach (var part in context._parts)
-            {
-                if (char.IsLower(part.Text[0]))
-                {
-                    if (item.Type.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
-                    {
-                        var gameObject = gameModel.GetById(item.Value) as GameObjectInstance;
-
-                        item = gameObject.Variables[part.Text];
-                    }
-                }
-                else
-                {
-                    var gameObject = gameModel.GetById(item.Value);
-                    propInfo = gameObject.GetType().GetProperty(part.Text);
-                    if (propInfo.PropertyType.IsAssignableFrom(typeof(GameObject)) || propInfo.PropertyType.IsAssignableFrom(typeof(GameObjectInstance)))
-                    {
-                        //if the property referenced by 'part' is inherits from GameObject or GameObjectInstance
-                        //then get it's Id
-                        //and store the corressponding symbol into item
-
-                        var gameObjectIdPropertyInfo = propInfo.PropertyType.GetProperty("Id");
-                        var propertyValue = propInfo.GetValue(gameObject);
-
-                        item = GetSymbolFromEnv(part, gameObjectIdPropertyInfo.GetValue(propertyValue).ToString());
-                    }
-                }
-            }
-
-            return new PropPathValue()
-            {
-                PropertyInfo = propInfo,
-                Symbol = item
-            };
+            return null;
         }
 
         public override object VisitParenExpression([NotNull] ViGaSParser.ParenExpressionContext context)
@@ -466,32 +451,33 @@ namespace GameScript.Visitors
 
             MethodInfo method = typeof(FunctionLibrary).GetMethod(functionName);
 
-            return method.Invoke(null, parameterListValues == null ? null : new object[] { parameterListValues });
+            var retval = method.Invoke(null, parameterListValues == null ? null : new object[] { parameterListValues });
+
+            return retval;
         }
 
-
-        public override object VisitPropertyAssignmentStatement([NotNull] ViGaSParser.PropertyAssignmentStatementContext context)
+        public override object VisitAssignmentStatement([NotNull] ViGaSParser.AssignmentStatementContext context)
         {
-            var propPathValue = (PropPathValue)Visit(context.propPath());
-            var value = Visit(context.expression());
+            var pathValue = Visit(context.path());
+            var expressionValue = Visit(context.expression());
 
-            Console.WriteLine(env);
-            Console.WriteLine(context.GetText());
+            if(pathValue is PropInfoPathValue)
+            {
+                var propInfoPathValue = pathValue as PropInfoPathValue;
 
-            var gameObject = gameModel.GetById(propPathValue.Symbol.Value);
-            var propInfo = propPathValue.PropertyInfo;
+                var gameObject = gameModel.GetById(propInfoPathValue.Symbol.Value);
+                var propInfo = propInfoPathValue.PropertyInfo;
 
-            propInfo.SetValue(gameObject, Convert.ChangeType(value, propInfo.PropertyType));
+                propInfo.SetValue(gameObject, Convert.ChangeType(expressionValue, propInfo.PropertyType));
+            }
 
-            return null;
-        }
+            if(pathValue is Symbol)
+            {
+                var symbol = pathValue as Symbol;
 
-        public override object VisitVariableAssignmentStatement([NotNull] ViGaSParser.VariableAssignmentStatementContext context)
-        {
-            var symbol = (Symbol)Visit(context.varPath());
-            var value = Visit(context.expression());
+                symbol.Value = expressionValue.ToString();
+            }
 
-            symbol.Value = value.ToString();
 
             return null;
         }
