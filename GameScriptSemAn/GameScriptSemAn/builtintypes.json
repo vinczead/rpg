@@ -41,6 +41,10 @@
     "parents": [ "Thing" ],
     "properties": [
       {
+        "name": "MaxHealth",
+        "type": "Number"
+      },
+      {
         "name": "Strength",
         "type": "Number"
       },

@@ -23,6 +23,7 @@ namespace Rpg.Screens
 
             gameModel = ExecutionVisitor.Build(new List<ScriptFile>() { scriptFile}, out _);
 			gameModel.Player = gameModel.Instances["$PC"] as PlayerInstance;
+            FunctionLibrary.gm = gameModel;
         }
 
         public override void Draw(GameTime gameTime, SpriteBatch spriteBatch)

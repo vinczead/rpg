@@ -21,7 +21,13 @@ statementList: statement*;
 statement: assignmentStatement | ifStatement | whileStatement | repeatStatement | functionCallStatement | RETURN | COMMENT;
 
 expression
-	: functionCallStatement									#funcExpression
+	: left=expression multiplOperator right=expression		#multiplExpression
+	| left=expression additiveOperator right=expression		#additiveExpression
+	| left=expression logicalOperator right=expression		#logicalExpression
+	| left=expression compOperator right=expression			#compExpression
+	| '(' expression ')'									#parenExpression
+	| '[' expression (',' expression)* ']'					#arrayExpression
+	| functionCallStatement									#funcExpression
 	| REFERENCE												#refExpression
 	| param=ID												#paramExpression
 	| path													#pathExpression
@@ -30,12 +36,6 @@ expression
 	| BOOLEAN												#boolExpression
 	| NULL													#nullExpression
 	| NOT expression										#notExpression
-	| left=expression multiplOperator right=expression		#multiplExpression
-	| left=expression additiveOperator right=expression		#additiveExpression
-	| left=expression logicalOperator right=expression		#logicalExpression
-	| left=expression compOperator right=expression			#compExpression
-	| '(' expression ')'									#parenExpression
-	| '[' expression (',' expression)* ']'					#arrayExpression
 	;
 
 path: (ref=REFERENCE | param=ID) ('.' (parts+=VARNAME | parts+=ID))+;

@@ -18,7 +18,7 @@ namespace GameScript.Models.Script
         private TypeSystem()
         {
             AddSimpleTypes();
-            ReadTypes(@"C:\Users\Ady\source\repos\Rpg\GameScriptSemAn\GameScriptSemAn\builtintypes.json");
+            ReadTypes(@"C:\Users\Adam\sources\rpg\GameScriptSemAn\GameScriptSemAn\builtintypes.json");
         }
 
         public void AddSimpleTypes()

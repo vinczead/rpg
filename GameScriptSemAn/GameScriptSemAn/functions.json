@@ -1,5 +1,15 @@
 [
   {
+    "name": "ShowMessage",
+    "parameters": [
+      {
+        "name": "String",
+        "type": "String"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+  {
     "name": "Random",
     "parameters": [],
     "returnType": "Number"
@@ -20,7 +30,7 @@
         "type": "Number"
       }
     ],
-    "returnType":  "Boolean"
+    "returnType": "Boolean"
   },
   {
     "name": "StrLength",

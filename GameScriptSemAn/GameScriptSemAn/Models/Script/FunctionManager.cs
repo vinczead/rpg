@@ -18,7 +18,7 @@ namespace GameScript.Models.Script
         private FunctionManager()
         {
             functions = new Dictionary<string, Function>();
-            ReadFunctions(@"C:\Users\Ady\source\repos\Rpg\GameScriptSemAn\GameScriptSemAn\functions.json");
+            ReadFunctions(@"C:\Users\Adam\sources\rpg\GameScriptSemAn\GameScriptSemAn\functions.json");
         }
 
         public void ReadFunctions(string filePath)

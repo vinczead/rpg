@@ -35,13 +35,6 @@
       <FileName>Models\BaseClasses\Equipment.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="GameScript.Models.BaseClasses.GameObject" Collapsed="true">
-    <Position X="8.75" Y="1.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>CAACAAAAAAAgAAAAAAEAAAQAAAAAAAAAAAAAAAAgAAA=</HashCode>
-      <FileName>Models\BaseClasses\GameObject.cs</FileName>
-    </TypeIdentifier>
-  </Class>
   <Class Name="GameScript.Models.BaseClasses.Item" Collapsed="true">
     <Position X="13.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
@@ -61,13 +54,6 @@
     <TypeIdentifier>
       <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\BaseClasses\Player.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="GameScript.Models.BaseClasses.Quest" Collapsed="true">
-    <Position X="3.25" Y="3" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Models\BaseClasses\Quest.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="GameScript.Models.BaseClasses.Thing" Collapsed="true">
@@ -115,7 +101,7 @@
   <Class Name="GameScript.Models.InstanceClasses.GameObjectInstance" Collapsed="true">
     <Position X="23.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAACAAAAABAAAAAAAAAAAAAAAAAAAAAAAAQAAAAgQAA=</HashCode>
+      <HashCode>AAACAAAAgAAAAAAAAAAAAAAEAAAAAAAAAgQAAAAAAAA=</HashCode>
       <FileName>Models\InstanceClasses\GameObjectInstance.cs</FileName>
     </TypeIdentifier>
   </Class>
@@ -150,7 +136,7 @@
   <Class Name="GameScript.Models.InstanceClasses.ThingInstance" Collapsed="true">
     <Position X="25" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAQAAAAAAAAAAgAgABAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <HashCode>AAQAAAAAAAAAAgAgAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
       <FileName>Models\InstanceClasses\ThingInstance.cs</FileName>
     </TypeIdentifier>
   </Class>

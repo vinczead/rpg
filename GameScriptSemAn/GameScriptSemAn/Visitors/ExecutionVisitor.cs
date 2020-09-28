@@ -385,7 +385,7 @@ namespace GameScript.Visitors
                 throw new InvalidOperationException($"Cannot execute operation '{op.GetText()}' on ${left} and ${right}");
 
             if (op.LT() != null)
-                return (double)left < (double)right;
+                return (double)Convert.ChangeType(left, typeof(double)) < (double)Convert.ChangeType(right, typeof(double));
             if (op.GT() != null)
                 return (double)left > (double)right;
             if (op.LTE() != null)

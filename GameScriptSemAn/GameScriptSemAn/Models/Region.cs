@@ -47,6 +47,7 @@ namespace GameScript.Models
             }
             foreach (var gameObject in thingsToRemove)
             {
+                gameObject.Region = null;
                 Things.Remove(gameObject.Id);
             }
             thingsToRemove.Clear();
@@ -61,7 +62,6 @@ namespace GameScript.Models
         public void RemoveThing(ThingInstance thingInstance)
         {
             thingsToRemove.Add(thingInstance);
-            thingInstance.Region = null;
         }
     }
 }

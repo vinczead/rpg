@@ -12,6 +12,8 @@ namespace GameScript.Models
     public static class FunctionLibrary
     {
         static Random random = new Random();
+
+        public static GameModel gm;
         public static double Random()
         {
             return random.NextDouble();
@@ -45,6 +47,15 @@ namespace GameScript.Models
             var y = Convert.ToSingle(parameters[2]);
 
             baseObject.Position = new Vector2(x, y);
+
+            return true;
+        }
+
+        public static bool ShowMessage(object[] paramenters)
+        {
+            var s = Convert.ToString(paramenters[0]);
+
+            gm.Message(s);
 
             return true;
         }
