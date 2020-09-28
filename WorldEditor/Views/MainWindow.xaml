@@ -18,15 +18,36 @@
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition/>
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
             <MenuItem Header="File">
-                <MenuItem Header="New World..." Command="ApplicationCommands.New"/>
-                <MenuItem Header="Open..." Command="ApplicationCommands.Open"/>
-                <MenuItem Header="Close" Command="ApplicationCommands.Close"/>
-                <MenuItem Header="Save" Command="ApplicationCommands.Save"/>
-                <MenuItem Header="Save as..." Command="ApplicationCommands.SaveAs"/>
+                <MenuItem Header="New World..." Command="ApplicationCommands.New">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Icons/NewFileCollection_16x.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Open..." Command="ApplicationCommands.Open">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Icons/OpenFolder_16x.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Close" Command="ApplicationCommands.Close">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Icons/Close_16x.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Save" Command="ApplicationCommands.Save">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Icons/Save_16x.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Save as..." Command="ApplicationCommands.SaveAs">
+                    <MenuItem.Icon>
+                        <Image Source="/Resources/Icons/SaveAs_16x.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator/>
                 <MenuItem Header="Exit" Command="{Binding Close}" CommandParameter="{Binding ElementName=MainEditorWindow}"/>
             </MenuItem>
@@ -64,7 +85,48 @@
                 <MenuItem Header="About..."/>
             </MenuItem>
         </Menu>
-        <Grid Grid.Row="1">
+        <ToolBar Grid.Row="1">
+            <Button>
+                <Image Source="/Resources/Icons/NewFileCollection_16x.png"/>
+            </Button>
+            <Button>
+                <Image Source="/Resources/Icons/OpenFolder_16x.png"/>
+            </Button>
+            <Button>
+                <Image Source="/Resources/Icons/Save_16x.png"/>
+            </Button>
+            <Separator/>
+            <Button Command="ApplicationCommands.Undo">
+                <Image Source="/Resources/Icons/Undo_16x.png"/>
+            </Button>
+            <Button>
+                <Image Source="/Resources/Icons/Redo_16x.png"/>
+            </Button>
+            <Separator/>
+            <Button>
+                <Image Source="/Resources/Icons/Cut_16x.png"/>
+            </Button>
+            <Button>
+                <Image Source="/Resources/Icons/Copy_16x.png"/>
+            </Button>
+            <Button>
+                <Image Source="/Resources/Icons/Paste_16x.png"/>
+            </Button>
+            <Separator/>
+            <ToggleButton ToolTip="Selection Tool">
+                <Image Source="/Resources/Icons/Select_16x.png"/>
+            </ToggleButton>
+            <ToggleButton ToolTip="Tile Tool">
+                <Image Source="/Resources/Icons/Grid_16x.png"/>
+            </ToggleButton>
+            <ToggleButton ToolTip="Object Tool">
+                <Image Source="/Resources/Icons/Object_16x.png"/>
+            </ToggleButton>
+            <ToggleButton ToolTip="Eraser Tool">
+                <Image Source="/Resources/Icons/Eraser_16x.png"/>
+            </ToggleButton>
+        </ToolBar>
+        <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition/>

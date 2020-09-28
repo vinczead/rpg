@@ -8,6 +8,42 @@
 
   <ItemGroup>
     <None Remove="Content\Content.mgcb" />
+    <None Remove="Resources\Icons\Close_16x.png" />
+    <None Remove="Resources\Icons\Copy_16x.png" />
+    <None Remove="Resources\Icons\Cut_16x.png" />
+    <None Remove="Resources\Icons\Eraser_16x.png" />
+    <None Remove="Resources\Icons\Grid_16x.png" />
+    <None Remove="Resources\Icons\NewFileCollection_16x.png" />
+    <None Remove="Resources\Icons\NewFile_16x.png" />
+    <None Remove="Resources\Icons\Object_16x.png" />
+    <None Remove="Resources\Icons\OpenFolder_16x.png" />
+    <None Remove="Resources\Icons\OpenProject_16x.png" />
+    <None Remove="Resources\Icons\Paste_16x.png" />
+    <None Remove="Resources\Icons\Redo_16x.png" />
+    <None Remove="Resources\Icons\SaveAs_16x.png" />
+    <None Remove="Resources\Icons\Save_16x.png" />
+    <None Remove="Resources\Icons\Select_16x.png" />
+    <None Remove="Resources\Icons\Undo_16x.png" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Resources\Icons\Close_16x.png" />
+    <Resource Include="Resources\Icons\Copy_16x.png" />
+    <Resource Include="Resources\Icons\Cut_16x.png" />
+    <Resource Include="Resources\Icons\Eraser_16x.png" />
+    <Resource Include="Resources\Icons\Grid_16x.png" />
+    <Resource Include="Resources\Icons\NewFileCollection_16x.png" />
+    <Resource Include="Resources\Icons\Object_16x.png" />
+    <Resource Include="Resources\Icons\OpenFolder_16x.png" />
+    <Resource Include="Resources\Icons\OpenProject_16x.png" />
+    <Resource Include="Resources\Icons\Paste_16x.png" />
+    <Resource Include="Resources\Icons\Redo_16x.png" />
+    <Resource Include="Resources\Icons\SaveAs_16x.png" />
+    <Resource Include="Resources\Icons\Save_16x.png" />
+    <Resource Include="Resources\Icons\Select_16x.png" />
+    <Resource Include="Resources\Icons\Undo_16x.png">
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
+    </Resource>
   </ItemGroup>
 
   <ItemGroup>
