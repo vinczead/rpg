@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:WorldEditor.Views"
         mc:Ignorable="d"
-        Title="Maps" Height="300" Width="500" ResizeMode="NoResize">
+        Title="Maps" Height="450" Width="600" ResizeMode="NoResize">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>

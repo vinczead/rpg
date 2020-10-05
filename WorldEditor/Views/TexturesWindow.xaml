@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WorldEditor.Views"
         xmlns:vm="clr-namespace:WorldEditor.ViewModels"
         mc:Ignorable="d"
-        Title="Textures" Height="300" Width="500">
+        Title="Textures" Height="450" Width="650">
     <Window.DataContext>
         <vm:TexturesViewModel/>
     </Window.DataContext>
