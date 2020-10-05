@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="WorldEditor.Views.TextureForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WorldEditor.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="450">
+    <Grid Grid.Column="1" Margin="10" DataContext="{Binding SelectedTexture}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="Padding" Value="0,0,5,0" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>
+        </Grid.Resources>
+
+        <Label Content="Id:" Grid.Column="0"/>
+        <TextBox Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,8" Text="{Binding Path=Id, Mode=TwoWay}"/>
+
+        <Label Content="Texture Preview:" Grid.Row="1"/>
+        <Image Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="2" Margin="0,0,0,8"
+               Stretch="Uniform">
+            <Image.Style>
+                <Style TargetType="{x:Type Image}">
+                    <Setter Property="Source" Value="{Binding Texture}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding Texture}" Value="{x:Null}">
+                            <Setter
+                                Property="Source"
+                                Value="pack://application:,,,/WorldEditor;component/Resources/Unknown.png" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
+
+        <Button Content="Browse..." Grid.Row="2"  Grid.Column="2" Command="{Binding BrowseImage}"/>
+    </Grid>
+</UserControl>

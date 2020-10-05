@@ -23,22 +23,22 @@
         </Grid.RowDefinitions>
         <Menu Grid.Row="0">
             <MenuItem Header="File">
-                <MenuItem Header="New World..." Command="ApplicationCommands.New">
+                <MenuItem Header="New World..." Command="{Binding NewProject}">
                     <MenuItem.Icon>
                         <Image Source="/Resources/Icons/NewFileCollection_16x.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Open..." Command="ApplicationCommands.Open">
+                <MenuItem Header="Open..." Command="{Binding OpenProject}">
                     <MenuItem.Icon>
                         <Image Source="/Resources/Icons/OpenFolder_16x.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Close" Command="ApplicationCommands.Close">
+                <MenuItem Header="Close" Command="{Binding CloseProject}">
                     <MenuItem.Icon>
                         <Image Source="/Resources/Icons/Close_16x.png"/>
                     </MenuItem.Icon>
                 </MenuItem>
-                <MenuItem Header="Save" Command="ApplicationCommands.Save">
+                <MenuItem Header="Save" Command="{Binding SaveProject}">
                     <MenuItem.Icon>
                         <Image Source="/Resources/Icons/Save_16x.png"/>
                     </MenuItem.Icon>
@@ -74,7 +74,7 @@
                 <MenuItem Header="Tile Tool" Command="{Binding SetTool}" CommandParameter="{x:Static utility:ToolType.TileTool}"/>
             </MenuItem>
             <MenuItem Header="Content">
-                <MenuItem Header="Textures..." Click="MenuItem_Click"/>
+                <MenuItem Header="Textures..." Command="{Binding OpenTextures}"/>
                 <MenuItem Header="Sprite Models..."/>
                 <MenuItem Header="Tile Types..."/>
                 <MenuItem Header="Breeds..."/>
@@ -86,17 +86,17 @@
             </MenuItem>
         </Menu>
         <ToolBar Grid.Row="1">
-            <Button>
+            <Button Command="{Binding NewProject}">
                 <Image Source="/Resources/Icons/NewFileCollection_16x.png"/>
             </Button>
-            <Button>
+            <Button Command="{Binding OpenProject}">
                 <Image Source="/Resources/Icons/OpenFolder_16x.png"/>
             </Button>
-            <Button>
+            <Button Command="{Binding SaveProject}">
                 <Image Source="/Resources/Icons/Save_16x.png"/>
             </Button>
             <Separator/>
-            <Button Command="ApplicationCommands.Undo">
+            <Button>
                 <Image Source="/Resources/Icons/Undo_16x.png"/>
             </Button>
             <Button>
@@ -126,7 +126,7 @@
                 <Image Source="/Resources/Icons/Eraser_16x.png"/>
             </ToggleButton>
         </ToolBar>
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="2" Visibility="{Binding IsWorldRepositoryOpen, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition/>
@@ -138,7 +138,9 @@
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0">
                     <Label HorizontalContentAlignment="Center">Mini Map</Label>
-                    <Canvas Height="200" Background="Black"></Canvas>
+                    <Canvas Height="200" Background="Black">
+                        <Rectangle Width="50" Height="50" Canvas.Left="15" Canvas.Top="25" Stroke="White"/>
+                    </Canvas>
                 </StackPanel>
                 <!--Selection tool-->
                 <Grid Grid.Row="1" Visibility="{Binding
@@ -254,7 +256,7 @@
             </Grid>
             <TabControl Grid.Column="1">
                 <TabItem Header="Example Map">
-                    <local:WorldEditorGame />
+                    <!--<local:WorldEditorGame />-->
                 </TabItem>
                 <TabItem Header="Second Map">
                 </TabItem>

@@ -4,6 +4,6 @@
              xmlns:local="clr-namespace:WorldEditor"
              StartupUri="Views\MainWindow.xaml">
     <Application.Resources>
-         
+        <BooleanToVisibilityConverter x:Key="BoolToVisibility"/>
     </Application.Resources>
 </Application>

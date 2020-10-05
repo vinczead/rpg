@@ -9,7 +9,7 @@ namespace Common.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public bool IsWalkable { get; set; }
-
+        public SpriteModel Model { get; set; }
 
     }
 }
