@@ -22,6 +22,16 @@ namespace WorldEditor.DataAccess
         {
             return new List<RpgTexture>(textures);
         }
+
+        public RpgTexture GetTextureById(string id)
+        {
+            var texture = textures.FirstOrDefault(texture => texture.Id == id);
+
+            if (texture == null)
+                throw new ArgumentException($"No texture was found with id '{id}'.");
+
+            return texture;
+        }
         public void AddTexture(RpgTexture rpgTexture)
         {
             if (rpgTexture == null)
@@ -46,7 +56,7 @@ namespace WorldEditor.DataAccess
 
             var texture = textures.FirstOrDefault(texture => texture.Id == id);
             if (texture == null)
-                throw new ArgumentException($"Texture with id '{id}' was not found in WorldRepository");
+                throw new ArgumentException($"No texture was found with id '{id}'.");
 
             textures.Remove(texture);
             TextureRemoved(this, new RpgTextureEventArgs(texture));

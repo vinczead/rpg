@@ -23,8 +23,7 @@
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction
                             Command="{Binding SelectTexture}"
-                            CommandParameter="{Binding ElementName=texturesList,
-                                Path=SelectedItem}"/>
+                            CommandParameter="{Binding ElementName=texturesList, Path=SelectedItem}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <ListBox.ItemTemplate>
