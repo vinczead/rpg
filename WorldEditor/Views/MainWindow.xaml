@@ -75,7 +75,7 @@
             </MenuItem>
             <MenuItem Header="Content">
                 <MenuItem Header="Textures..." Command="{Binding OpenTextures}"/>
-                <MenuItem Header="Sprite Models..."/>
+                <MenuItem Header="Sprite Models..." Command="{Binding OpenSpriteModels}"/>
                 <MenuItem Header="Tile Types..."/>
                 <MenuItem Header="Breeds..."/>
                 <MenuItem Header="Maps..."/>

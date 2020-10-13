@@ -6,6 +6,7 @@ namespace Common.Models
 {
     public class Animation
     {
+        public string Id { get; set; }
         public List<Frame> Frames { get; set; } = new List<Frame>();
 
         public bool IsLooping { get; set; }

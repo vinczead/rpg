@@ -37,20 +37,20 @@ namespace WorldEditor.ViewModels
             AddTexture = new RelayCommand(ExecuteAddTexture);
             RemoveTexture = new RelayCommand<TextureViewModel>(ExecuteRemoveTexture);
 
-            worldRepository.TextureAdded += WorldRepository_TextureAdded;
+            worldRepository.Textures.SpriteModelAdded += WorldRepository_TextureAdded;
 
             CreateTextures();
         }
 
-        private void WorldRepository_TextureAdded(object sender, Utility.RpgTextureEventArgs e)
+        private void WorldRepository_TextureAdded(object sender, Utility.EntityEventArgs<RpgTexture> e)
         {
-            var textureViewModel = new TextureViewModel(e.Texture);
+            var textureViewModel = new TextureViewModel(e.Entity);
             this.Textures.Add(textureViewModel);
         }
 
         void CreateTextures()
         {
-            var textures = WorldRepository.GetTextures().Select(texture => new TextureViewModel(texture)).ToList();
+            var textures = WorldRepository.Textures.GetTextures().Select(texture => new TextureViewModel(texture)).ToList();
 
             Textures = new ObservableCollection<TextureViewModel>(textures);
         }
@@ -62,12 +62,12 @@ namespace WorldEditor.ViewModels
 
         private void ExecuteAddTexture()
         {
-            WorldRepository.AddNewTexture();
+            WorldRepository.Textures.AddNewTexture();
         }
 
         private void ExecuteRemoveTexture(TextureViewModel textureViewModel)
         {
-            WorldRepository.RemoveTexture(textureViewModel.Id);
+            WorldRepository.Textures.RemoveTexture(textureViewModel.Id);
         }
     }
 }

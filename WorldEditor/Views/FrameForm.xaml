@@ -1,0 +1,48 @@
+﻿<UserControl x:Class="WorldEditor.Views.FrameForm"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WorldEditor.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="300">
+    <Grid DataContext="{Binding SelectedFrame}">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
+        </Grid.ColumnDefinitions>
+        <Grid.Resources>
+            <Style TargetType="Label">
+                <Setter Property="Padding" Value="0,0,5,0" />
+                <Setter Property="HorizontalAlignment" Value="Right" />
+            </Style>
+        </Grid.Resources>
+        <Label Grid.Row="0">Frame Position:</Label>
+        <TextBox Grid.Row="0" Grid.Column="1" Margin="0,0,0,10" Text="{Binding X}"/>
+        <TextBox Grid.Row="0" Grid.Column="3" Margin="0,0,0,10" Text="{Binding Y}"/>
+        <Label Grid.Row="0" Grid.Column="4" Margin="5,0,0,0">px</Label>
+
+        <Label Grid.Row="1">Frame Dimensions:</Label>
+        <TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,0,10" Text="{Binding Width}"/>
+        <Label Grid.Row="1" Grid.Column="2" Margin="5,0,0,0">×</Label>
+        <TextBox Grid.Row="1" Grid.Column="3" Margin="0,0,0,10" Text="{Binding Height}"/>
+        <Label Grid.Row="1" Grid.Column="4" Margin="5,0,0,0">px</Label>
+
+        <Label Grid.Row="2">Frame Duration:</Label>
+        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,0,0,10" Text="{Binding Duration}"/>
+        <Label Grid.Row="2" Grid.Column="4" Margin="5,0,0,0">ms</Label>
+
+        <Label Grid.Row="3">Preview:</Label>
+        <Image Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"/>
+    </Grid>
+</UserControl>

@@ -33,6 +33,7 @@ namespace WorldEditor.ViewModels
                 CloseProject.RaiseCanExecuteChanged();
                 SetTool.RaiseCanExecuteChanged();
                 OpenTextures.RaiseCanExecuteChanged();
+                OpenSpriteModels.RaiseCanExecuteChanged();
             }
         }
         
@@ -51,6 +52,7 @@ namespace WorldEditor.ViewModels
             CloseProject = new RelayCommand(ExecuteCloseProjectCommand, () => IsWorldRepositoryOpen);
 
             OpenTextures = new RelayCommand(ExecuteOpenTexturesWindowCommand, () => IsWorldRepositoryOpen);
+            OpenSpriteModels = new RelayCommand(ExectueOpenSpriteModelsWindowCommand, () => IsWorldRepositoryOpen);
         }
 
         public RelayCommand<ToolType> SetTool { get; }
@@ -61,6 +63,10 @@ namespace WorldEditor.ViewModels
         public RelayCommand CloseProject { get; }
 
         public RelayCommand OpenTextures { get; }
+        public RelayCommand OpenSpriteModels { get; }
+        public RelayCommand OpenTileTypes { get; }
+        public RelayCommand OpenBreeds { get; }
+        public RelayCommand OpenMaps { get; }
 
         private void ExecuteCloseWindow(Window window)
         {
@@ -115,10 +121,23 @@ namespace WorldEditor.ViewModels
         private void ExecuteOpenTexturesWindowCommand()
         {
             var texturesViewModel = new TexturesViewModel(WorldRepository);
-            var texturesWindow = new TexturesWindow();
-            texturesWindow.DataContext = texturesViewModel;
+            var texturesWindow = new TexturesWindow
+            {
+                DataContext = texturesViewModel
+            };
 
             texturesWindow.ShowDialog();
+        }
+
+        private void ExectueOpenSpriteModelsWindowCommand()
+        {
+            var spriteModelsViewModel = new SpriteModelsViewModel(WorldRepository);
+            var spriteModelsWindow = new SpriteModelsWindow
+            {
+                DataContext = spriteModelsViewModel
+            };
+
+            spriteModelsWindow.ShowDialog();
         }
     }
 }

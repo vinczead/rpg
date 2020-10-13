@@ -18,7 +18,11 @@
                 <RowDefinition Height="*"/>
                 <RowDefinition Height="Auto"/>
             </Grid.RowDefinitions>
-            <ListBox Grid.Row="0" ItemsSource="{Binding Textures}" SelectionMode="Single" x:Name="texturesList">
+            <ListBox Grid.Row="0"
+                     ItemsSource="{Binding Textures}"
+                     SelectionMode="Single"
+                     x:Name="texturesList"
+                     DisplayMemberPath="Id">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="SelectionChanged">
                         <i:InvokeCommandAction
@@ -26,11 +30,6 @@
                             CommandParameter="{Binding ElementName=texturesList, Path=SelectedItem}"/>
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <TextBlock Text="{Binding Path=Id}"/>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
             </ListBox>
             <Button Content="Add Texture" Grid.Row="1" Command="{Binding AddTexture}"/>
         </Grid>

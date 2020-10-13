@@ -11,10 +11,11 @@ namespace Common.Models
 {
     public class SpriteModel
     {
+        public string Id { get; set; }
         [JsonIgnore]
         public Texture2D SpriteSheet { get; set; }
         public string SpriteSheetId { get; set; }
-        public Dictionary<string, Animation> Animations { get; set; }
+        public Dictionary<string, Animation> Animations { get; set; } = new Dictionary<string, Animation>();
 
         public Animation this[string state]
         {
