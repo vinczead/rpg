@@ -15,21 +15,13 @@ namespace Common.Models
         [JsonIgnore]
         public Texture2D SpriteSheet { get; set; }
         public string SpriteSheetId { get; set; }
-        public Dictionary<string, Animation> Animations { get; set; } = new Dictionary<string, Animation>();
+        public List<Animation> Animations { get; set; } = new List<Animation>();
 
         public Animation this[string state]
         {
             get
             {
-                if(Animations.TryGetValue(state, out var animation))
-                {
-                    return animation;
-                }
-                else
-                {
-                    return new Animation();
-                }
-                
+                return Animations.FirstOrDefault(animation => animation.Id == state);
             }
         }
     }

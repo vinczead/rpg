@@ -19,7 +19,7 @@ namespace WorldEditor.ViewModels
         {
             this.animation = animation;
 
-            var frames = animation.Frames.Select(frame => new FrameViewModel(frame)).ToList();
+            var frames = animation.Frames.Select((frame, index) => new FrameViewModel(frame) { Id = "Frame " + index }).ToList();
             Frames = new ObservableCollection<FrameViewModel>(frames);
             AddFrame = new RelayCommand(ExecuteAddFrameCommand);
         }

@@ -22,7 +22,7 @@ namespace WorldEditor.ViewModels
             this.spriteModel = spriteModel;
             Textures = textures;
 
-            var animations = spriteModel.Animations.Select(animation => new AnimationViewModel(animation.Value)).ToList();
+            var animations = spriteModel.Animations.Select(animation => new AnimationViewModel(animation)).ToList();
             Animations = new ObservableCollection<AnimationViewModel>(animations);
 
             AddAnimation = new RelayCommand(ExecuteAddAnimationCommand);
@@ -32,9 +32,9 @@ namespace WorldEditor.ViewModels
         {
             var animation = new Animation()
             {
-                Id = "IDLE" + spriteModel.Animations.Count
+                Id = "ANIMATION_" + spriteModel.Animations.Count
             };
-            spriteModel.Animations.Add(animation.Id, animation);
+            spriteModel.Animations.Add(animation);
             Animations.Add(new AnimationViewModel(animation));
         }
 
