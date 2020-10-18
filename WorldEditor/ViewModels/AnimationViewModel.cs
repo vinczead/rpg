@@ -14,25 +14,31 @@ namespace WorldEditor.ViewModels
         readonly Animation animation;
 
         public RelayCommand AddFrame { get; set; }
+        public RelayCommand RemoveFrame { get; set; }
 
         public AnimationViewModel(Animation animation)
         {
             this.animation = animation;
 
-            var frames = animation.Frames.Select((frame, index) => new FrameViewModel(frame) { Id = "Frame " + index }).ToList();
+            var frames = animation.Frames.Select((frame) => new FrameViewModel(frame)).ToList();
             Frames = new ObservableCollection<FrameViewModel>(frames);
             AddFrame = new RelayCommand(ExecuteAddFrameCommand);
+            RemoveFrame = new RelayCommand(ExecuteRemoveFrameCommand);
+        }
+
+        public void ExecuteRemoveFrameCommand()
+        {
+            if (!IsFrameSelected)
+                return;
+            animation.Frames.RemoveAt(SelectedIndex);
+            Frames.RemoveAt(SelectedIndex);
         }
 
         public void ExecuteAddFrameCommand()
         {
             var frame = new Frame();
             animation.Frames.Add(frame);
-            var fvm = new FrameViewModel(frame)
-            {
-                Id = "Frame " + Frames.Count
-            };
-            Frames.Add(fvm);
+            Frames.Add(new FrameViewModel(frame));
         }
 
         public string Id
@@ -71,6 +77,7 @@ namespace WorldEditor.ViewModels
                 RaisePropertyChanged(() => IsFrameSelected);
             }
         }
+        public int SelectedIndex { get; set; }
 
         public bool IsFrameSelected { get => SelectedFrame != null; }
     }

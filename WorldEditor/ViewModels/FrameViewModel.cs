@@ -15,8 +15,6 @@ namespace WorldEditor.ViewModels
             this.frame = frame;
         }
 
-        public string Id { get; set; }
-
         public int X
         {
             get => frame.Source.X;

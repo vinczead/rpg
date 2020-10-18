@@ -37,10 +37,26 @@
 
         <Label Grid.Row="2">Frames:</Label>
         <ListBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3"
+                 AlternationCount="1000"
                  MinHeight="100" Margin="0,0,0,10"
                  ItemsSource="{Binding Frames}"
                  SelectedItem="{Binding SelectedFrame}"
-                 DisplayMemberPath="Id"/>
+                 SelectedIndex="{Binding SelectedIndex, Mode=OneWayToSource}">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Remove frame" Command="{Binding RemoveFrame}"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="Frame "/>
+                        <TextBlock Text="{Binding RelativeSource={RelativeSource AncestorType=ListBoxItem},
+                                      Path=(ItemsControl.AlternationIndex)}"/>
+                    </StackPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
 
         <Button Grid.Row="3" Grid.Column="1" Margin="0,0,0,10"
                 Content="Add Frame"
