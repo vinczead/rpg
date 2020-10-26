@@ -8,16 +8,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace WorldEditor.Views
 {
     /// <summary>
-    /// Interaction logic for TileTypesWindow.xaml
+    /// Interaction logic for MapForm.xaml
     /// </summary>
-    public partial class TileTypesWindow : Window
+    public partial class MapForm : UserControl
     {
-        public TileTypesWindow()
+        public MapForm()
         {
             InitializeComponent();
         }

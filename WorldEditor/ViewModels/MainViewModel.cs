@@ -4,6 +4,8 @@ using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using WorldEditor.DataAccess;
@@ -34,12 +36,23 @@ namespace WorldEditor.ViewModels
                 SetTool.RaiseCanExecuteChanged();
                 OpenTextures.RaiseCanExecuteChanged();
                 OpenSpriteModels.RaiseCanExecuteChanged();
+                OpenTiles.RaiseCanExecuteChanged();
+                OpenScripts.RaiseCanExecuteChanged();
+                OpenMaps.RaiseCanExecuteChanged();
             }
         }
         
         public bool IsWorldRepositoryOpen
         {
             get => WorldRepository != null;
+        }
+
+        private ObservableCollection<MapViewModel> maps;
+
+        public ObservableCollection<MapViewModel> Maps
+        {
+            get => maps;
+            set => Set(ref maps, value);
         }
 
         public MainViewModel()
@@ -53,6 +66,9 @@ namespace WorldEditor.ViewModels
 
             OpenTextures = new RelayCommand(ExecuteOpenTexturesWindowCommand, () => IsWorldRepositoryOpen);
             OpenSpriteModels = new RelayCommand(ExectueOpenSpriteModelsWindowCommand, () => IsWorldRepositoryOpen);
+            OpenTiles = new RelayCommand(ExectueOpenTilesWindowCommand, () => IsWorldRepositoryOpen);
+            OpenScripts = new RelayCommand(ExectueOpenScriptsWindowCommand, () => IsWorldRepositoryOpen);
+            OpenMaps = new RelayCommand(ExectueOpenMapsWindowCommand, () => IsWorldRepositoryOpen);
         }
 
         public RelayCommand<ToolType> SetTool { get; }
@@ -64,9 +80,16 @@ namespace WorldEditor.ViewModels
 
         public RelayCommand OpenTextures { get; }
         public RelayCommand OpenSpriteModels { get; }
-        public RelayCommand OpenTileTypes { get; }
-        public RelayCommand OpenBreeds { get; }
+        public RelayCommand OpenTiles { get; }
+        public RelayCommand OpenScripts { get; }
         public RelayCommand OpenMaps { get; }
+
+        private void CreateMaps()
+        {
+            var maps = worldRepository.Maps.GetMaps().Select(map => new MapViewModel(map)).ToList();
+
+            Maps = new ObservableCollection<MapViewModel>(maps);
+        }
 
         private void ExecuteCloseWindow(Window window)
         {
@@ -86,6 +109,7 @@ namespace WorldEditor.ViewModels
             if (openFileDialog.ShowDialog() == true)
             {
                 WorldRepository = new WorldRepository(openFileDialog.FileName, false);
+                CreateMaps();
             }
         }
 
@@ -115,6 +139,7 @@ namespace WorldEditor.ViewModels
             if (saveFileDialog.ShowDialog() == true)
             {
                 WorldRepository = new WorldRepository(saveFileDialog.FileName, true);
+                CreateMaps();
             }
         }
 
@@ -138,6 +163,40 @@ namespace WorldEditor.ViewModels
             };
 
             spriteModelsWindow.ShowDialog();
+        }
+
+        private void ExectueOpenTilesWindowCommand()
+        {
+            var tilesViewModel = new TilesViewModel(WorldRepository);
+            var tilesWindow = new TilesWindow
+            {
+                DataContext = tilesViewModel
+            };
+
+            tilesWindow.ShowDialog();
+        }
+
+        private void ExectueOpenScriptsWindowCommand()
+        {
+            var scriptFilesViewModel = new ScriptFilesViewModel(WorldRepository);
+            var scriptsWindow = new ScriptFilesWindow
+            {
+                DataContext = scriptFilesViewModel
+            };
+
+            scriptsWindow.ShowDialog();
+        }
+
+        private void ExectueOpenMapsWindowCommand()
+        {
+            var mapsViewModel = new MapsViewModel(WorldRepository);
+            var mapsWindow = new MapsWindow
+            {
+                DataContext = mapsViewModel
+            };
+
+            mapsWindow.ShowDialog();
+            CreateMaps();
         }
     }
 }

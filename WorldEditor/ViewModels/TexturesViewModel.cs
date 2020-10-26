@@ -37,7 +37,7 @@ namespace WorldEditor.ViewModels
             AddTexture = new RelayCommand(ExecuteAddTexture);
             RemoveTexture = new RelayCommand<TextureViewModel>(ExecuteRemoveTexture);
 
-            worldRepository.Textures.SpriteModelAdded += WorldRepository_TextureAdded;
+            worldRepository.Textures.TextureAdded += WorldRepository_TextureAdded;
 
             CreateTextures();
         }

@@ -30,7 +30,7 @@ namespace WorldEditor.DataAccess
                 throw new ArgumentNullException("rpgTexture");
 
             textures.Add(rpgTexture);
-            SpriteModelAdded(this, new EntityEventArgs<RpgTexture>(rpgTexture));
+            TextureAdded?.Invoke(this, new EntityEventArgs<RpgTexture>(rpgTexture));
         }
         public void AddNewTexture()
         {
@@ -51,11 +51,20 @@ namespace WorldEditor.DataAccess
                 throw new ArgumentException($"No texture was found with id '{id}'.");
 
             textures.Remove(texture);
-            SpriteModelRemoved(this, new EntityEventArgs<RpgTexture>(texture));
+            TextureRemoved(this, new EntityEventArgs<RpgTexture>(texture));
+        }
+
+        public void RemoveAt(int index)
+        {
+            if(index < 0 || index >= textures.Count)
+                throw new ArgumentException($"Invalid index: {index}");
+
+            textures.RemoveAt(index);
+
         }
 
 
-        public event EventHandler<EntityEventArgs<RpgTexture>> SpriteModelAdded;
-        public event EventHandler<EntityEventArgs<RpgTexture>> SpriteModelRemoved;
+        public event EventHandler<EntityEventArgs<RpgTexture>> TextureAdded;
+        public event EventHandler<EntityEventArgs<RpgTexture>> TextureRemoved;
     }
 }

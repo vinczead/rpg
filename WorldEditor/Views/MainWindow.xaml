@@ -76,9 +76,9 @@
             <MenuItem Header="Content">
                 <MenuItem Header="Textures..." Command="{Binding OpenTextures}"/>
                 <MenuItem Header="Sprite Models..." Command="{Binding OpenSpriteModels}"/>
-                <MenuItem Header="Tile Types..."/>
-                <MenuItem Header="Breeds..."/>
-                <MenuItem Header="Maps..."/>
+                <MenuItem Header="Tile Types..." Command="{Binding OpenTiles}"/>
+                <MenuItem Header="Scripts..." Command="{Binding OpenScripts}"/>
+                <MenuItem Header="Maps..." Command="{Binding OpenMaps}"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="View GitHub Page..."/>
@@ -254,12 +254,13 @@
                     </ComboBox>
                 </Grid>
             </Grid>
-            <TabControl Grid.Column="1">
-                <TabItem Header="Example Map">
-                    <!--<local:WorldEditorGame />-->
-                </TabItem>
-                <TabItem Header="Second Map">
-                </TabItem>
+            <TabControl Grid.Column="1" ItemsSource="{Binding Maps}" DisplayMemberPath="NameAndId">
+                <TabControl.ContentTemplate>
+                    <DataTemplate>
+                        
+                    </DataTemplate>
+                </TabControl.ContentTemplate>
+                
             </TabControl>
         </Grid>
     </Grid>

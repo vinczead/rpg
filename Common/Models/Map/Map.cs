@@ -20,7 +20,7 @@ namespace Common.Models
 
         public int Width { get; set; }
         public int Height { get; set; }
-        public string[][] Tiles { get; set; }
+        public Tile[,] Tiles { get; set; }
 
         public void Update(GameTime gameTime)
         {

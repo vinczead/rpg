@@ -13,11 +13,11 @@ using System.Windows.Shapes;
 namespace WorldEditor.Views
 {
     /// <summary>
-    /// Interaction logic for BreedsWindow.xaml
+    /// Interaction logic for TileTypesWindow.xaml
     /// </summary>
-    public partial class BreedsWindow : Window
+    public partial class TilesWindow : Window
     {
-        public BreedsWindow()
+        public TilesWindow()
         {
             InitializeComponent();
         }

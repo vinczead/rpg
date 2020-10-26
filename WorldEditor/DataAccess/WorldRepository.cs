@@ -16,9 +16,11 @@ namespace WorldEditor.DataAccess
         [JsonIgnore]
         public string FileName { get; set; }
 
-        //todo: add things, maps, spritemodels, tiles
         public TextureRepository Textures { get; private set; } = new TextureRepository();
         public SpriteModelRepository SpriteModels { get; private set; } = new SpriteModelRepository();
+        public TileRepository Tiles { get; private set; } = new TileRepository();
+        public ScriptFileRepository ScriptFiles { get; private set; } = new ScriptFileRepository();
+        public MapRepository Maps { get; private set; } = new MapRepository();
 
         public WorldRepository(string fileName, bool creating)
         {

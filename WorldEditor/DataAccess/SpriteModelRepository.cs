@@ -30,7 +30,7 @@ namespace WorldEditor.DataAccess
                 throw new ArgumentNullException("spriteModel");
 
             spriteModels.Add(spriteModel);
-            SpriteModelAdded(this, new EntityEventArgs<SpriteModel>(spriteModel));
+            SpriteModelAdded?.Invoke(this, new EntityEventArgs<SpriteModel>(spriteModel));
         }
         public void AddNewSpriteModel()
         {
