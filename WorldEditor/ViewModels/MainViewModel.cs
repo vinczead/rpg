@@ -61,7 +61,7 @@ namespace WorldEditor.ViewModels
             Close = new RelayCommand<Window>(ExecuteCloseWindow);
             NewProject = new RelayCommand(ExecuteNewProjectCommand);
             OpenProject = new RelayCommand(ExecuteOpenProjectCommand);
-            SaveProject = new RelayCommand(() => WorldRepository.SaveWorldDescriptor(), () => IsWorldRepositoryOpen);
+            SaveProject = new RelayCommand(ExecuteSaveProjectCommand, () => IsWorldRepositoryOpen);
             CloseProject = new RelayCommand(ExecuteCloseProjectCommand, () => IsWorldRepositoryOpen);
 
             OpenTextures = new RelayCommand(ExecuteOpenTexturesWindowCommand, () => IsWorldRepositoryOpen);
@@ -111,6 +111,15 @@ namespace WorldEditor.ViewModels
                 WorldRepository = new WorldRepository(openFileDialog.FileName, false);
                 CreateMaps();
             }
+        }
+
+        public void ExecuteSaveProjectCommand()
+        {
+            if (!IsWorldRepositoryOpen)
+                return;
+
+            WorldRepository.SaveWorldDescriptor();
+            MessageBox.Show("Project saved.");
         }
 
         private void ExecuteCloseProjectCommand()

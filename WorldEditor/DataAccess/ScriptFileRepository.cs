@@ -9,15 +9,15 @@ namespace WorldEditor.DataAccess
 {
     public class ScriptFileRepository
     {
-        readonly List<ScriptFile> scriptFiles = new List<ScriptFile>();
+        public List<ScriptFile> ScriptFiles { get; set; } = new List<ScriptFile>();
         public List<ScriptFile> GetScriptFiles()
         {
-            return new List<ScriptFile>(scriptFiles);
+            return new List<ScriptFile>(ScriptFiles);
         }
 
         public ScriptFile GetScriptFileById(string id)
         {
-            var scriptFile = scriptFiles.FirstOrDefault(scriptFile => scriptFile.Name == id);
+            var scriptFile = ScriptFiles.FirstOrDefault(scriptFile => scriptFile.Name == id);
 
             if (scriptFile == null)
                 throw new ArgumentException($"No script file was found with id '{id}'.");
@@ -29,13 +29,13 @@ namespace WorldEditor.DataAccess
             if (scriptFile == null)
                 throw new ArgumentNullException("scriptFile");
 
-            scriptFiles.Add(scriptFile);
+            ScriptFiles.Add(scriptFile);
             ScriptFileAdded?.Invoke(this, new EntityEventArgs<ScriptFile>(scriptFile));
         }
         public void AddNewScriptFile()
         {
             var i = 1;
-            while (scriptFiles.FirstOrDefault(scriptFile => scriptFile.Name == $"Script{i}") != null)
+            while (ScriptFiles.FirstOrDefault(scriptFile => scriptFile.Name == $"Script{i}") != null)
                 i++;
 
             AddScriptFile(new ScriptFile() { Name = $"Script{i}" });
@@ -46,20 +46,20 @@ namespace WorldEditor.DataAccess
             if (id == null)
                 throw new ArgumentNullException("id");
 
-            var scriptFile = scriptFiles.FirstOrDefault(scriptFile => scriptFile.Name == id);
+            var scriptFile = ScriptFiles.FirstOrDefault(scriptFile => scriptFile.Name == id);
             if (scriptFile == null)
                 throw new ArgumentException($"No script file was found with id '{id}'.");
 
-            scriptFiles.Remove(scriptFile);
+            ScriptFiles.Remove(scriptFile);
             ScriptFileRemoved(this, new EntityEventArgs<ScriptFile>(scriptFile));
         }
 
         public void RemoveAt(int index)
         {
-            if(index < 0 || index >= scriptFiles.Count)
+            if(index < 0 || index >= ScriptFiles.Count)
                 throw new ArgumentException($"Invalid index: {index}");
 
-            scriptFiles.RemoveAt(index);
+            ScriptFiles.RemoveAt(index);
 
         }
 

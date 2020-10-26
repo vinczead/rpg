@@ -9,15 +9,15 @@ namespace WorldEditor.DataAccess
 {
     public class TextureRepository
     {
-        readonly List<RpgTexture> textures = new List<RpgTexture>();
+        public List<RpgTexture> Textures { get; set; } = new List<RpgTexture>();
         public List<RpgTexture> GetTextures()
         {
-            return new List<RpgTexture>(textures);
+            return new List<RpgTexture>(Textures);
         }
 
         public RpgTexture GetTextureById(string id)
         {
-            var texture = textures.FirstOrDefault(texture => texture.Id == id);
+            var texture = Textures.FirstOrDefault(texture => texture.Id == id);
 
             if (texture == null)
                 throw new ArgumentException($"No texture was found with id '{id}'.");
@@ -29,13 +29,13 @@ namespace WorldEditor.DataAccess
             if (rpgTexture == null)
                 throw new ArgumentNullException("rpgTexture");
 
-            textures.Add(rpgTexture);
+            Textures.Add(rpgTexture);
             TextureAdded?.Invoke(this, new EntityEventArgs<RpgTexture>(rpgTexture));
         }
         public void AddNewTexture()
         {
             var i = 1;
-            while (textures.FirstOrDefault(texture => texture.Id == $"Texture{i}") != null)
+            while (Textures.FirstOrDefault(texture => texture.Id == $"Texture{i}") != null)
                 i++;
 
             AddTexture(new RpgTexture() { Id = $"Texture{i}" });
@@ -46,20 +46,20 @@ namespace WorldEditor.DataAccess
             if (id == null)
                 throw new ArgumentNullException("id");
 
-            var texture = textures.FirstOrDefault(texture => texture.Id == id);
+            var texture = Textures.FirstOrDefault(texture => texture.Id == id);
             if (texture == null)
                 throw new ArgumentException($"No texture was found with id '{id}'.");
 
-            textures.Remove(texture);
+            Textures.Remove(texture);
             TextureRemoved(this, new EntityEventArgs<RpgTexture>(texture));
         }
 
         public void RemoveAt(int index)
         {
-            if(index < 0 || index >= textures.Count)
+            if(index < 0 || index >= Textures.Count)
                 throw new ArgumentException($"Invalid index: {index}");
 
-            textures.RemoveAt(index);
+            Textures.RemoveAt(index);
 
         }
 

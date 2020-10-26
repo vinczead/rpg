@@ -10,6 +10,6 @@ namespace Common.Utility
         public Dictionary<string, string> SpriteModels { get; set; }
         public Dictionary<string, string> Scripts { get; set; }
         public Dictionary<string, string> Maps { get; set; }
-        public Dictionary<string, string> Breeds { get; set; }
+        public Dictionary<string, string> Tiles { get; set; }
     }
 }

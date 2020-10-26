@@ -257,7 +257,9 @@
             <TabControl Grid.Column="1" ItemsSource="{Binding Maps}" DisplayMemberPath="NameAndId">
                 <TabControl.ContentTemplate>
                     <DataTemplate>
-                        
+                        <UserControl>
+                            <Canvas Background="Black" x:Name="mapCanvas" />
+                        </UserControl>
                     </DataTemplate>
                 </TabControl.ContentTemplate>
                 

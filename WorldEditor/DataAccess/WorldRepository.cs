@@ -6,6 +6,7 @@ using System.Drawing.Design;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 using WorldEditor.Utility;
 
@@ -16,11 +17,17 @@ namespace WorldEditor.DataAccess
         [JsonIgnore]
         public string FileName { get; set; }
 
-        public TextureRepository Textures { get; private set; } = new TextureRepository();
-        public SpriteModelRepository SpriteModels { get; private set; } = new SpriteModelRepository();
-        public TileRepository Tiles { get; private set; } = new TileRepository();
-        public ScriptFileRepository ScriptFiles { get; private set; } = new ScriptFileRepository();
-        public MapRepository Maps { get; private set; } = new MapRepository();
+        public TextureRepository Textures { get; set; } = new TextureRepository();
+        public SpriteModelRepository SpriteModels { get; set; } = new SpriteModelRepository();
+        public TileRepository Tiles { get; set; } = new TileRepository();
+        public ScriptFileRepository ScriptFiles { get; set; } = new ScriptFileRepository();
+        [JsonIgnore]
+        public MapRepository Maps { get; set; } = new MapRepository(); //Todo: this should be serialized too
+
+        public WorldRepository()
+        {
+
+        }
 
         public WorldRepository(string fileName, bool creating)
         {
@@ -28,6 +35,7 @@ namespace WorldEditor.DataAccess
             {
                 var file = File.Create(fileName);
                 file.Close();
+                FileName = fileName;
             }
             else
             {
@@ -37,13 +45,33 @@ namespace WorldEditor.DataAccess
 
         private void LoadWorldDescriptor(string fileName)
         {
+            var jsonString = File.ReadAllText(fileName);
+            var deserialized = JsonSerializer.Deserialize<WorldRepository>(jsonString);
             FileName = fileName;
-            //TODO: implement
+            Textures = deserialized.Textures;
+            SpriteModels = deserialized.SpriteModels;
+            Tiles = deserialized.Tiles;
+            ScriptFiles = deserialized.ScriptFiles;
+            Maps = deserialized.Maps;
+
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(FileName));
+            foreach (var texture in Textures.GetTextures())
+            {
+                texture.Texture2D = File.ReadAllBytes($"Textures/{texture.Id}.png");
+            }
         }
 
         public void SaveWorldDescriptor()
         {
-            //TODO: implement
+            var jsonString = JsonSerializer.Serialize(this);
+            File.WriteAllText(FileName, jsonString);
+
+            Directory.SetCurrentDirectory(Path.GetDirectoryName(FileName));
+            Directory.CreateDirectory("Textures");
+            foreach (var texture in Textures.GetTextures())
+            {
+                File.WriteAllBytes($"Textures/{texture.Id}.png", texture.Texture2D);
+            }
         }
     }
 }

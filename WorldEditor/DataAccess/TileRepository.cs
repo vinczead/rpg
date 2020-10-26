@@ -8,15 +8,15 @@ namespace WorldEditor.DataAccess
 {
     public class TileRepository
     {
-        readonly List<Tile> tiles = new List<Tile>();
+        public List<Tile> Tiles { get; set; } = new List<Tile>();
         public List<Tile> GetTiles()
         {
-            return new List<Tile>(tiles);
+            return new List<Tile>(Tiles);
         }
 
         public Tile GetTileById(string id)
         {
-            var tile = tiles.FirstOrDefault(tile => tile.Id == id);
+            var tile = Tiles.FirstOrDefault(tile => tile.Id == id);
 
             if (tile == null)
                 throw new ArgumentException($"No tile was found with id '{id}'.");
@@ -28,13 +28,13 @@ namespace WorldEditor.DataAccess
             if (tile == null)
                 throw new ArgumentNullException("tile");
 
-            tiles.Add(tile);
+            Tiles.Add(tile);
             TileAdded?.Invoke(this, new EntityEventArgs<Tile>(tile));
         }
         public void AddNewTile()
         {
             var i = 1;
-            while (tiles.FirstOrDefault(tile => tile.Id == $"Tile{i}") != null)
+            while (Tiles.FirstOrDefault(tile => tile.Id == $"Tile{i}") != null)
                 i++;
 
             AddTile(new Tile() { Id = $"Tile{i}" });
@@ -45,20 +45,20 @@ namespace WorldEditor.DataAccess
             if (id == null)
                 throw new ArgumentNullException("id");
 
-            var tile = tiles.FirstOrDefault(tile => tile.Id == id);
+            var tile = Tiles.FirstOrDefault(tile => tile.Id == id);
             if (tile == null)
                 throw new ArgumentException($"No tile was found with id '{id}'.");
 
-            tiles.Remove(tile);
+            Tiles.Remove(tile);
             TileRemoved(this, new EntityEventArgs<Tile>(tile));
         }
 
         public void RemoveAt(int index)
         {
-            if(index < 0 || index >= tiles.Count)
+            if(index < 0 || index >= Tiles.Count)
                 throw new ArgumentException($"Invalid index: {index}");
 
-            tiles.RemoveAt(index);
+            Tiles.RemoveAt(index);
 
         }
 

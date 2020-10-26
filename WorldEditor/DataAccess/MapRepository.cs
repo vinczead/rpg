@@ -9,15 +9,16 @@ namespace WorldEditor.DataAccess
 {
     public class MapRepository
     {
-        readonly List<Map> maps = new List<Map>();
+        public List<Map> Maps { get; set; } = new List<Map>();
+
         public List<Map> GetMaps()
         {
-            return new List<Map>(maps);
+            return new List<Map>(Maps);
         }
 
         public Map GetMapById(string id)
         {
-            var map = maps.FirstOrDefault(map => map.Id == id);
+            var map = Maps.FirstOrDefault(map => map.Id == id);
 
             if (map == null)
                 throw new ArgumentException($"No map was found with id '{id}'.");
@@ -29,13 +30,13 @@ namespace WorldEditor.DataAccess
             if (map == null)
                 throw new ArgumentNullException("map");
 
-            maps.Add(map);
+            Maps.Add(map);
             MapAdded?.Invoke(this, new EntityEventArgs<Map>(map));
         }
         public void AddNewMap()
         {
             var i = 1;
-            while (maps.FirstOrDefault(map => map.Id == $"Map{i}") != null)
+            while (Maps.FirstOrDefault(map => map.Id == $"Map{i}") != null)
                 i++;
 
             AddMap(new Map() { Id = $"Map{i}" });
@@ -46,20 +47,20 @@ namespace WorldEditor.DataAccess
             if (id == null)
                 throw new ArgumentNullException("id");
 
-            var map = maps.FirstOrDefault(map => map.Id == id);
+            var map = Maps.FirstOrDefault(map => map.Id == id);
             if (map == null)
                 throw new ArgumentException($"No map was found with id '{id}'.");
 
-            maps.Remove(map);
+            Maps.Remove(map);
             MapRemoved(this, new EntityEventArgs<Map>(map));
         }
 
         public void RemoveAt(int index)
         {
-            if(index < 0 || index >= maps.Count)
+            if(index < 0 || index >= Maps.Count)
                 throw new ArgumentException($"Invalid index: {index}");
 
-            maps.RemoveAt(index);
+            Maps.RemoveAt(index);
 
         }
 

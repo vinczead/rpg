@@ -9,15 +9,15 @@ namespace WorldEditor.DataAccess
 {
     public class SpriteModelRepository
     {
-        readonly List<SpriteModel> spriteModels = new List<SpriteModel>();
+        public List<SpriteModel> SpriteModels { get; set; } = new List<SpriteModel>();
         public List<SpriteModel> GetSpriteModels()
         {
-            return new List<SpriteModel>(spriteModels);
+            return new List<SpriteModel>(SpriteModels);
         }
 
         public SpriteModel GetSpriteModelById(string id)
         {
-            var spriteModel = spriteModels.FirstOrDefault(spriteModel => spriteModel.Id == id);
+            var spriteModel = SpriteModels.FirstOrDefault(spriteModel => spriteModel.Id == id);
 
             if (spriteModel == null)
                 throw new ArgumentException($"No sprite model was found with id '{id}'.");
@@ -29,13 +29,13 @@ namespace WorldEditor.DataAccess
             if (spriteModel == null)
                 throw new ArgumentNullException("spriteModel");
 
-            spriteModels.Add(spriteModel);
+            SpriteModels.Add(spriteModel);
             SpriteModelAdded?.Invoke(this, new EntityEventArgs<SpriteModel>(spriteModel));
         }
         public void AddNewSpriteModel()
         {
             var i = 1;
-            while (spriteModels.FirstOrDefault(spriteModel => spriteModel.Id == $"SpriteModel{i}") != null)
+            while (SpriteModels.FirstOrDefault(spriteModel => spriteModel.Id == $"SpriteModel{i}") != null)
                 i++;
 
             AddSpriteModel(new SpriteModel() { Id = $"SpriteModel{i}" });
@@ -46,11 +46,11 @@ namespace WorldEditor.DataAccess
             if (id == null)
                 throw new ArgumentNullException("id");
 
-            var spriteModel = spriteModels.FirstOrDefault(spriteModel => spriteModel.Id == id);
+            var spriteModel = SpriteModels.FirstOrDefault(spriteModel => spriteModel.Id == id);
             if (spriteModel == null)
                 throw new ArgumentException($"No sprite model was found with id '{id}'.");
 
-            spriteModels.Remove(spriteModel);
+            SpriteModels.Remove(spriteModel);
             SpriteModelRemoved(this, new EntityEventArgs<SpriteModel>(spriteModel));
         }
 
