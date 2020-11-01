@@ -31,6 +31,7 @@ namespace WorldEditor.ViewModels
             {
                 Set(ref worldRepository, value);
                 RaisePropertyChanged(() => IsWorldRepositoryOpen);
+                RaisePropertyChanged(() => Title);
                 SaveProject.RaiseCanExecuteChanged();
                 CloseProject.RaiseCanExecuteChanged();
                 SetTool.RaiseCanExecuteChanged();
@@ -46,6 +47,8 @@ namespace WorldEditor.ViewModels
         {
             get => WorldRepository != null;
         }
+
+        public string Title { get => "World Editor" + (IsWorldRepositoryOpen ? $" - {WorldRepository.FileName}" : ""); }
 
         private ObservableCollection<MapViewModel> maps;
 

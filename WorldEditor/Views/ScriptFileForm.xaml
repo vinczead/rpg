@@ -37,6 +37,7 @@
         </ae:TextEditor>
         <TextBox
             Grid.Row="1"
-            IsReadOnly="True"/>
+            IsReadOnly="True"
+            x:Name="messages"/>
     </Grid>
 </UserControl>
