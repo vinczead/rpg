@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Common.Script.Utility
@@ -27,6 +28,15 @@ namespace Common.Script.Utility
             var y = Convert.ToSingle(parameters[2]);
 
             baseObject.Position = new Vector2(x, y);
+
+            return true;
+        }
+
+        public static bool SetTiles(object[] parameters)
+        {
+            var region = parameters[0] as Region;
+            var objects = parameters[1] as object[];
+            var tiles = objects.Select(obj => obj as Tile).ToArray();
 
             return true;
         }

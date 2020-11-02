@@ -97,7 +97,7 @@ namespace Common.Script.Visitors
                 Id = modelId,
                 SpriteSheet = World.Instance.Textures[textureId]
             };
-            World.Instance.Models.Add(textureId, currentModel);
+            World.Instance.Models.Add(modelId, currentModel);
 
             var retVal = base.VisitModelDefinition(context);
             currentModel = null;
@@ -143,7 +143,7 @@ namespace Common.Script.Visitors
         public override object VisitTileDefinition([NotNull] ViGaSParser.TileDefinitionContext context)
         {
             var id = context.tileId.Text;
-            var modelId = context.modelId.Text[1..^1];
+            var modelId = context.modelId.Text;
             var tile = new Tile()
             {
                 Id = id,
@@ -255,6 +255,10 @@ namespace Common.Script.Visitors
         #endregion
 
         #region Expressions
+        public override object VisitArrayExpression([NotNull] ViGaSParser.ArrayExpressionContext context)
+        {
+            return context.expression().Select(expression => Visit(expression)).ToArray();
+        }
 
         public override object VisitBoolExpression([NotNull] ViGaSParser.BoolExpressionContext context)
         {
@@ -279,7 +283,7 @@ namespace Common.Script.Visitors
 
         public override object VisitRefExpression([NotNull] ViGaSParser.RefExpressionContext context)
         {
-            return World.Instance.GetById(context.REFERENCE().GetText());
+            return World.Instance.GetById(context.REFERENCE().GetText().Substring(1));
         }
 
         public override object VisitParamExpression([NotNull] ViGaSParser.ParamExpressionContext context)
@@ -550,7 +554,6 @@ namespace Common.Script.Visitors
 
                 symbol.Value = expressionValue.ToString();
             }
-
 
             return null;
         }

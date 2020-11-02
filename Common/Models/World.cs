@@ -160,7 +160,22 @@ namespace Common.Models
                 return region;
             }
 
-            throw new ArgumentException("No GameObject was found with the specified id.", "id");
+            if (Tiles.TryGetValue(id, out Tile tile))
+            {
+                return tile;
+            }
+
+            if (Models.TryGetValue(id, out SpriteModel model))
+            {
+                return model;
+            }
+
+            if (Textures.TryGetValue(id, out Texture2D texture))
+            {
+                return texture;
+            }
+
+            throw new ArgumentException("No entity was found with the specified id.", "id");
         }
 
         public Env ToEnv()

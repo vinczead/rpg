@@ -10,13 +10,13 @@ frameDefinition: FRAME frameId=ID x=NUMBER ',' y=NUMBER ',' width=NUMBER ',' hei
 
 tileDefinition: TILE tileId=ID FROM modelId=ID WALKABLE?;
 
-baseDefinition: BASE baseRef=REFERENCE FROM baseClass=ID baseBody END;
+baseDefinition: BASE baseRef=ID FROM baseClass=ID baseBody END;
 baseBody: initBlock variablesBlock? runBlock*;
 
-regionDefinition: REGION regionRef=REFERENCE regionBody END;
+regionDefinition: REGION regionRef=ID regionBody END;
 regionBody: initBlock instanceDefinition*;
 
-instanceDefinition: PLAYER? INSTANCE instanceRef=REFERENCE? FROM baseRef=REFERENCE initBlock END;
+instanceDefinition: PLAYER? INSTANCE instanceRef=ID? FROM baseRef=ID initBlock END;
 
 initBlock: (assignmentStatement | functionCallStatement)*;
 

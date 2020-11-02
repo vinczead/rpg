@@ -75,5 +75,19 @@
       }
     ],
     "returnType": "Boolean"
+  },
+  {
+    "name": "SetTiles",
+    "parameters": [
+      {
+        "name": "Region",
+        "type": "Region"
+      },
+      {
+        "name": "Tiles",
+        "type": "TileArray"
+      }
+    ],
+    "returnType": "Boolean"
   }
 ]
