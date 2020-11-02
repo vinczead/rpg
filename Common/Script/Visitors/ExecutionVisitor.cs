@@ -3,6 +3,7 @@ using Antlr4.Runtime.Misc;
 using Common.Models;
 using Common.Script.Utility;
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -76,7 +77,13 @@ namespace Common.Script.Visitors
             var id = context.textureId.Text;
             var fileName = context.fileName.Text[1..^1];
 
-            World.Instance.LoadTextureFromFile(id, fileName);
+            if (World.Instance.Game != null)
+                World.Instance.LoadTextureFromFile(id, fileName);
+            else {
+                World.Instance.Textures.Add(id, null);
+                Errors.Add(new Error(context, $"Warning: Texture {id} from file {fileName} was not loaded, because Game is not initialized."));
+            }
+
             return null;
         }
 
