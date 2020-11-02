@@ -8,7 +8,6 @@ namespace Common.Models
     public class Tile
     {
         public string Id { get; set; }
-        public string Name { get; set; }
         public bool IsWalkable { get; set; }
         [JsonIgnore]
         public SpriteModel Model { get; set; }

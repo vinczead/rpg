@@ -15,7 +15,7 @@ namespace WorldEditor.ViewModels
             worldRepository.Maps.MapAdded += Maps_MapAdded;
         }
 
-        private void Maps_MapAdded(object sender, Utility.EntityEventArgs<Common.Models.Map> e)
+        private void Maps_MapAdded(object sender, Utility.EntityEventArgs<Common.Models.Region> e)
         {
             var mapViewModel = new MapViewModel(e.Entity);
             Items.Add(mapViewModel);

@@ -1,13 +1,12 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace GameScript.Models.Script
+namespace Common.Script.Utility
 {
     public sealed class TypeSystem
     {
@@ -18,7 +17,7 @@ namespace GameScript.Models.Script
         private TypeSystem()
         {
             AddSimpleTypes();
-            ReadTypes(@"C:\Users\Adam\sources\rpg\GameScriptSemAn\GameScriptSemAn\builtintypes.json");
+            ReadTypes();
         }
 
         public void AddSimpleTypes()
@@ -29,14 +28,14 @@ namespace GameScript.Models.Script
             types.Add("Boolean", new Type("Boolean"));
             types.Add("Number", new Type("Number"));
             types.Add("NullType", new Type("NullType"));
-            
+
             types.Add("Array", new Type("Array"));
             types.Add("StringArray", new Type("StringArray"));
             types.Add("BooleanArray", new Type("BooleanArray"));
             types.Add("NumberArray", new Type("NumberArray"));
 
             this["ErrorType"].Parents.Add(this["AnyType"]);
-            
+
             this["AnyType"].Parents.Add(this["String"]);
             this["AnyType"].Parents.Add(this["Boolean"]);
             this["AnyType"].Parents.Add(this["Number"]);
@@ -48,63 +47,76 @@ namespace GameScript.Models.Script
             this["Array"].Parents.Add(this["NumberArray"]);
         }
 
-        public void ReadTypes(string filePath)
+        public void ReadTypes()
         {
-            using (StreamReader sr = new StreamReader(filePath))
+            using var stream = typeof(FunctionManager).Assembly.GetManifestResourceStream("Common.types.json");
+            using var sr = new StreamReader(stream);
+            var content = sr.ReadToEnd();
+
+            try
             {
-                using (JsonReader jr = new JsonTextReader(sr))
+                var document = JsonDocument.Parse(content);
+                var root = document.RootElement;
+
+                foreach (var type in root.EnumerateArray())
                 {
-                    JsonSerializer serializer = new JsonSerializer();
+                    var name = type.GetProperty("name").GetString();
+                    types.Add(name, new Type(name));
+                    types.Add($"{name}Array", new Type($"{name}Array"));
+                    this["Array"].Parents.Add(this[$"{name}Array"]);
+                }
+                foreach (var type in root.EnumerateArray())
+                {
+                    var currentTypeName = type.GetProperty("name").GetString();
 
-                    var parsedTypes = (JArray)serializer.Deserialize(jr);
-                    foreach (var type in parsedTypes)
+                    if (type.TryGetProperty("parentOfNull", out var parentOfNull) && parentOfNull.GetBoolean())
+                        types["NullType"].Parents.Add(types[currentTypeName]);
+
+                    if (type.TryGetProperty("parents", out var parents))
                     {
-                        var name = type.Value<string>("name");
-                        types.Add(name, new Type(name));
-                        types.Add($"{name}Array", new Type($"{name}Array"));
-                        this["Array"].Parents.Add(this[$"{name}Array"]);
+                        var parentTypes = parents.EnumerateArray().Select(p => types[p.GetString()]);
+                        types[currentTypeName].Parents = parentTypes.ToHashSet();
                     }
-                    foreach (var type in parsedTypes)
+
+                    if (type.TryGetProperty("events", out var events))
                     {
-                        var currentTypeName = type.Value<string>("name");
-
-                        var events = type.Value<JArray>("events") ?? new JArray();
-                        var parents = type.Value<JArray>("parents") ?? new JArray();
-                        var parentOfNull = type.Value<bool>("parentOfNull");
-                        var properties = type.Value<JArray>("properties") ?? new JArray();
-
-                        if (parentOfNull)
-                            types["NullType"].Parents.Add(types[currentTypeName]);
-
-                        types[currentTypeName].Parents = parents.Select(p => types[p.Value<string>()]).ToHashSet();
-                        types[currentTypeName].Events = events.Select(e =>
+                        var eventValues = events.EnumerateArray().Select(e =>
                         {
-                            var @params = e.Value<JArray>("parameters");
+                            var @params = e.GetProperty("parameters");
 
                             List<Parameter> parameters = new List<Parameter>();
-                            foreach (var p in @params)
+                            foreach (var p in @params.EnumerateArray())
                             {
                                 parameters.Add(new Parameter()
                                 {
-                                    Name = p.Value<string>("name"),
-                                    Type = types[p.Value<string>("type")]
+                                    Name = p.GetProperty("name").GetString(),
+                                    Type = types[p.GetProperty("type").GetString()]
                                 });
                             }
 
                             return new Event()
                             {
-                                Name = e.Value<string>("name"),
+                                Name = e.GetProperty("name").GetString(),
                                 Parameters = parameters
                             };
-                            }).ToHashSet();
+                        });
+                        types[currentTypeName].Events = eventValues.ToHashSet();
+                    }
 
-                        types[currentTypeName].Properties = properties.Select(p => new Property()
+                    if(type.TryGetProperty("properties", out var properties))
+                    {
+                        var propertyValues = properties.EnumerateArray().Select(p => new Property()
                         {
-                            Name = p.Value<string>("name"),
-                            Type = types[p.Value<string>("type")]
-                        }).ToHashSet();
+                            Name = p.GetProperty("name").GetString(),
+                            Type = types[p.GetProperty("type").GetString()]
+                        });
+                        types[currentTypeName].Properties = propertyValues.ToHashSet();
                     }
                 }
+            }
+            catch
+            {
+                throw new FormatException("The format of types.json is invalid.");
             }
         }
 

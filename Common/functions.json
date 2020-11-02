@@ -1,0 +1,79 @@
+[
+  {
+    "name": "ShowMessage",
+    "parameters": [
+      {
+        "name": "String",
+        "type": "String"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+  {
+    "name": "Random",
+    "parameters": [],
+    "returnType": "Number"
+  },
+  {
+    "name": "SetPos",
+    "parameters": [
+      {
+        "name": "ThingInstance",
+        "type": "ThingInstance"
+      },
+      {
+        "name": "X",
+        "type": "Number"
+      },
+      {
+        "name": "Y",
+        "type": "Number"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+  {
+    "name": "StrLength",
+    "parameters": [
+      {
+        "name": "String",
+        "type": "String"
+      }
+    ],
+    "returnType": "Number"
+  },
+  {
+    "name": "StrFind",
+    "parameters": [
+      {
+        "name": "String",
+        "type": "String"
+      },
+      {
+        "name": "SearchTerm",
+        "type": "String"
+      }
+    ],
+    "returnType": "Number"
+  },
+  {
+    "name": "AddItem",
+    "parameters": [
+      {
+        "name": "ItemToAdd",
+        "type": "Item"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+  {
+    "name": "RemoveItem",
+    "parameters": [
+      {
+        "name": "ItemToRemove",
+        "type": "Item"
+      }
+    ],
+    "returnType": "Boolean"
+  }
+]

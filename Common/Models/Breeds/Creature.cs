@@ -12,7 +12,7 @@ namespace Common.Models
         
         //Base Stats
         public int MaxHealth { get; set; }
-        public int MaxMagicPoints { get; set; }
+        public int MaxMana { get; set; }
 
         //Base Attributes
         public int Strength { get; set; }

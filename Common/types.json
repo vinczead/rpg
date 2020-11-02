@@ -1,0 +1,190 @@
+[
+  {
+    "name": "Texture",
+    "properties": [],
+    "events": [],
+    "parentOfNull": true
+  },
+  {
+    "name": "Model",
+    "properties": [],
+    "events": [],
+    "parentOfNull": true
+  },
+  {
+    "name": "Tile",
+    "properties": [],
+    "events": [],
+    "parentOfNull": true
+  },
+  {
+    "name": "Region",
+    "properties": [
+      {
+        "name": "Width",
+        "type": "Number"
+      },
+      {
+        "name": "Height",
+        "type": "Number"
+      }
+    ]
+  },
+  {
+    "name": "Thing",
+    "properties": [
+      {
+        "name": "Id",
+        "type": "String"
+      },
+      {
+        "name": "Name",
+        "type": "String"
+      },
+      {
+        "name": "Model",
+        "type": "Model"
+      }
+    ],
+    "events": [
+      {
+        "name": "InGame",
+        "parameters": []
+      },
+      {
+        "name": "Created",
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "Creature",
+    "parents": [ "Thing" ],
+    "properties": [
+      {
+        "name": "MaxHealth",
+        "type": "Number"
+      },
+      {
+        "name": "MaxMana",
+        "type": "Number"
+      },
+      {
+        "name": "Strength",
+        "type": "Number"
+      },
+      {
+        "name": "Dexterity",
+        "type": "Number"
+      },
+      {
+        "name": "Speed",
+        "type": "Number"
+      },
+      {
+        "name": "Intelligence",
+        "type": "Number"
+      },
+      {
+        "name": "Protection",
+        "type": "Number"
+      }
+    ],
+    "events": [
+      {
+        "name": "Damaged",
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "Character",
+    "parents": [ "Creature" ],
+    "properties": [],
+    "events": [
+      {
+        "name": "ItemAdded",
+        "parameters": []
+      },
+      {
+        "name": "ItemRemoved",
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "Item",
+    "parents": [ "Thing" ],
+    "properties": [
+      {
+        "name": "Value",
+        "type": "Number"
+      },
+      {
+        "name": "Description",
+        "type": "String"
+      }
+    ],
+    "events": [
+      {
+        "name": "PickedUp",
+        "parameters": []
+      },
+      {
+        "name": "Dropped",
+        "parameters": []
+      }
+    ]
+  },
+  {
+    "name": "ThingInstance",
+    "properties": [
+      {
+        "name": "X",
+        "type": "Number"
+      },
+      {
+        "name": "Y",
+        "type": "Number"
+      },
+      {
+        "name": "Breed",
+        "type": "Thing"
+      }
+    ]
+  },
+  {
+    "name": "ItemInstance",
+    "parents": [ "ThingInstance" ],
+    "properties": [
+      {
+        "name": "Breed",
+        "type": "Item"
+      }
+    ]
+  },
+  {
+    "name": "CreatureInstance",
+    "parents": [ "ThingInstance" ],
+    "properties": [
+      {
+        "name": "CurrentHealth",
+        "type": "Number"
+      },
+      {
+        "name": "Breed",
+        "type": "Creature"
+      }
+    ]
+  },
+  {
+    "name": "CharacterInstance",
+    "parents": [ "CreatureInstance" ],
+    "properties": [
+      {
+        "name": "Breed",
+        "type": "Character"
+      }
+    ]
+  }
+]

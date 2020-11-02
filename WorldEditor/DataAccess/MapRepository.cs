@@ -9,14 +9,14 @@ namespace WorldEditor.DataAccess
 {
     public class MapRepository
     {
-        public List<Map> Maps { get; set; } = new List<Map>();
+        public List<Region> Maps { get; set; } = new List<Region>();
 
-        public List<Map> GetMaps()
+        public List<Region> GetMaps()
         {
-            return new List<Map>(Maps);
+            return new List<Region>(Maps);
         }
 
-        public Map GetMapById(string id)
+        public Region GetMapById(string id)
         {
             var map = Maps.FirstOrDefault(map => map.Id == id);
 
@@ -25,13 +25,13 @@ namespace WorldEditor.DataAccess
 
             return map;
         }
-        public void AddMap(Map map)
+        public void AddMap(Region map)
         {
             if (map == null)
                 throw new ArgumentNullException("map");
 
             Maps.Add(map);
-            MapAdded?.Invoke(this, new EntityEventArgs<Map>(map));
+            MapAdded?.Invoke(this, new EntityEventArgs<Region>(map));
         }
         public void AddNewMap()
         {
@@ -39,7 +39,7 @@ namespace WorldEditor.DataAccess
             while (Maps.FirstOrDefault(map => map.Id == $"Map{i}") != null)
                 i++;
 
-            AddMap(new Map() { Id = $"Map{i}" });
+            AddMap(new Region() { Id = $"Map{i}" });
         }
 
         public void RemoveMap(string id)
@@ -52,7 +52,7 @@ namespace WorldEditor.DataAccess
                 throw new ArgumentException($"No map was found with id '{id}'.");
 
             Maps.Remove(map);
-            MapRemoved(this, new EntityEventArgs<Map>(map));
+            MapRemoved(this, new EntityEventArgs<Region>(map));
         }
 
         public void RemoveAt(int index)
@@ -64,7 +64,7 @@ namespace WorldEditor.DataAccess
 
         }
 
-        public event EventHandler<EntityEventArgs<Map>> MapAdded;
-        public event EventHandler<EntityEventArgs<Map>> MapRemoved;
+        public event EventHandler<EntityEventArgs<Region>> MapAdded;
+        public event EventHandler<EntityEventArgs<Region>> MapRemoved;
     }
 }

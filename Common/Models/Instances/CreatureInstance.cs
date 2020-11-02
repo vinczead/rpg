@@ -8,7 +8,7 @@ namespace Common.Models
 {
     public class CreatureInstance : ThingInstance
     {
-        public int CurrHealth { get; set; }
+        public int CurrentHealth { get; set; }
         public virtual int Damage => (Breed as Creature).Strength;
 
         public State State { get; set; }

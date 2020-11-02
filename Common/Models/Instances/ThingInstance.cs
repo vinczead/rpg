@@ -13,9 +13,10 @@ namespace Common.Models
         public string Id { get; set; }
         public Thing Breed { get; set; }
         public Vector2 Position { get; set; }
-        public Map Map { get; set; }
+        public Region Map { get; set; }
         public TimeSpan AnimationTime { get; set; }
         public virtual string StateString => $"Idle";
+        public Region Region { get; set; }
 
         public virtual void Update(GameTime gameTime)
         {

@@ -1,32 +1,27 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
-using GameScript.Models;
-using GameScript.Models.BaseClasses;
-using GameScript.Models.InstanceClasses;
-using GameScript.Models.Script;
+using Common.Models;
+using Common.Script.Utility;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using System.Text;
-using System.Threading.Tasks;
 
-namespace GameScript.Visitors
+namespace Common.Script.Visitors
 {
     public sealed class ExecutionVisitor : ViGaSBaseVisitor<object>
     {
         private Env env;
 
-        private GameModel gameModel;
-        private GameObject currentBase;
-        private GameObjectInstance currentInstance;
+        private Thing currentBreed;
+        private ThingInstance currentInstance;
+        private SpriteModel currentModel;
+        private Animation currentAnimation;
         private Region currentRegion;
 
-        private List<Error> errors;
+        public List<Error> Errors { get; private set; }
 
         private static ExecutionVisitor Instance { get; } = new ExecutionVisitor();
 
@@ -46,65 +41,110 @@ namespace GameScript.Visitors
 
         private ExecutionVisitor()
         {
-            gameModel = new GameModel();
+            World.Instance.Clear();
             env = new Env();
-            errors = new List<Error>();
+            Errors = new List<Error>();
         }
 
-        public static GameModel Build(IEnumerable<ScriptFile> files, out List<Error> errors)
+        public static void BuildWorld(IEnumerable<string> files)
         {
             var worldBuilder = new ExecutionVisitor();
             foreach (var file in files)
             {
-                var tree = Executer.ReadAST(file.Document.Text, out _);
+                var tree = ScriptReader.ReadAST(file, out _);
                 worldBuilder.Visit(tree);
             }
-
-            errors = Instance.errors;
-            return worldBuilder.gameModel;
         }
 
-        public static List<Error> ExecuteRunBlock(GameModel gameModel, GameObjectInstance currentInstance, string runBlockId, List<Symbol> parameters = null)
+        public static void ExecuteRunBlock(ThingInstance currentInstance, string runBlockId, List<Symbol> parameters = null)
         {
-            Instance.gameModel = gameModel;
-            Instance.env = new Env(gameModel.ToEnv(), runBlockId);
+            Instance.env = new Env(World.Instance.ToEnv(), runBlockId);
 
             if (parameters != null)
                 foreach (var p in parameters)
                     Instance.env[p.Name] = p;
 
-            if (currentInstance.BASE.RunBlocks.TryGetValue(runBlockId, out var runBlock))
-                Instance.Visit(runBlock);
-
-            return Instance.errors;
+            //todo: actually run the run block
+            /*if (currentInstance.Breed.RunBlocks.TryGetValue(runBlockId, out var runBlock))
+                Instance.Visit(runBlock);*/
         }
 
         #region World building
 
         public override object VisitTextureDefinition([NotNull] ViGaSParser.TextureDefinitionContext context)
         {
-            
-            return base.VisitTextureDefinition(context);
+            var id = context.textureId.Text;
+            var fileName = context.fileName.Text[1..^1];
+
+            World.Instance.LoadTextureFromFile(id, fileName);
+            return null;
         }
 
         public override object VisitModelDefinition([NotNull] ViGaSParser.ModelDefinitionContext context)
         {
-            return base.VisitModelDefinition(context);
+            var modelId = context.modelId.Text;
+            var textureId = context.textureId.Text;
+            AddSymbolToEnv(context, new Symbol(modelId, TypeSystem.Instance["Model"], modelId));
+            currentModel = new SpriteModel()
+            {
+                Id = modelId,
+                SpriteSheet = World.Instance.Textures[textureId]
+            };
+            World.Instance.Models.Add(textureId, currentModel);
+
+            var retVal = base.VisitModelDefinition(context);
+            currentModel = null;
+            return retVal;
         }
 
         public override object VisitAnimationDefinition([NotNull] ViGaSParser.AnimationDefinitionContext context)
         {
-            return base.VisitAnimationDefinition(context);
+            var animationId = context.animationId.Text;
+            var looping = context.LOOPING() != null;
+
+            currentAnimation = new Animation()
+            {
+                Id = animationId,
+                IsLooping = looping
+            };
+            currentModel.Animations.Add(currentAnimation);
+
+            var retVal = base.VisitAnimationDefinition(context);
+
+            currentAnimation = null;
+
+            return retVal;
         }
 
         public override object VisitFrameDefinition([NotNull] ViGaSParser.FrameDefinitionContext context)
         {
-            return base.VisitFrameDefinition(context);
+            var x = int.Parse(context.x.Text);
+            var y = int.Parse(context.y.Text);
+            var width = int.Parse(context.width.Text);
+            var height = int.Parse(context.height.Text);
+            var duration = int.Parse(context.duration.Text);
+            var frame = new Frame()
+            {
+                Source = new Rectangle(x, y, width, height),
+                TimeSpan = TimeSpan.FromMilliseconds(duration)
+            };
+            currentAnimation.Frames.Add(frame);
+
+            return null;
         }
 
         public override object VisitTileDefinition([NotNull] ViGaSParser.TileDefinitionContext context)
         {
-            return base.VisitTileDefinition(context);
+            var id = context.tileId.Text;
+            var modelId = context.modelId.Text[1..^1];
+            var tile = new Tile()
+            {
+                Id = id,
+                Model = World.Instance.Models[modelId]
+            };
+
+            World.Instance.Tiles.Add(id, tile);
+            return null;
         }
 
         public override object VisitBaseDefinition([NotNull] ViGaSParser.BaseDefinitionContext context)
@@ -114,15 +154,15 @@ namespace GameScript.Visitors
 
             AddSymbolToEnv(context, new Symbol(baseRef, TypeSystem.Instance[baseClass], baseRef));
             env = new Env(env, baseRef);
-            currentBase = GameObjectFactory.CreateGameObject(baseClass);
-            currentBase.Id = baseRef;
-            gameModel.Bases.Add(baseRef, currentBase);
+            currentBreed = GameObjectFactory.Create(baseClass);
+            currentBreed.Id = baseRef;
+            World.Instance.Breeds.Add(baseRef, currentBreed);
 
             AddSymbolToEnv(context, new Symbol("Self", TypeSystem.Instance[baseClass], baseRef));
 
             var retVal = base.VisitBaseDefinition(context);
 
-            currentBase = null;
+            currentBreed = null;
 
             return retVal;
         }
@@ -137,7 +177,7 @@ namespace GameScript.Visitors
 
             foreach (var runBlock in context.runBlock())
             {
-                currentBase.RunBlocks[runBlock.eventTypeName.Text] = runBlock;
+                //currentBreed.RunBlocks[runBlock.eventTypeName.Text] = runBlock; //todo: actually save run block
             }
 
             return null;
@@ -152,7 +192,7 @@ namespace GameScript.Visitors
             if (context.expression() != null)
                 value = Visit(context.expression()).ToString();
 
-            currentBase.Variables[name] = new Symbol(name, TypeSystem.Instance[type], value.ToString());
+            //currentBreed.Variables[name] = new Symbol(name, TypeSystem.Instance[type], value.ToString()); //todo: actually save variable
             return null;
         }
 
@@ -162,11 +202,11 @@ namespace GameScript.Visitors
             var instanceRef = context.instanceRef?.Text;
 
             var baseSymbol = GetSymbolFromEnv(context, baseRef);
-            var instanceType = TypeSystem.Instance[baseSymbol.Type + "Instance"];
+            var instanceType = TypeSystem.Instance[baseSymbol.Type + "Instance"]; //todo: this could be nicer - maybe read instanceType from json?
 
             AddSymbolToEnv(context, new Symbol(instanceRef, instanceType, instanceRef));
             env = new Env(env, instanceRef ?? $"Instance of {baseRef}");
-            currentInstance = gameModel.Spawn(baseRef, currentRegion.Id, instanceRef);
+            currentInstance = World.Instance.Spawn(baseRef, currentRegion.Id, instanceRef);
             currentInstance.Region = currentRegion;
 
             AddSymbolToEnv(context, new Symbol("Self", instanceType, currentInstance.Id));
@@ -184,9 +224,8 @@ namespace GameScript.Visitors
 
             AddSymbolToEnv(context, new Symbol(regionRef, TypeSystem.Instance["Region"], regionRef));
             env = new Env(env, regionRef);
-            currentRegion = new Region() { Id = regionRef, GameModel = gameModel };
-            gameModel.Regions.Add(regionRef, currentRegion);
-            currentRegion.GameModel = gameModel;
+            currentRegion = new Region() { Id = regionRef };
+            World.Instance.Regions.Add(regionRef, currentRegion);
 
             AddSymbolToEnv(context, new Symbol("Self", TypeSystem.Instance["Region"], currentRegion.Id));
 
@@ -233,30 +272,30 @@ namespace GameScript.Visitors
 
         public override object VisitRefExpression([NotNull] ViGaSParser.RefExpressionContext context)
         {
-            return gameModel.GetById(context.REFERENCE().GetText());
+            return World.Instance.GetById(context.REFERENCE().GetText());
         }
 
         public override object VisitParamExpression([NotNull] ViGaSParser.ParamExpressionContext context)
         {
             var symbol = GetSymbolFromEnv(context, context.param.Text);
-            return gameModel.GetById(symbol?.Value);
+            return World.Instance.GetById(symbol?.Value);
         }
 
         public override object VisitPathExpression([NotNull] ViGaSParser.PathExpressionContext context)
         {
             var pathValue = Visit(context.path());
 
-            if(pathValue is PropInfoPathValue)
+            if (pathValue is PropInfoPathValue)
             {
                 var propInfoPathValue = pathValue as PropInfoPathValue;
 
-                var gameObject = gameModel.GetById(propInfoPathValue.Symbol.Value);
+                var gameObject = World.Instance.GetById(propInfoPathValue.Symbol.Value);
                 var propInfo = propInfoPathValue.PropertyInfo;
 
                 return propInfo.GetValue(gameObject);
             }
-            
-            if(pathValue is Symbol)
+
+            if (pathValue is Symbol)
             {
                 return pathValue;
             }
@@ -287,24 +326,24 @@ namespace GameScript.Visitors
                 if (char.IsLower(part.Text[0]))
                 {
                     //only variables of Instance classes can be accessed
-                    if (currentSymbol.Type.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
+                    if (currentSymbol.Type.InheritsFrom(TypeSystem.Instance["ThingInstance"]))
                     {
-                        var gameObject = gameModel.GetById(currentSymbol.Value) as GameObjectInstance;
+                        var gameObject = World.Instance.GetById(currentSymbol.Value) as ThingInstance;
 
-                        currentSymbol = gameObject.Variables[part.Text];
+                        //currentSymbol = gameObject.Variables[part.Text]; //todo: actually reach variable
 
                         if (isLastPart)
                             return currentSymbol;
                     }
                     else
                     {
-                        errors.Add(new Error(part, $"Only variables of Instances can be accessed."));
+                        Errors.Add(new Error(part, $"Only variables of Instances can be accessed."));
                         return null;
                     }
                 }
                 else //this part is a property
                 {
-                    var gameObject = gameModel.GetById(currentSymbol.Value); //Get the GameObject that corresponds to the current symbol
+                    var gameObject = World.Instance.GetById(currentSymbol.Value); //Get the Breed that corresponds to the current symbol
 
                     thisPropertyInfo = gameObject.GetType().GetProperty(part.Text); //The PropertyInfo that is being referenced by 'part'
 
@@ -315,11 +354,11 @@ namespace GameScript.Visitors
                             Symbol = currentSymbol
                         };
 
-                    //if this isn't the last part, and the property referenced by part is a Base or Instance, resolve the corresponding symbol
+                    //if this isn't the last part, and the property referenced by part is a Breed or Instance, resolve the corresponding symbol
                     var thisPropertyType = thisPropertyInfo.PropertyType;
-                    if (thisPropertyType.IsAssignableFrom(typeof(GameObject)) || thisPropertyType.IsAssignableFrom(typeof(GameObjectInstance)))
+                    if (thisPropertyType.IsAssignableFrom(typeof(Thing)) || thisPropertyType.IsAssignableFrom(typeof(ThingInstance)))
                     {
-                        //get the Id of this gameObject or GameObjectInstance
+                        //get the Id of this Breed or Instance
                         var gameObjectIdPropertyInfo = thisPropertyInfo.PropertyType.GetProperty("Id");
                         var currentPropertyValue = thisPropertyInfo.GetValue(gameObject);
 
@@ -328,7 +367,7 @@ namespace GameScript.Visitors
                     }
                     else
                     {
-                        errors.Add(new Error(part, $"Only properties of Instances and Bases can be accessed."));
+                        Errors.Add(new Error(part, $"Only properties of Instances and Breeds can be accessed."));
                         return null;
                     }
                 }
@@ -347,8 +386,8 @@ namespace GameScript.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, errors);
-            var rightType = TypeVisitor.GetType(context.right, env, errors);
+            var leftType = TypeVisitor.GetType(context.left, env, Errors);
+            var rightType = TypeVisitor.GetType(context.right, env, Errors);
 
             var @operator = context.additiveOperator();
 
@@ -372,8 +411,8 @@ namespace GameScript.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, errors);
-            var rightType = TypeVisitor.GetType(context.right, env, errors);
+            var leftType = TypeVisitor.GetType(context.left, env, Errors);
+            var rightType = TypeVisitor.GetType(context.right, env, Errors);
 
             var @operator = context.multiplOperator();
 
@@ -394,8 +433,8 @@ namespace GameScript.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, errors);
-            var rightType = TypeVisitor.GetType(context.right, env, errors);
+            var leftType = TypeVisitor.GetType(context.left, env, Errors);
+            var rightType = TypeVisitor.GetType(context.right, env, Errors);
 
             var op = context.compOperator();
 
@@ -428,8 +467,8 @@ namespace GameScript.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, errors);
-            var rightType = TypeVisitor.GetType(context.right, env, errors);
+            var leftType = TypeVisitor.GetType(context.left, env, Errors);
+            var rightType = TypeVisitor.GetType(context.right, env, Errors);
 
             var op = context.logicalOperator();
 
@@ -449,7 +488,7 @@ namespace GameScript.Visitors
         public override object VisitNotExpression([NotNull] ViGaSParser.NotExpressionContext context)
         {
             var expression = Visit(context.expression());
-            var type = TypeVisitor.GetType(context.expression(), env, errors);
+            var type = TypeVisitor.GetType(context.expression(), env, Errors);
 
             if (type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 return !(bool)expression;
@@ -488,17 +527,17 @@ namespace GameScript.Visitors
             var pathValue = Visit(context.path());
             var expressionValue = Visit(context.expression());
 
-            if(pathValue is PropInfoPathValue)
+            if (pathValue is PropInfoPathValue)
             {
                 var propInfoPathValue = pathValue as PropInfoPathValue;
 
-                var gameObject = gameModel.GetById(propInfoPathValue.Symbol.Value);
+                var gameObject = World.Instance.GetById(propInfoPathValue.Symbol.Value);
                 var propInfo = propInfoPathValue.PropertyInfo;
 
                 propInfo.SetValue(gameObject, Convert.ChangeType(expressionValue, propInfo.PropertyType));
             }
 
-            if(pathValue is Symbol)
+            if (pathValue is Symbol)
             {
                 var symbol = pathValue as Symbol;
 
@@ -552,7 +591,7 @@ namespace GameScript.Visitors
             if (symbol != null)
                 return symbol;
 
-            errors.Add(new Error(token, $"{symbolName} does not exist in this context."));
+            Errors.Add(new Error(token, $"{symbolName} does not exist in this context."));
             return null;
         }
 
@@ -565,7 +604,7 @@ namespace GameScript.Visitors
             if (symbol != null)
                 return symbol;
 
-            errors.Add(new Error(context, $"{symbolName} does not exist in this context."));
+            Errors.Add(new Error(context, $"{symbolName} does not exist in this context."));
             return null;
         }
 
@@ -577,7 +616,7 @@ namespace GameScript.Visitors
             }
             catch
             {
-                errors.Add(new Error(context, $"{symbol.Name} is already defined."));
+                Errors.Add(new Error(context, $"{symbol.Name} is already defined."));
             }
         }
     }

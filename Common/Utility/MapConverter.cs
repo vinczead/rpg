@@ -7,15 +7,15 @@ using System.Text.Json.Serialization;
 
 namespace Common.Utility
 {
-    public class MapConverter : JsonConverter<Map>
+    public class MapConverter : JsonConverter<Region>
     {
-        public override Map Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
+        public override Region Read(ref Utf8JsonReader reader, Type typeToConvert, JsonSerializerOptions options)
         {
-            return new Map();
+            return new Region();
             //todo
         }
 
-        public override void Write(Utf8JsonWriter writer, Map value, JsonSerializerOptions options)
+        public override void Write(Utf8JsonWriter writer, Region value, JsonSerializerOptions options)
         {
             //todo
         }

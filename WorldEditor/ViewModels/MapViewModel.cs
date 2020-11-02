@@ -9,9 +9,9 @@ namespace WorldEditor.ViewModels
 {
     public class MapViewModel: ViewModelBase
     {
-        readonly Map map;
+        readonly Region map;
 
-        public MapViewModel(Map map)
+        public MapViewModel(Region map)
         {
             this.map = map ?? throw new ArgumentException("map");
         }

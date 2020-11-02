@@ -6,7 +6,7 @@ textureDefinition: TEXTURE textureId=ID FROM fileName=STRING;
 
 modelDefinition: MODEL modelId=ID FROM textureId=ID animationDefinition+ END;
 animationDefinition: ANIMATION animationId=ID LOOPING? frameDefinition+ END;
-frameDefinition: FRAME x=NUMBER ',' y=NUMBER ',' width=NUMBER ',' height=NUMBER ',' duration=NUMBER;
+frameDefinition: FRAME frameId=ID x=NUMBER ',' y=NUMBER ',' width=NUMBER ',' height=NUMBER ',' duration=NUMBER;
 
 tileDefinition: TILE tileId=ID FROM modelId=ID WALKABLE?;
 
@@ -16,7 +16,7 @@ baseBody: initBlock variablesBlock? runBlock*;
 regionDefinition: REGION regionRef=REFERENCE regionBody END;
 regionBody: initBlock instanceDefinition*;
 
-instanceDefinition: INSTANCE instanceRef=REFERENCE? FROM baseRef=REFERENCE initBlock END;
+instanceDefinition: PLAYER? INSTANCE instanceRef=REFERENCE? FROM baseRef=REFERENCE initBlock END;
 
 initBlock: (assignmentStatement | functionCallStatement)*;
 
@@ -97,43 +97,47 @@ LOOPING: 'looping';
 FRAME: 'frame';
 TILE: 'tile';
 WALKABLE: 'walkable';
-BASE: 'base';
-REGION: 'region';
-INSTANCE: 'instance';
-FROM: 'from';
+BASE: [Bb]'ase';
+REGION: [Rr]'egion';
+INSTANCE: [Ii]'nstance';
+FROM: [Ff]'rom';
+PLAYER: 'player';
 
-VARIABLES: 'variables';
-IS: 'is';
-WITHVALUE: 'withvalue';
+VARIABLES: [Vv]'ariables';
+IS: [Ii]'s';
+WITHVALUE: 'WithValue' | 'withvalue';
+PARAMETER: [Pp]'arameter';
+SHARED: [Ss]'hared';
 
-INIT: 'init';
+INIT: [Ii]'nit';
 
-RUN: 'run';
-WHEN: 'when';
+RUN: [Rr]'un';
+WHEN: [Ww]'hen';
 
-IF: 'if';
-THEN: 'then';
-ELSE: 'else';
+IF: 'If' | 'if';
+THEN: 'Then' | 'then';
+ELSE: 'Else' | 'else';
 
-WHILE: 'while';
-REPEAT: 'repeat';
-BREAK: 'break';
+WHILE: 'While' | 'while';
+REPEAT: 'Repeat' | 'repeat';
+BREAK: 'Break' | 'break';
 
-RETURN: 'return';
+RETURN: 'Return' | 'return';
 
-SET: 'set';
-TO: 'to';
+SET: 'Set' | 'set';
+SETVAR: 'SetVar' | 'setvar';
+TO: 'To' | 'to';
 
-END: 'end';
+END: 'End' | 'end';
 
 BRACKET_OPEN: '(';
 BRACKET_CLOSE: ')';
 COMMA: ',';
 DOT: '.';
 
-THIS: 'this';
-NULL: 'null';
-BOOLEAN: 'true' | 'false';
+THIS: [Tt]'his';
+NULL: 'Null' | 'null';
+BOOLEAN: 'True' | 'true' | 'False' | 'false';
 STRING: '"' (~[\r\n])* '"';
 NUMBER: [0-9]+ ('.' [0-9]+)?;
 
