@@ -124,8 +124,12 @@ namespace Common.Script.Visitors
             var baseRef = context.baseRef;
             var baseSymbol = GetSymbolFromEnv(baseRef, baseRef.Text);
 
+            var isPlayer = context.PLAYER() != null;
+
             var instanceRef = context.instanceRef;
             var instanceType = TypeSystem.Instance["ErrorType"];
+
+            //todo: check if x,y in bounds
 
             if (baseSymbol != null)
             {
@@ -143,6 +147,11 @@ namespace Common.Script.Visitors
                 }
                 else
                     errors.Add(new Error(baseRef, $"Type of {baseRef.Text} must be {TypeSystem.Instance["GameObject"]}"));
+            }
+
+            if(isPlayer && baseSymbol.Type != TypeSystem.Instance["Character"])
+            {
+                errors.Add(new Error(baseRef, $"The player keyword can only be used on Instances of Characters."));
             }
 
             if (instanceRef != null)

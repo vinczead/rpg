@@ -1,4 +1,5 @@
-﻿using Common.Script.Utility;
+﻿using Antlr4.StringTemplate;
+using Common.Script.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -198,6 +199,14 @@ namespace Common.Models
             }
 
             return env;
+        }
+
+        public string Serialize()
+        {
+            TemplateGroupFile templateGroupFile = new TemplateGroupFile(@"C:\Users\Adam\sources\rpg\Common\bin\Debug\netcoreapp3.1\Templates.stg");
+            var template = templateGroupFile.GetInstanceOf("world");
+            template.Add("w", Instance);
+            return template.Render();
         }
     }
 }

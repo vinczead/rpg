@@ -1,0 +1,49 @@
+﻿world(w) ::= <<
+<w.models.values:model()><\\>
+<w.tiles.values:tile()>
+<w.breeds.values:breed()><\\>
+<w.regions.values:region(w)><\\>
+>>
+
+model(m) ::= <<
+model <m.id> from <m.texture.id>
+    <m.animations:animation()><\\>
+end<\n><\n>
+>>
+
+animation(a) ::= <<
+animation <a.id> <if(a.isLooping)>looping<endif>
+    <a.frames:frame()><\\>
+end<\n>
+>>
+
+frame(f) ::= <<
+frame <f.source.X>, <f.source.Y>, <f.source.Width>, <f.source.Height>, <f.timeSpan.totalMilliseconds><\n>
+>>
+
+tile(t) ::= <<
+tile <t.id> from <t.model.id><\n>
+>>
+
+typeMap ::= [
+    "Common.Models.Thing": "Thing",
+    "Common.Models.Creature": "Creature",
+    "Common.Models.Character": "Character",
+    "Common.Models.Item": "Item",
+]
+
+breed(b) ::= <<
+breed <b.id> from <typeMap.(b.type)>
+
+end<\n><\n>
+>>
+
+region(r,w) ::= <<
+region <r.id> as <r.name>
+    <r.instances:instance(w)>
+end<\n><\n>
+>>
+
+instance(i,w) ::= <<
+instance <if(!i.isIdGenerated)><i.id> <endif> of <i.breed.id> to <i.position.X>, <i.position.Y><\n>
+>>

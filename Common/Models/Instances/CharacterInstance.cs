@@ -13,13 +13,13 @@ namespace Common.Models
         public void DropItem(ItemInstance item)
         {
             Items.Remove(item);
-            Map.AddInstance(item);
+            Region.AddInstance(item);
             item.Position = Position;
         }
 
         public void PickUpItem(ItemInstance item)
         {
-            Map.RemoveInstance(item);
+            Region.RemoveInstance(item);
             Items.Add(item);
         }
     }

@@ -6,7 +6,7 @@ textureDefinition: TEXTURE textureId=ID FROM fileName=STRING;
 
 modelDefinition: MODEL modelId=ID FROM textureId=ID animationDefinition+ END;
 animationDefinition: ANIMATION animationId=ID LOOPING? frameDefinition+ END;
-frameDefinition: FRAME frameId=ID x=NUMBER ',' y=NUMBER ',' width=NUMBER ',' height=NUMBER ',' duration=NUMBER;
+frameDefinition: FRAME x=NUMBER ',' y=NUMBER ',' width=NUMBER ',' height=NUMBER ',' duration=NUMBER;
 
 tileDefinition: TILE tileId=ID FROM modelId=ID WALKABLE?;
 
@@ -16,7 +16,7 @@ baseBody: initBlock variablesBlock? runBlock*;
 regionDefinition: REGION regionRef=ID regionBody END;
 regionBody: initBlock instanceDefinition*;
 
-instanceDefinition: PLAYER? INSTANCE instanceRef=ID? FROM baseRef=ID initBlock END;
+instanceDefinition: PLAYER? INSTANCE instanceRef=ID? OF baseRef=ID TO x=NUMBER ',' y=NUMBER (initBlock END)?;
 
 initBlock: (assignmentStatement | functionCallStatement)*;
 
@@ -76,10 +76,10 @@ GTE: '>=';
 EQ: '=';
 NEQ: '<>';
 
-OR: 'Or' | 'or';
-AND: 'And' | 'and';
-NOT: 'Not' | 'not';
-XOR: 'Xor' | 'xor';
+OR: 'or';
+AND: 'and';
+NOT: 'not';
+XOR: 'xor';
 
 PLUS: '+';
 MINUS: '-';
@@ -97,38 +97,36 @@ LOOPING: 'looping';
 FRAME: 'frame';
 TILE: 'tile';
 WALKABLE: 'walkable';
-BASE: [Bb]'ase';
-REGION: [Rr]'egion';
-INSTANCE: [Ii]'nstance';
-FROM: [Ff]'rom';
+BASE: 'breed';
+REGION: 'region';
+INSTANCE: 'instance';
+FROM: 'from';
 PLAYER: 'player';
+OF: 'of';
 
-VARIABLES: [Vv]'ariables';
-IS: [Ii]'s';
-WITHVALUE: 'WithValue' | 'withvalue';
-PARAMETER: [Pp]'arameter';
-SHARED: [Ss]'hared';
+VARIABLES: 'variables';
+IS: 'is';
+WITHVALUE: 'withvalue';
 
-INIT: [Ii]'nit';
+INIT: 'init';
 
-RUN: [Rr]'un';
-WHEN: [Ww]'hen';
+RUN: 'run';
+WHEN: 'when';
 
-IF: 'If' | 'if';
-THEN: 'Then' | 'then';
-ELSE: 'Else' | 'else';
+IF: 'if';
+THEN: 'then';
+ELSE: 'else';
 
-WHILE: 'While' | 'while';
-REPEAT: 'Repeat' | 'repeat';
-BREAK: 'Break' | 'break';
+WHILE: 'while';
+REPEAT: 'repeat';
+BREAK: 'break';
 
-RETURN: 'Return' | 'return';
+RETURN: 'return';
 
-SET: 'Set' | 'set';
-SETVAR: 'SetVar' | 'setvar';
-TO: 'To' | 'to';
+SET: 'set';
+TO: 'to';
 
-END: 'End' | 'end';
+END: 'end';
 
 BRACKET_OPEN: '(';
 BRACKET_CLOSE: ')';

@@ -11,9 +11,9 @@ namespace Common.Models
     public class ThingInstance
     {
         public string Id { get; set; }
+        public bool IsIdGenerated { get; set; }
         public Thing Breed { get; set; }
         public Vector2 Position { get; set; }
-        public Region Map { get; set; }
         public TimeSpan AnimationTime { get; set; }
         public virtual string StateString => $"Idle";
         public Region Region { get; set; }

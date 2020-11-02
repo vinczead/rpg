@@ -22,7 +22,7 @@ namespace Common.Script.Visitors
         private Animation currentAnimation;
         private Region currentRegion;
 
-        public List<Error> Errors { get; private set; }
+        private List<Error> errors;
 
         private static ExecutionVisitor Instance { get; } = new ExecutionVisitor();
 
@@ -44,20 +44,22 @@ namespace Common.Script.Visitors
         {
             World.Instance.Clear();
             env = new Env();
-            Errors = new List<Error>();
+            errors = new List<Error>();
         }
 
-        public static void BuildWorld(IEnumerable<string> files)
+        public static void BuildWorld(IEnumerable<string> files, out List<Error> errors)
         {
+            Instance.errors = new List<Error>();
             var worldBuilder = new ExecutionVisitor();
             foreach (var file in files)
             {
                 var tree = ScriptReader.ReadAST(file, out _);
                 worldBuilder.Visit(tree);
             }
+            errors = Instance.errors;
         }
 
-        public static void ExecuteRunBlock(ThingInstance currentInstance, string runBlockId, List<Symbol> parameters = null)
+        public static List<Error> ExecuteRunBlock(ThingInstance currentInstance, string runBlockId, List<Symbol> parameters = null)
         {
             Instance.env = new Env(World.Instance.ToEnv(), runBlockId);
 
@@ -68,6 +70,7 @@ namespace Common.Script.Visitors
             //todo: actually run the run block
             /*if (currentInstance.Breed.RunBlocks.TryGetValue(runBlockId, out var runBlock))
                 Instance.Visit(runBlock);*/
+            return Instance.errors;
         }
 
         #region World building
@@ -81,7 +84,7 @@ namespace Common.Script.Visitors
                 World.Instance.LoadTextureFromFile(id, fileName);
             else {
                 World.Instance.Textures.Add(id, null);
-                Errors.Add(new Error(context, $"Warning: Texture {id} from file {fileName} was not loaded, because Game is not initialized."));
+                errors.Add(new Error(context, $"Warning: Texture {id} from file {fileName} was not loaded, because Game is not initialized."));
             }
 
             return null;
@@ -207,6 +210,9 @@ namespace Common.Script.Visitors
         {
             var baseRef = context.baseRef.Text;
             var instanceRef = context.instanceRef?.Text;
+            var isPlayer = context.PLAYER() != null;
+            var x = float.Parse(context.x.Text);
+            var y = float.Parse(context.y.Text);
 
             var baseSymbol = GetSymbolFromEnv(context, baseRef);
             var instanceType = TypeSystem.Instance[baseSymbol.Type + "Instance"]; //todo: this could be nicer - maybe read instanceType from json?
@@ -215,6 +221,10 @@ namespace Common.Script.Visitors
             env = new Env(env, instanceRef ?? $"Instance of {baseRef}");
             currentInstance = World.Instance.Spawn(baseRef, currentRegion.Id, instanceRef);
             currentInstance.Region = currentRegion;
+            currentRegion.instances.Add(currentInstance);
+            currentInstance.Position = new Vector2(x, y);
+            if (isPlayer)
+                World.Instance.Player = currentInstance as CharacterInstance;
 
             AddSymbolToEnv(context, new Symbol("Self", instanceType, currentInstance.Id));
 
@@ -348,7 +358,7 @@ namespace Common.Script.Visitors
                     }
                     else
                     {
-                        Errors.Add(new Error(part, $"Only variables of Instances can be accessed."));
+                        errors.Add(new Error(part, $"Only variables of Instances can be accessed."));
                         return null;
                     }
                 }
@@ -378,7 +388,7 @@ namespace Common.Script.Visitors
                     }
                     else
                     {
-                        Errors.Add(new Error(part, $"Only properties of Instances and Breeds can be accessed."));
+                        errors.Add(new Error(part, $"Only properties of Instances and Breeds can be accessed."));
                         return null;
                     }
                 }
@@ -397,8 +407,8 @@ namespace Common.Script.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, Errors);
-            var rightType = TypeVisitor.GetType(context.right, env, Errors);
+            var leftType = TypeVisitor.GetType(context.left, env, errors);
+            var rightType = TypeVisitor.GetType(context.right, env, errors);
 
             var @operator = context.additiveOperator();
 
@@ -422,8 +432,8 @@ namespace Common.Script.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, Errors);
-            var rightType = TypeVisitor.GetType(context.right, env, Errors);
+            var leftType = TypeVisitor.GetType(context.left, env, errors);
+            var rightType = TypeVisitor.GetType(context.right, env, errors);
 
             var @operator = context.multiplOperator();
 
@@ -444,8 +454,8 @@ namespace Common.Script.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, Errors);
-            var rightType = TypeVisitor.GetType(context.right, env, Errors);
+            var leftType = TypeVisitor.GetType(context.left, env, errors);
+            var rightType = TypeVisitor.GetType(context.right, env, errors);
 
             var op = context.compOperator();
 
@@ -478,8 +488,8 @@ namespace Common.Script.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, Errors);
-            var rightType = TypeVisitor.GetType(context.right, env, Errors);
+            var leftType = TypeVisitor.GetType(context.left, env, errors);
+            var rightType = TypeVisitor.GetType(context.right, env, errors);
 
             var op = context.logicalOperator();
 
@@ -499,7 +509,7 @@ namespace Common.Script.Visitors
         public override object VisitNotExpression([NotNull] ViGaSParser.NotExpressionContext context)
         {
             var expression = Visit(context.expression());
-            var type = TypeVisitor.GetType(context.expression(), env, Errors);
+            var type = TypeVisitor.GetType(context.expression(), env, errors);
 
             if (type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 return !(bool)expression;
@@ -601,7 +611,7 @@ namespace Common.Script.Visitors
             if (symbol != null)
                 return symbol;
 
-            Errors.Add(new Error(token, $"{symbolName} does not exist in this context."));
+            errors.Add(new Error(token, $"{symbolName} does not exist in this context."));
             return null;
         }
 
@@ -614,7 +624,7 @@ namespace Common.Script.Visitors
             if (symbol != null)
                 return symbol;
 
-            Errors.Add(new Error(context, $"{symbolName} does not exist in this context."));
+            errors.Add(new Error(context, $"{symbolName} does not exist in this context."));
             return null;
         }
 
@@ -626,7 +636,7 @@ namespace Common.Script.Visitors
             }
             catch
             {
-                Errors.Add(new Error(context, $"{symbol.Name} is already defined."));
+                errors.Add(new Error(context, $"{symbol.Name} is already defined."));
             }
         }
     }

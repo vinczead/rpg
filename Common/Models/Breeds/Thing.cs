@@ -19,6 +19,7 @@ namespace Common.Models
             
             instance.Breed = this;
             instance.Id = instanceId ?? Guid.NewGuid().ToString();
+            instance.IsIdGenerated = instanceId == null;
             return instance;
         }
     }

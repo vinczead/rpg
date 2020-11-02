@@ -13,7 +13,7 @@ namespace Common.Models
         public string Id { get; set; }
         public string Name { get; set; }
 
-        List<ThingInstance> instances = new List<ThingInstance>();
+        public List<ThingInstance> instances = new List<ThingInstance>();
 
         private List<ThingInstance> instancesToDelete = new List<ThingInstance>();
         private List<ThingInstance> instancesToAdd = new List<ThingInstance>();
@@ -24,7 +24,7 @@ namespace Common.Models
 
         public void Update(GameTime gameTime)
         {
-            foreach (var thing in instances)
+            foreach (var thing in instances)    //todo: why not make a shallow copy?
                 thing.Update(gameTime);
 
             foreach (var thing in instancesToDelete) {
