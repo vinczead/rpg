@@ -204,7 +204,7 @@ namespace Common.Script.Visitors
             if (context.expression() != null)
                 value = Visit(context.expression()).ToString();
 
-            //currentBreed.Variables[name] = new Symbol(name, TypeSystem.Instance[type], value.ToString()); //todo: actually save variable
+            currentBreed.Variables[name] = new Symbol(name, TypeSystem.Instance[type], value.ToString());
             return null;
         }
 
@@ -370,7 +370,7 @@ namespace Common.Script.Visitors
                     {
                         var gameObject = World.Instance.GetById(currentSymbol.Value) as ThingInstance;
 
-                        //currentSymbol = gameObject.Variables[part.Text]; //todo: actually reach variable
+                        currentSymbol = gameObject.Variables[part.Text];
 
                         if (isLastPart)
                             return currentSymbol;

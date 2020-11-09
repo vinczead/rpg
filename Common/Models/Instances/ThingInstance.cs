@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common.Script.Utility;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -17,6 +18,7 @@ namespace Common.Models
         public TimeSpan AnimationTime { get; set; }
         public virtual string StateString => $"Idle";
         public Region Region { get; set; }
+        public Dictionary<string, Symbol> Variables { get; set; } = new Dictionary<string, Symbol>();
 
         public virtual void Update(GameTime gameTime)
         {

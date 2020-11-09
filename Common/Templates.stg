@@ -55,8 +55,15 @@ propMap ::= [
 breed(b) ::= <<
 breed <b.id> from <typeMap.(b.type)>
     <propMap.keys:{prop | <if(b.(prop))>set Self.<prop> to <value(b,prop)><endif>}>
+    <variables(b)>
     <b.runBlocks.keys:{r | <b.runBlockTexts.(r)><\n>}>
 end<\n><\n>
+>>
+
+variables(b) ::= <<
+variables
+    <b.variables.values:{v | <v.name> is <v.type.name> withvalue <value(v, "realValue")>}>
+end<\n>
 >>
 
 value(b,prop) ::= <<

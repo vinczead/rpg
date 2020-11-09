@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Common.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,40 @@ namespace Common.Script.Utility
         public string Name { get; set; }
         public Type Type { get; set; }
         public string Value { get; set; }
+
+        public object RealValue
+        {
+            get
+            {
+                if (Type == TypeSystem.Instance["Number"])
+                    return double.Parse(Value);
+
+                if (Type == TypeSystem.Instance["Boolean"])
+                    return bool.Parse(Value);
+
+                if (Type.InheritsFrom(TypeSystem.Instance["Thing"]))
+                    return new Thing() { Id = Value };
+
+                if (Type.InheritsFrom(TypeSystem.Instance["ThingInstance"]))
+                    return new ThingInstance() { Id = Value };
+
+                if (Type == TypeSystem.Instance["Tile"])
+                    return new Tile() { Id = Value };
+
+
+                if (Type == TypeSystem.Instance["Model"])
+                    return new SpriteModel() { Id = Value };
+
+
+                if (Type == TypeSystem.Instance["Texture"])
+                    return new Texture() { Id = Value };
+
+                if (Type == TypeSystem.Instance["Region"])
+                    return new Region() { Id = Value };
+
+                return Value;
+            }
+        }
 
         public Symbol(Symbol symbol)
         {

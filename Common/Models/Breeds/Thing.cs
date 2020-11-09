@@ -1,4 +1,5 @@
 ﻿using Antlr4.Runtime.Misc;
+using Common.Script.Utility;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -14,7 +15,7 @@ namespace Common.Models
         public string Id { get; set; }
         public string Name { get; set; }
         public SpriteModel Model { get; set; }
-        public virtual Type InstanceType { get { return typeof(ThingInstance); } }
+        public virtual System.Type InstanceType { get { return typeof(ThingInstance); } }
         public Dictionary<string, RunBlockContext> RunBlocks { get; set; } = new Dictionary<string, RunBlockContext>();
         public Dictionary<string, string> RunBlockTexts
         {
@@ -30,6 +31,8 @@ namespace Common.Models
                 }).ToDictionary(p => p.Key, p => p.Value);
             }
         }
+        public Dictionary<string, Symbol> Variables { get; set; } = new Dictionary<string, Symbol>();
+
         public virtual ThingInstance Spawn(string instanceId = null)
         {
             ThingInstance instance = Activator.CreateInstance(InstanceType) as ThingInstance;
@@ -37,6 +40,11 @@ namespace Common.Models
             instance.Breed = this;
             instance.Id = instanceId ?? Guid.NewGuid().ToString();
             instance.IsIdGenerated = instanceId == null;
+            foreach (var variable in Variables.Values)
+            {
+                instance.Variables.Add(variable.Name, new Symbol(variable));
+            }
+
             return instance;
         }
     }
