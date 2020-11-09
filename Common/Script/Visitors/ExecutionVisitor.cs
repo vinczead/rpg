@@ -82,7 +82,7 @@ namespace Common.Script.Visitors
 
         #region World building
 
-        public override object VisitTextureDefinition([NotNull] ViGaSParser.TextureDefinitionContext context)
+        public override object VisitTextureDefinition([NotNull] TextureDefinitionContext context)
         {
             var id = context.textureId.Text;
             var fileName = context.fileName.Text[1..^1];
@@ -91,7 +91,7 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        public override object VisitModelDefinition([NotNull] ViGaSParser.ModelDefinitionContext context)
+        public override object VisitModelDefinition([NotNull] ModelDefinitionContext context)
         {
             var modelId = context.modelId.Text;
             var textureId = context.textureId.Text;
@@ -108,7 +108,7 @@ namespace Common.Script.Visitors
             return retVal;
         }
 
-        public override object VisitAnimationDefinition([NotNull] ViGaSParser.AnimationDefinitionContext context)
+        public override object VisitAnimationDefinition([NotNull] AnimationDefinitionContext context)
         {
             var animationId = context.animationId.Text;
             var looping = context.LOOPING() != null;
@@ -127,7 +127,7 @@ namespace Common.Script.Visitors
             return retVal;
         }
 
-        public override object VisitFrameDefinition([NotNull] ViGaSParser.FrameDefinitionContext context)
+        public override object VisitFrameDefinition([NotNull] FrameDefinitionContext context)
         {
             var x = int.Parse(context.x.Text);
             var y = int.Parse(context.y.Text);
@@ -144,7 +144,7 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        public override object VisitTileDefinition([NotNull] ViGaSParser.TileDefinitionContext context)
+        public override object VisitTileDefinition([NotNull] TileDefinitionContext context)
         {
             var id = context.tileId.Text;
             var modelId = context.modelId.Text;
@@ -160,7 +160,7 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        public override object VisitBaseDefinition([NotNull] ViGaSParser.BaseDefinitionContext context)
+        public override object VisitBaseDefinition([NotNull] BaseDefinitionContext context)
         {
             var baseRef = context.baseRef.Text;
             var baseClass = context.baseClass.Text;
@@ -180,7 +180,7 @@ namespace Common.Script.Visitors
             return retVal;
         }
 
-        public override object VisitBaseBody([NotNull] ViGaSParser.BaseBodyContext context)
+        public override object VisitBaseBody([NotNull] BaseBodyContext context)
         {
             Visit(context.initBlock());
 
@@ -196,7 +196,7 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        public override object VisitVariableDeclaration([NotNull] ViGaSParser.VariableDeclarationContext context)
+        public override object VisitVariableDeclaration([NotNull] VariableDeclarationContext context)
         {
             var name = context.varName.Text;
             var type = context.typeName.Text;
@@ -209,7 +209,7 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        public override object VisitInstanceDefinition([NotNull] ViGaSParser.InstanceDefinitionContext context)
+        public override object VisitInstanceDefinition([NotNull] InstanceDefinitionContext context)
         {
             var baseRef = context.baseRef.Text;
             var instanceRef = context.instanceRef?.Text;
@@ -235,14 +235,14 @@ namespace Common.Script.Visitors
             return retVal;
         }
 
-        public override object VisitPlayerDefinition([NotNull] ViGaSParser.PlayerDefinitionContext context)
+        public override object VisitPlayerDefinition([NotNull] PlayerDefinitionContext context)
         {
             var instanceId = context.instanceId.Text;
             World.Instance.Player = World.Instance.GetInstance(instanceId) as CharacterInstance;
             return base.VisitPlayerDefinition(context);
         }
 
-        public override object VisitRegionDefinition([NotNull] ViGaSParser.RegionDefinitionContext context)
+        public override object VisitRegionDefinition([NotNull] RegionDefinitionContext context)
         {
             var regionRef = context.regionRef.Text;
             var width = int.Parse(context.width.Text);
