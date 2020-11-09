@@ -6,9 +6,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using System.Text;
+using static Common.Script.ViGaSParser;
 
 namespace Common.Script.Visitors
 {
@@ -47,15 +49,20 @@ namespace Common.Script.Visitors
             errors = new List<Error>();
         }
 
-        public static void BuildWorld(IEnumerable<string> files, out List<Error> errors)
+        public static void BuildWorldFromFile(string fileName, out List<Error> errors)
+        {
+            World.Instance.FolderPath = Path.GetDirectoryName(fileName);
+            var script = File.ReadAllText(fileName);
+            BuildWorld(script, out errors);
+        }
+
+        public static void BuildWorld(string script, out List<Error> errors)
         {
             Instance.errors = new List<Error>();
-            var worldBuilder = new ExecutionVisitor();
-            foreach (var file in files)
-            {
-                var tree = ScriptReader.ReadAST(file, out _);
-                worldBuilder.Visit(tree);
-            }
+            Instance.env = new Env();
+            World.Instance.Clear();
+            var tree = ScriptReader.MakeParseTree(script, out _);
+            Instance.Visit(tree);
             errors = Instance.errors;
         }
 
@@ -80,13 +87,7 @@ namespace Common.Script.Visitors
             var id = context.textureId.Text;
             var fileName = context.fileName.Text[1..^1];
 
-            if (World.Instance.Game != null)
-                World.Instance.LoadTextureFromFile(id, fileName);
-            else {
-                World.Instance.Textures.Add(id, null);
-                errors.Add(new Error(context, $"Warning: Texture {id} from file {fileName} was not loaded, because Game is not initialized."));
-            }
-
+            World.Instance.LoadTextureFromFile(id, fileName);
             return null;
         }
 
@@ -147,10 +148,12 @@ namespace Common.Script.Visitors
         {
             var id = context.tileId.Text;
             var modelId = context.modelId.Text;
+            var isWalkable = context.WALKABLE() != null;
             var tile = new Tile()
             {
                 Id = id,
-                Model = World.Instance.Models[modelId]
+                Model = World.Instance.Models[modelId],
+                IsWalkable = isWalkable
             };
 
             World.Instance.Tiles.Add(id, tile);
@@ -210,7 +213,6 @@ namespace Common.Script.Visitors
         {
             var baseRef = context.baseRef.Text;
             var instanceRef = context.instanceRef?.Text;
-            var isPlayer = context.PLAYER() != null;
             var x = float.Parse(context.x.Text);
             var y = float.Parse(context.y.Text);
 
@@ -223,8 +225,6 @@ namespace Common.Script.Visitors
             currentInstance.Region = currentRegion;
             currentRegion.instances.Add(currentInstance);
             currentInstance.Position = new Vector2(x, y);
-            if (isPlayer)
-                World.Instance.Player = currentInstance as CharacterInstance;
 
             AddSymbolToEnv(context, new Symbol("Self", instanceType, currentInstance.Id));
 
@@ -235,16 +235,27 @@ namespace Common.Script.Visitors
             return retVal;
         }
 
+        public override object VisitPlayerDefinition([NotNull] ViGaSParser.PlayerDefinitionContext context)
+        {
+            var instanceId = context.instanceId.Text;
+            World.Instance.Player = World.Instance.GetInstance(instanceId) as CharacterInstance;
+            return base.VisitPlayerDefinition(context);
+        }
+
         public override object VisitRegionDefinition([NotNull] ViGaSParser.RegionDefinitionContext context)
         {
             var regionRef = context.regionRef.Text;
+            var width = int.Parse(context.width.Text);
+            var height = int.Parse(context.height.Text);
 
             AddSymbolToEnv(context, new Symbol(regionRef, TypeSystem.Instance["Region"], regionRef));
-            env = new Env(env, regionRef);
-            currentRegion = new Region() { Id = regionRef };
+            currentRegion = new Region()
+            {
+                Id = regionRef,
+                Width = width,
+                Height = height
+            };
             World.Instance.Regions.Add(regionRef, currentRegion);
-
-            AddSymbolToEnv(context, new Symbol("Self", TypeSystem.Instance["Region"], currentRegion.Id));
 
             var retVal = base.VisitRegionDefinition(context);
 
@@ -253,7 +264,16 @@ namespace Common.Script.Visitors
             return retVal;
         }
 
-        public override object VisitInitBlock([NotNull] ViGaSParser.InitBlockContext context)
+        public override object VisitTilesBlock([NotNull] TilesBlockContext context)
+        {
+            var expressions = context.expression()?.ToList() ?? new List<ExpressionContext>();
+
+            currentRegion.Tiles = expressions.Select(expression => (VisitArrayExpression(expression as ArrayExpressionContext) as object[]).Select(tile => tile as Tile).ToArray()).ToArray();
+
+            return base.VisitTilesBlock(context);
+        }
+
+        public override object VisitInitBlock([NotNull] InitBlockContext context)
         {
             var retVal = base.VisitInitBlock(context);
 
@@ -265,44 +285,44 @@ namespace Common.Script.Visitors
         #endregion
 
         #region Expressions
-        public override object VisitArrayExpression([NotNull] ViGaSParser.ArrayExpressionContext context)
+        public override object VisitArrayExpression([NotNull] ArrayExpressionContext context)
         {
             return context.expression().Select(expression => Visit(expression)).ToArray();
         }
 
-        public override object VisitBoolExpression([NotNull] ViGaSParser.BoolExpressionContext context)
+        public override object VisitBoolExpression([NotNull] BoolExpressionContext context)
         {
             return bool.Parse(context.GetText());
         }
 
-        public override object VisitNumberExpression([NotNull] ViGaSParser.NumberExpressionContext context)
+        public override object VisitNumberExpression([NotNull] NumberExpressionContext context)
         {
             return double.Parse(context.GetText());
         }
 
-        public override object VisitNullExpression([NotNull] ViGaSParser.NullExpressionContext context)
+        public override object VisitNullExpression([NotNull] NullExpressionContext context)
         {
             return null;
         }
 
-        public override object VisitStringExpression([NotNull] ViGaSParser.StringExpressionContext context)
+        public override object VisitStringExpression([NotNull] StringExpressionContext context)
         {
             var str = context.GetText();
             return str.Substring(1, str.Length - 2);
         }
 
-        public override object VisitRefExpression([NotNull] ViGaSParser.RefExpressionContext context)
+        public override object VisitRefExpression([NotNull] RefExpressionContext context)
         {
             return World.Instance.GetById(context.REFERENCE().GetText().Substring(1));
         }
 
-        public override object VisitParamExpression([NotNull] ViGaSParser.ParamExpressionContext context)
+        public override object VisitParamExpression([NotNull] ParamExpressionContext context)
         {
             var symbol = GetSymbolFromEnv(context, context.param.Text);
             return World.Instance.GetById(symbol?.Value);
         }
 
-        public override object VisitPathExpression([NotNull] ViGaSParser.PathExpressionContext context)
+        public override object VisitPathExpression([NotNull] PathExpressionContext context)
         {
             var pathValue = Visit(context.path());
 
@@ -324,7 +344,7 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        public override object VisitPath([NotNull] ViGaSParser.PathContext context)
+        public override object VisitPath([NotNull] PathContext context)
         {
             Symbol currentSymbol = null;
 
@@ -397,12 +417,12 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        public override object VisitParenExpression([NotNull] ViGaSParser.ParenExpressionContext context)
+        public override object VisitParenExpression([NotNull] ParenExpressionContext context)
         {
             return Visit(context.expression());
         }
 
-        public override object VisitAdditiveExpression([NotNull] ViGaSParser.AdditiveExpressionContext context)
+        public override object VisitAdditiveExpression([NotNull] AdditiveExpressionContext context)
         {
             var left = Visit(context.left);
             var right = Visit(context.right);
@@ -427,7 +447,7 @@ namespace Common.Script.Visitors
             throw new InvalidOperationException($"Cannot evaluate additive operation.");
         }
 
-        public override object VisitMultiplExpression([NotNull] ViGaSParser.MultiplExpressionContext context)
+        public override object VisitMultiplExpression([NotNull] MultiplExpressionContext context)
         {
             var left = Visit(context.left);
             var right = Visit(context.right);
@@ -449,7 +469,7 @@ namespace Common.Script.Visitors
             throw new InvalidOperationException($"Cannot evaluate multiplicative operation.");
         }
 
-        public override object VisitCompExpression([NotNull] ViGaSParser.CompExpressionContext context)
+        public override object VisitCompExpression([NotNull] CompExpressionContext context)
         {
             var left = Visit(context.left);
             var right = Visit(context.right);
@@ -483,7 +503,7 @@ namespace Common.Script.Visitors
             throw new InvalidOperationException($"Cannot evaluate comparative operation.");
         }
 
-        public override object VisitLogicalExpression([NotNull] ViGaSParser.LogicalExpressionContext context)
+        public override object VisitLogicalExpression([NotNull] LogicalExpressionContext context)
         {
             var left = Visit(context.left);
             var right = Visit(context.right);
@@ -506,7 +526,7 @@ namespace Common.Script.Visitors
             throw new InvalidOperationException($"Cannot evaluate logical operation.");
         }
 
-        public override object VisitNotExpression([NotNull] ViGaSParser.NotExpressionContext context)
+        public override object VisitNotExpression([NotNull] NotExpressionContext context)
         {
             var expression = Visit(context.expression());
             var type = TypeVisitor.GetType(context.expression(), env, errors);
@@ -526,7 +546,7 @@ namespace Common.Script.Visitors
 
         #region Statements
 
-        public override object VisitFunctionCallStatement([NotNull] ViGaSParser.FunctionCallStatementContext context)
+        public override object VisitFunctionCallStatement([NotNull] FunctionCallStatementContext context)
         {
             //check whether function exists and parameter types match
             var paramsCtx = context.functionParameterList();
@@ -543,7 +563,7 @@ namespace Common.Script.Visitors
             return retval;
         }
 
-        public override object VisitAssignmentStatement([NotNull] ViGaSParser.AssignmentStatementContext context)
+        public override object VisitAssignmentStatement([NotNull] AssignmentStatementContext context)
         {
             var pathValue = Visit(context.path());
             var expressionValue = Visit(context.expression());
@@ -568,7 +588,7 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        public override object VisitIfStatement([NotNull] ViGaSParser.IfStatementContext context)
+        public override object VisitIfStatement([NotNull] IfStatementContext context)
         {
             var expression = (bool)Visit(context.expression());
 
@@ -581,7 +601,7 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        public override object VisitRepeatStatement([NotNull] ViGaSParser.RepeatStatementContext context)
+        public override object VisitRepeatStatement([NotNull] RepeatStatementContext context)
         {
             do
             {
@@ -591,7 +611,7 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        public override object VisitWhileStatement([NotNull] ViGaSParser.WhileStatementContext context)
+        public override object VisitWhileStatement([NotNull] WhileStatementContext context)
         {
             while ((bool)Visit(context.expression()))
             {

@@ -11,6 +11,7 @@ namespace Common.Models
 {
     public class World
     {
+        
         private static readonly object padlock = new object();
         private static World instance = null;
         public static World Instance
@@ -26,7 +27,8 @@ namespace Common.Models
         }
 
         public Game Game { get; set; }
-        public Dictionary<string, Texture2D> Textures { get; set; }
+        public string FolderPath { get; set; }
+        public Dictionary<string, Texture> Textures { get; set; }
         public Dictionary<string, SpriteModel> Models { get; set; }
         public Dictionary<string, Thing> Breeds { get; set; }
         public Dictionary<string, ThingInstance> Instances { get; set; }
@@ -42,12 +44,12 @@ namespace Common.Models
 
         public void Clear()
         {
+            Textures = new Dictionary<string, Texture>();
+            Models = new Dictionary<string, SpriteModel>();
             Breeds = new Dictionary<string, Thing>();
             Instances = new Dictionary<string, ThingInstance>();
-            Regions = new Dictionary<string, Region>();
-            Textures = new Dictionary<string, Texture2D>();
-            Models = new Dictionary<string, SpriteModel>();
             Tiles = new Dictionary<string, Tile>();
+            Regions = new Dictionary<string, Region>();
             Player = null;
         }
 
@@ -96,15 +98,35 @@ namespace Common.Models
 
         public void LoadTextureFromFile(string id, string fileName)
         {
-            FileStream fileStream = new FileStream(fileName, FileMode.Open);
-            var texture = Texture2D.FromStream(Game.GraphicsDevice, fileStream);
-            Textures[id] = texture;
+            var fullFileName = Path.Combine(Instance.FolderPath, fileName);
+            Texture2D texture = null;
+            byte[] byteArrayValue = null;
+            if(Game != null)
+            {
+                using FileStream fileStream = new FileStream(fullFileName, FileMode.Open);
+                texture = Texture2D.FromStream(Game.GraphicsDevice, fileStream);
+            } else
+            {
+                byteArrayValue = File.ReadAllBytes(fullFileName);
+            }
+            
+            Textures[id] = new Texture()
+            {
+                Id = id,
+                FileName = fileName,
+                Value = texture,
+                ByteArrayValue = byteArrayValue
+            };
         }
 
         public void LoadTextureFromContent(string id, string assetName)
         {
             var texture = Game.Content.Load<Texture2D>(assetName);
-            Textures[id] = texture;
+            Textures[id] = new Texture()
+            {
+                Id = id,
+                Value = texture
+            };
         }
 
         public void SpawnAtPlayer(string baseId, string instanceId = null)
@@ -171,7 +193,7 @@ namespace Common.Models
                 return model;
             }
 
-            if (Textures.TryGetValue(id, out Texture2D texture))
+            if (Textures.TryGetValue(id, out Texture texture))
             {
                 return texture;
             }

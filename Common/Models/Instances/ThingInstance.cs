@@ -26,9 +26,9 @@ namespace Common.Models
         public virtual void Draw(SpriteBatch spriteBatch)
         {
             var spriteSheet = Breed.Model.SpriteSheet;
-            var drawPosition = Position - new Vector2(spriteSheet.Width / 2, spriteSheet.Height);
+            var drawPosition = Position - new Vector2(spriteSheet.Value.Width / 2, spriteSheet.Value.Height);
 
-            spriteBatch.Draw(Breed.Model.SpriteSheet, drawPosition, Breed.Model[StateString].FrameAt(AnimationTime).Source, Color.White);
+            spriteBatch.Draw(Breed.Model.SpriteSheet.Value, drawPosition, Breed.Model[StateString].FrameAt(AnimationTime).Source, Color.White);
         }
     }
 }

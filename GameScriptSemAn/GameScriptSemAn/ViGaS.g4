@@ -76,10 +76,10 @@ GTE: '>=';
 EQ: '=';
 NEQ: '<>';
 
-OR: 'Or' | 'or';
-AND: 'And' | 'and';
-NOT: 'Not' | 'not';
-XOR: 'Xor' | 'xor';
+OR: 'or';
+AND: 'and';
+NOT: 'not';
+XOR: 'xor';
 
 PLUS: '+';
 MINUS: '-';

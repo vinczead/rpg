@@ -22,18 +22,14 @@ namespace Common.Script.Visitors
             errors = new List<Error>();
         }
 
-        public static List<Error> CheckErrors(IEnumerable<string> files)
+        public static List<Error> CheckErrors(string script)
         {
             Instance.env = new Env();
             Instance.errors = new List<Error>();
+            var tree = ScriptReader.MakeParseTree(script, out var syntaxErrors);
+            Instance.errors.AddRange(syntaxErrors);
 
-            foreach (var file in files)
-            {
-                var tree = ScriptReader.ReadAST(file, out var syntaxErrors);
-                Instance.errors.AddRange(syntaxErrors);
-
-                Instance.Visit(tree);
-            }
+            Instance.Visit(tree);
 
             return Instance.errors;
         }
@@ -124,8 +120,6 @@ namespace Common.Script.Visitors
             var baseRef = context.baseRef;
             var baseSymbol = GetSymbolFromEnv(baseRef, baseRef.Text);
 
-            var isPlayer = context.PLAYER() != null;
-
             var instanceRef = context.instanceRef;
             var instanceType = TypeSystem.Instance["ErrorType"];
 
@@ -149,11 +143,6 @@ namespace Common.Script.Visitors
                     errors.Add(new Error(baseRef, $"Type of {baseRef.Text} must be {TypeSystem.Instance["GameObject"]}"));
             }
 
-            if(isPlayer && baseSymbol.Type != TypeSystem.Instance["Character"])
-            {
-                errors.Add(new Error(baseRef, $"The player keyword can only be used on Instances of Characters."));
-            }
-
             if (instanceRef != null)
                 AddSymbolToEnv(instanceRef, new Symbol(instanceRef.Text, instanceType));
 
@@ -165,16 +154,70 @@ namespace Common.Script.Visitors
             return base.VisitInstanceDefinition(context);
         }
 
+        public override object VisitPlayerDefinition([NotNull] PlayerDefinitionContext context)
+        {
+            var instanceId = context.instanceId.Text;
+            var instanceSymbol = GetSymbolFromEnv(context, instanceId);
+            if (instanceSymbol != null && instanceSymbol.Type != TypeSystem.Instance["CharacterInstance"])
+            {
+                errors.Add(new Error(context.instanceId, $"Type mismatch: the player keyword can only be used with Instances of Characters."));
+            }
+            return base.VisitPlayerDefinition(context);
+        }
+
         public override object VisitRegionDefinition([NotNull] RegionDefinitionContext context)
         {
-            var regionRef = context.regionRef;
+            var regionRef = context.regionRef.Text;
+            var width = context.width.Text;
+            var height = context.height.Text;
 
-            env = new Env(env, $"{regionRef.Text} Initialization");
-            AddSymbolToEnv(context, new Symbol("Self", TypeSystem.Instance["Region"]));
+            if (int.TryParse(width, out int widthValue))
+            {
+                if (widthValue <= 0)
+                    errors.Add(new Error(context.width, $"Invalid value: width must greater than 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.width, $"Type mismatch: width must be an integer."));
+            }
 
-            var result = base.VisitRegionDefinition(context);
+            if (widthValue <= 0)
+            {
+                errors.Add(new Error(context.width, $"Invalid value: width must greater than 0."));
+            }
 
-            return result;
+            if (int.TryParse(height, out int heightValue))
+            {
+                if (heightValue <= 0)
+                    errors.Add(new Error(context.width, $"Invalid value: height must greater than 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.width, $"Type mismatch: height must be an integer."));
+            }
+
+            AddSymbolToEnv(context, new Symbol(regionRef, TypeSystem.Instance["Region"]));
+
+            return base.VisitRegionDefinition(context);
+        }
+
+        public override object VisitTilesBlock([NotNull] TilesBlockContext context)
+        {
+            var expressions = context.expression()?.ToList() ?? new List<ExpressionContext>();
+
+            foreach (var expression in expressions)
+            {
+                var type = TypeVisitor.GetType(expression, env, errors);
+                if (type != TypeSystem.Instance["TileArray"])
+                {
+                    errors.Add(new Error(expression, "Type mismatch: must be array of Tile."));
+                } else
+                {
+                    //todo check width
+                }
+            }
+            //todo check height
+            return base.VisitTilesBlock(context);
         }
 
         public override object VisitVariableDeclaration([NotNull] VariableDeclarationContext context)

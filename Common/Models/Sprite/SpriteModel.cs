@@ -13,7 +13,7 @@ namespace Common.Models
     {
         public string Id { get; set; }
         [JsonIgnore]
-        public Texture2D SpriteSheet { get; set; }
+        public Texture SpriteSheet { get; set; }
         public string SpriteSheetId { get; set; }
         public List<Animation> Animations { get; set; } = new List<Animation>();
 

@@ -1,4 +1,6 @@
 ﻿using Common.Models;
+using Common.Script.Utility;
+using Common.Script.Visitors;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -39,8 +41,16 @@ namespace WorldEditor.DataAccess
             }
             else
             {
-                LoadWorldDescriptor(fileName);
+                LoadWorldScript(fileName);
             }
+        }
+
+        private void LoadWorldScript(string fileName)
+        {
+            ExecutionVisitor.BuildWorldFromFile(fileName, out var allerrors);
+            var a = World.Instance;
+
+            var asdasd = World.Instance.Serialize();
         }
 
         private void LoadWorldDescriptor(string fileName)

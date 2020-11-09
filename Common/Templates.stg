@@ -1,12 +1,18 @@
 ﻿world(w) ::= <<
+<w.textures.values:texture()>
 <w.models.values:model()><\\>
 <w.tiles.values:tile()>
 <w.breeds.values:breed()><\\>
 <w.regions.values:region(w)><\\>
+<w.player:player()>
+>>
+
+texture(t) ::= <<
+texture <t.id> from "<t.fileName>"<\n>
 >>
 
 model(m) ::= <<
-model <m.id> from <m.texture.id>
+model <m.id> from <m.spriteSheet.id>
     <m.animations:animation()><\\>
 end<\n><\n>
 >>
@@ -32,18 +38,51 @@ typeMap ::= [
     "Common.Models.Item": "Item",
 ]
 
+propMap ::= [
+    "Name":"",
+    "Model":"",
+    "MaxHealth":"",
+    "MaxMana":"",
+    "Strength":"",
+    "Dexterity":"",
+    "Speed":"",
+    "Intelligence":"",
+    "Protection":"",
+    "Value":"",
+    "Description":""
+]
+
 breed(b) ::= <<
 breed <b.id> from <typeMap.(b.type)>
-
+    <propMap.keys:{prop | <if(b.(prop))>set Self.<prop> to <value(b,prop)><endif>}>
 end<\n><\n>
 >>
 
+value(b,prop) ::= <<
+<if(b.(prop).id)>$<b.(prop).id>
+<elseif(b.(prop).length)>"<b.(prop)>"
+<else><b.(prop)>
+<endif>
+>>
+
 region(r,w) ::= <<
-region <r.id> as <r.name>
+region <r.id> <r.width>, <r.height>
+    tiles
+        <r.tiles:tileArray()>
+    end
+
     <r.instances:instance(w)>
 end<\n><\n>
 >>
 
+tileArray(ts) ::= <<
+    [<trunc(ts):{t | $<t.id>, }> $<last(ts).id>]<\n>
+>>
+
 instance(i,w) ::= <<
-instance <if(!i.isIdGenerated)><i.id> <endif> of <i.breed.id> to <i.position.X>, <i.position.Y><\n>
+instance <if(!i.isIdGenerated)><i.id> <endif>of <i.breed.id> to <i.position.X>, <i.position.Y><\n>
+>>
+
+player(p) ::= <<
+player <p.id>
 >>

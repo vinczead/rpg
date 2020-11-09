@@ -9,7 +9,7 @@ namespace Common.Script.Utility
 {
     public static class ScriptReader
     {
-        public static IParseTree ReadAST(string script, out List<Error> errors)
+        public static IParseTree MakeParseTree(string script, out List<Error> errors)
         {
             var inputStream = new AntlrInputStream(script);
             var lexer = new ViGaSLexer(inputStream);

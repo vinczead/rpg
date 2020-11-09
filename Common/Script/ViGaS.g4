@@ -1,6 +1,6 @@
 grammar ViGaS;
 
-script: (textureDefinition | modelDefinition | tileDefinition | baseDefinition | regionDefinition)*;
+script: (textureDefinition | modelDefinition | tileDefinition | baseDefinition | regionDefinition)* playerDefinition?;
 
 textureDefinition: TEXTURE textureId=ID FROM fileName=STRING;
 
@@ -13,10 +13,13 @@ tileDefinition: TILE tileId=ID FROM modelId=ID WALKABLE?;
 baseDefinition: BASE baseRef=ID FROM baseClass=ID baseBody END;
 baseBody: initBlock variablesBlock? runBlock*;
 
-regionDefinition: REGION regionRef=ID regionBody END;
-regionBody: initBlock instanceDefinition*;
+regionDefinition: REGION regionRef=ID width=NUMBER ',' height=NUMBER regionBody END;
+regionBody: tilesBlock instanceDefinition*;
+tilesBlock: TILES expression* END;
 
-instanceDefinition: PLAYER? INSTANCE instanceRef=ID? OF baseRef=ID TO x=NUMBER ',' y=NUMBER (initBlock END)?;
+instanceDefinition: INSTANCE instanceRef=ID? OF baseRef=ID TO x=NUMBER ',' y=NUMBER (initBlock END)?;
+
+playerDefinition: PLAYER instanceId=ID?;
 
 initBlock: (assignmentStatement | functionCallStatement)*;
 
@@ -99,6 +102,7 @@ TILE: 'tile';
 WALKABLE: 'walkable';
 BASE: 'breed';
 REGION: 'region';
+TILES: 'tiles';
 INSTANCE: 'instance';
 FROM: 'from';
 PLAYER: 'player';

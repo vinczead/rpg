@@ -108,7 +108,7 @@ namespace WorldEditor.ViewModels
                 CloseProject.Execute(null);
 
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "JSON files|*.json";
+            openFileDialog.Filter = "Vincze Game Script files|*.vgs";
             if (openFileDialog.ShowDialog() == true)
             {
                 WorldRepository = new WorldRepository(openFileDialog.FileName, false);
