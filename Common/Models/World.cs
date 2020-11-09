@@ -225,8 +225,12 @@ namespace Common.Models
 
         public string Serialize()
         {
-            TemplateGroupFile templateGroupFile = new TemplateGroupFile(@"C:\Users\Adam\sources\rpg\Common\bin\Debug\netcoreapp3.1\Templates.stg");
-            var template = templateGroupFile.GetInstanceOf("world");
+            using var stream = typeof(FunctionManager).Assembly.GetManifestResourceStream("Common.Templates.stg");
+            using var sr = new StreamReader(stream);
+            var content = sr.ReadToEnd();
+            TemplateGroup templateGroup = new TemplateGroupString(content);
+            //TemplateGroupFile templateGroupFile = new TemplateGroupFile(@"C:\Users\Adam\sources\rpg\Common\bin\Debug\netcoreapp3.1\Templates.stg");
+            var template = templateGroup.GetInstanceOf("world");
             template.Add("w", Instance);
             return template.Render();
         }

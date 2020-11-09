@@ -18,30 +18,60 @@ namespace Common.Script.Utility
             get
             {
                 if (Type == TypeSystem.Instance["Number"])
-                    return double.Parse(Value);
+                {
+                    if (double.TryParse(Value, out var realValue))
+                        return realValue;
+                    else return 0.0;
+                }
 
                 if (Type == TypeSystem.Instance["Boolean"])
-                    return bool.Parse(Value);
+                {
+                    if (bool.TryParse(Value, out var realValue))
+                        return realValue;
+                    else return false;
+                }
 
-                if (Type.InheritsFrom(TypeSystem.Instance["Thing"]))
-                    return new Thing() { Id = Value };
+                if (Type == TypeSystem.Instance["Thing"])
+                {
+                    if (Value == "")
+                        return null;
+                    else return new Thing() { Id = Value };
+                }
 
-                if (Type.InheritsFrom(TypeSystem.Instance["ThingInstance"]))
-                    return new ThingInstance() { Id = Value };
+                if (Type == TypeSystem.Instance["ThingInstance"])
+                {
+                    if (Value == "")
+                        return null;
+                    else return new ThingInstance() { Id = Value };
+                }
 
                 if (Type == TypeSystem.Instance["Tile"])
-                    return new Tile() { Id = Value };
-
+                {
+                    if (Value == "")
+                        return null;
+                    else return new Tile() { Id = Value };
+                }
 
                 if (Type == TypeSystem.Instance["Model"])
-                    return new SpriteModel() { Id = Value };
-
-
-                if (Type == TypeSystem.Instance["Texture"])
-                    return new Texture() { Id = Value };
+                {
+                    if (Value == "")
+                        return null;
+                    else return new SpriteModel() { Id = Value };
+                }
 
                 if (Type == TypeSystem.Instance["Region"])
-                    return new Region() { Id = Value };
+                {
+                    if (Value == "")
+                        return null;
+                    else return new Region() { Id = Value };
+                }
+
+                if (Type == TypeSystem.Instance["Texture"])
+                {
+                    if (Value == "")
+                        return null;
+                    else return new Texture() { Id = Value };
+                }
 
                 return Value;
             }

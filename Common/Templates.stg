@@ -62,7 +62,7 @@ end<\n><\n>
 
 variables(b) ::= <<
 variables
-    <b.variables.values:{v | <v.name> is <v.type.name> withvalue <value(v, "realValue")>}>
+    <b.variables.values:{v | <v.name> is <v.type.name> <if(v.realValue)>withvalue <value(v, "realValue")><else><\n><endif>}>
 end<\n>
 >>
 
