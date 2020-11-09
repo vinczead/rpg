@@ -74,9 +74,8 @@ namespace Common.Script.Visitors
                 foreach (var p in parameters)
                     Instance.env[p.Name] = p;
 
-            //todo: actually run the run block
-            /*if (currentInstance.Breed.RunBlocks.TryGetValue(runBlockId, out var runBlock))
-                Instance.Visit(runBlock);*/
+            if (currentInstance.Breed.RunBlocks.TryGetValue(runBlockId, out var runBlock))
+                Instance.Visit(runBlock);
             return Instance.errors;
         }
 
@@ -190,7 +189,7 @@ namespace Common.Script.Visitors
 
             foreach (var runBlock in context.runBlock())
             {
-                //currentBreed.RunBlocks[runBlock.eventTypeName.Text] = runBlock; //todo: actually save run block
+                currentBreed.RunBlocks[runBlock.eventTypeName.Text] = runBlock;
             }
 
             return null;
