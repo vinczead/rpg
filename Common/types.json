@@ -48,8 +48,13 @@
     ],
     "events": [
       {
-        "name": "Update",
-        "parameters": []
+        "name": "Updated",
+        "parameters": [
+          {
+            "name": "ElapsedTime",
+            "type": "Number"
+          }
+        ]
       },
       {
         "name": "Created",

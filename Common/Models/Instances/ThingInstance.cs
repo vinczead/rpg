@@ -1,4 +1,5 @@
 ﻿using Common.Script.Utility;
+using Common.Script.Visitors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -23,6 +24,8 @@ namespace Common.Models
         public virtual void Update(GameTime gameTime)
         {
             AnimationTime += gameTime.ElapsedGameTime;
+            var elapsedTime = new Symbol("ElapsedTime", TypeSystem.Instance["Number"], gameTime.ElapsedGameTime.TotalMilliseconds.ToString());
+            ExecutionVisitor.ExecuteRunBlock(this, "Updated", new List<Symbol>() { elapsedTime });
         }
 
         public virtual void Draw(SpriteBatch spriteBatch)
