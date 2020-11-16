@@ -76,4 +76,16 @@
     <Folder Include="Views\Tools\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Compile Update="Views\Content\TileTypes\TileTypesGrid.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Page Update="Views\Content\TileTypes\TileTypesGrid.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+
 </Project>

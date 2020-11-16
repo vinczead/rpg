@@ -1,10 +1,13 @@
-﻿using GalaSoft.MvvmLight;
+﻿using Common.Models;
+using Common.Script.Visitors;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
@@ -30,11 +33,21 @@ namespace WorldEditor.ViewModels
             set
             {
                 Set(ref worldRepository, value);
-                RaisePropertyChanged(() => IsWorldRepositoryOpen);
+            }
+        }
+
+        private bool isWorldRepositoryOpen;
+        public bool IsWorldRepositoryOpen
+        {
+            get => isWorldRepositoryOpen;
+            set
+            {
+                Set(ref isWorldRepositoryOpen, value);
                 RaisePropertyChanged(() => Title);
                 SaveProject.RaiseCanExecuteChanged();
                 CloseProject.RaiseCanExecuteChanged();
                 SetTool.RaiseCanExecuteChanged();
+                OpenContents.RaiseCanExecuteChanged();
                 OpenTextures.RaiseCanExecuteChanged();
                 OpenSpriteModels.RaiseCanExecuteChanged();
                 OpenTiles.RaiseCanExecuteChanged();
@@ -42,13 +55,8 @@ namespace WorldEditor.ViewModels
                 OpenMaps.RaiseCanExecuteChanged();
             }
         }
-        
-        public bool IsWorldRepositoryOpen
-        {
-            get => WorldRepository != null;
-        }
 
-        public string Title { get => "World Editor" + (IsWorldRepositoryOpen ? $" - {WorldRepository.FileName}" : ""); }
+        public string Title { get => "World Editor" + (IsWorldRepositoryOpen ? $" - {World.Instance.FileName}" : ""); }
 
         private ObservableCollection<MapViewModel> maps;
 
@@ -67,6 +75,7 @@ namespace WorldEditor.ViewModels
             SaveProject = new RelayCommand(ExecuteSaveProjectCommand, () => IsWorldRepositoryOpen);
             CloseProject = new RelayCommand(ExecuteCloseProjectCommand, () => IsWorldRepositoryOpen);
 
+            OpenContents = new RelayCommand(ExecuteOpenContentsWindowCommand, () => IsWorldRepositoryOpen);
             OpenTextures = new RelayCommand(ExecuteOpenTexturesWindowCommand, () => IsWorldRepositoryOpen);
             OpenSpriteModels = new RelayCommand(ExectueOpenSpriteModelsWindowCommand, () => IsWorldRepositoryOpen);
             OpenTiles = new RelayCommand(ExectueOpenTilesWindowCommand, () => IsWorldRepositoryOpen);
@@ -81,6 +90,7 @@ namespace WorldEditor.ViewModels
         public RelayCommand SaveProject { get; }
         public RelayCommand CloseProject { get; }
 
+        public RelayCommand OpenContents { get; }
         public RelayCommand OpenTextures { get; }
         public RelayCommand OpenSpriteModels { get; }
         public RelayCommand OpenTiles { get; }
@@ -89,7 +99,7 @@ namespace WorldEditor.ViewModels
 
         private void CreateMaps()
         {
-            var maps = worldRepository.Maps.GetMaps().Select(map => new MapViewModel(map)).ToList();
+            var maps = World.Instance.Regions.Select(map => new MapViewModel(map.Value)).ToList();
 
             Maps = new ObservableCollection<MapViewModel>(maps);
         }
@@ -111,7 +121,9 @@ namespace WorldEditor.ViewModels
             openFileDialog.Filter = "Vincze Game Script files|*.vgs";
             if (openFileDialog.ShowDialog() == true)
             {
-                WorldRepository = new WorldRepository(openFileDialog.FileName, false);
+                ExecutionVisitor.BuildWorldFromFile(openFileDialog.FileName, out var allerrors);  //todo: error handling
+                var a = World.Instance;
+                IsWorldRepositoryOpen = true;
                 CreateMaps();
             }
         }
@@ -121,7 +133,7 @@ namespace WorldEditor.ViewModels
             if (!IsWorldRepositoryOpen)
                 return;
 
-            WorldRepository.SaveWorldDescriptor();
+            File.WriteAllText(World.Instance.FileName, World.Instance.Serialize());
             MessageBox.Show("Project saved.");
         }
 
@@ -132,12 +144,11 @@ namespace WorldEditor.ViewModels
             {
                 SaveProject.Execute(null);
             }
-            if(messageBoxResult == MessageBoxResult.Cancel)
+            if (messageBoxResult == MessageBoxResult.Cancel)
             {
                 return;
             }
-
-            WorldRepository = null;
+            IsWorldRepositoryOpen = false;
         }
 
         private void ExecuteNewProjectCommand()
@@ -147,17 +158,26 @@ namespace WorldEditor.ViewModels
 
             SaveFileDialog saveFileDialog = new SaveFileDialog();
             saveFileDialog.FileName = "NewWorld";
-            saveFileDialog.Filter = "JSON files|*.json";
+            saveFileDialog.Filter = "Vincze Game Script files|*.vgs";
             if (saveFileDialog.ShowDialog() == true)
             {
-                WorldRepository = new WorldRepository(saveFileDialog.FileName, true);
+                using var file = File.Create(saveFileDialog.FileName);
+                World.Instance.FolderPath = Path.GetDirectoryName(saveFileDialog.FileName);
+                World.Instance.FileName = saveFileDialog.FileName;
+                file.Close();
                 CreateMaps();
+                IsWorldRepositoryOpen = true;
             }
+        }
+
+        private void ExecuteOpenContentsWindowCommand()
+        {
+            new ContentsWindow().ShowDialog();
         }
 
         private void ExecuteOpenTexturesWindowCommand()
         {
-            var texturesViewModel = new TexturesViewModel(WorldRepository);
+            var texturesViewModel = new TexturesViewModel();
             var texturesWindow = new TexturesWindow
             {
                 DataContext = texturesViewModel

@@ -37,6 +37,8 @@ namespace WorldEditor.DataAccess
             if (creating)
             {
                 using var file = File.Create(fileName);
+                World.Instance.FolderPath = Path.GetDirectoryName(fileName);
+                World.Instance.FileName = fileName;
                 file.Close();
             }
             else
@@ -48,14 +50,6 @@ namespace WorldEditor.DataAccess
         private void LoadWorldScript(string fileName)
         {
             ExecutionVisitor.BuildWorldFromFile(fileName, out var allerrors);
-            var a = World.Instance;
-
-            var asdasd = World.Instance.Serialize();
-        }
-
-        public void SaveWorldScript()
-        {
-            File.WriteAllText(FileName, World.Instance.Serialize());
         }
 
         private void LoadWorldDescriptor(string fileName)

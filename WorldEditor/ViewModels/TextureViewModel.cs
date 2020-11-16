@@ -1,4 +1,5 @@
-﻿using GalaSoft.MvvmLight;
+﻿using Common.Models;
+using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
 using Microsoft.Win32;
 using System;
@@ -8,50 +9,67 @@ using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
 using WorldEditor.DataAccess;
+using WorldEditor.Utility;
 
 namespace WorldEditor.ViewModels
 {
     public class TextureViewModel : ViewModelBase
     {
-        readonly RpgTexture texture;
+        public Texture Texture { get; private set; }
 
-        public TextureViewModel(RpgTexture texture)
+        public TextureViewModel(Texture texture)
         {
-            this.texture = texture ?? throw new ArgumentNullException("texture");
+            if (texture != null)
+            {
+                Texture = texture;
+                Id = texture.Id;
+                FileName = texture.FileName;
+            }
             BrowseImage = new RelayCommand(ExecuteBrowseImage);
+            SaveTexture = new RelayCommand<Window>(ExecuteSaveTexture);
         }
+
+        private string id;
 
         public string Id
         {
-            get => texture.Id;
+            get => id;
+            set => Set(ref id, value);
+        }
+
+        private string fileName;
+        public string FileName
+        {
+            get => fileName;
             set
             {
-                if (value == texture.Id)
-                    return;
-                texture.Id = value;
-                RaisePropertyChanged("Id");
+                Set(ref fileName, value);
+                try
+                {
+                    ByteArrayValue = File.ReadAllBytes(Path.Combine(World.Instance.FolderPath, value));
+                }
+                catch
+                {
+                    MessageBox.Show($"Failed to load File: {FileName}!");
+                }
             }
         }
 
-        public byte[] Texture
+        private byte[] byteArrayValue;
+        public byte[] ByteArrayValue
         {
-            get => texture.Texture2D;
-            set
-            {
-                if (value == texture.Texture2D)
-                    return;
-                texture.Texture2D = value;
-                RaisePropertyChanged("Texture");
-                RaisePropertyChanged("HasTextureValue");
-            }
+            get => byteArrayValue;
+            set => Set(ref byteArrayValue, value);
         }
+
 
         public bool HasTextureValue
         {
-            get => Texture != null;
+            get => ByteArrayValue != null;
         }
 
         public RelayCommand BrowseImage { get; }
+        public RelayCommand<Window> SaveTexture { get; }
 
         public void ExecuteBrowseImage()
         {
@@ -61,7 +79,41 @@ namespace WorldEditor.ViewModels
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                Texture = File.ReadAllBytes(openFileDialog.FileName);
+                var relativePath = Path.GetRelativePath(World.Instance.FolderPath, openFileDialog.FileName);
+                FileName = relativePath;
+            }
+        }
+
+        public void ExecuteSaveTexture(Window window)
+        {
+            try
+            {
+                if (Texture == null)
+                {
+                    var textureToAdd = new Texture()
+                    {
+                        Id = Id,
+                        FileName = FileName,
+                        ByteArrayValue = ByteArrayValue
+                    };
+                    World.Instance.Textures.Add(Id, textureToAdd);
+                    window.DialogResult = true;
+                }
+                else
+                {
+                    if (Texture.Id != Id && World.Instance.Textures.ContainsKey(Id))
+                        throw new ArgumentException();
+                    World.Instance.Textures.Remove(Texture.Id);
+                    Texture.Id = Id;
+                    Texture.FileName = FileName;
+                    Texture.ByteArrayValue = ByteArrayValue;
+                    World.Instance.Textures.Add(Id, Texture);
+                }
+                window.Close();
+            }
+            catch
+            {
+                MessageBox.Show("Failed to add Texture! A texture with the same id already exists!");
             }
         }
     }

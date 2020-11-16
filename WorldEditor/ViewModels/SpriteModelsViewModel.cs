@@ -66,7 +66,7 @@ namespace WorldEditor.ViewModels
 
         void CreateTextures()
         {
-            var textures = WorldRepository.Textures.GetTextures().Select(texture => new TextureViewModel(texture)).ToList();
+            var textures = World.Instance.Textures.Values.Select(texture => new TextureViewModel(texture)).ToList();
 
             Textures = new ObservableCollection<TextureViewModel>(textures);
         }

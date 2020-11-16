@@ -44,23 +44,24 @@ namespace Common.Script.Visitors
 
         private ExecutionVisitor()
         {
-            World.Instance.Clear();
             scope = new Scope();
             errors = new List<Error>();
         }
 
         public static void BuildWorldFromFile(string fileName, out List<Error> errors)
         {
+            World.Instance.Clear(true);
             World.Instance.FolderPath = Path.GetDirectoryName(fileName);
+            World.Instance.FileName = fileName;
             var script = File.ReadAllText(fileName);
             BuildWorld(script, out errors);
         }
 
         public static void BuildWorld(string script, out List<Error> errors)
         {
+            World.Instance.Clear();
             Instance.errors = new List<Error>();
             Instance.scope = new Scope();
-            World.Instance.Clear();
             var tree = ScriptReader.MakeParseTree(script, out _);
             Instance.Visit(tree);
             errors = Instance.errors;

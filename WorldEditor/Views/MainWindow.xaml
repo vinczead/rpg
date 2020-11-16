@@ -73,7 +73,8 @@
                 <MenuItem Header="Eraser Tool" Command="{Binding SetTool}" CommandParameter="{x:Static utility:ToolType.EraserTool}"/>
                 <MenuItem Header="Tile Tool" Command="{Binding SetTool}" CommandParameter="{x:Static utility:ToolType.TileTool}"/>
             </MenuItem>
-            <MenuItem Header="Content">
+            <MenuItem Header="Contents">
+                <MenuItem Header="Edit Contents..." Command="{Binding OpenContents}"/>
                 <MenuItem Header="Textures..." Command="{Binding OpenTextures}"/>
                 <MenuItem Header="Sprite Models..." Command="{Binding OpenSpriteModels}"/>
                 <MenuItem Header="Tile Types..." Command="{Binding OpenTiles}"/>

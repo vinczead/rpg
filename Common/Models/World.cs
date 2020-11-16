@@ -43,8 +43,12 @@ namespace Common.Models
             Clear();
         }
 
-        public void Clear()
+        public void Clear(bool clearFileName = false)
         {
+            if(clearFileName) {
+                FileName = null;
+                FolderPath = null;
+            }
             Textures = new Dictionary<string, Texture>();
             Models = new Dictionary<string, SpriteModel>();
             Breeds = new Dictionary<string, Thing>();
