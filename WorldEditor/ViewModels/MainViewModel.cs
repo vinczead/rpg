@@ -188,7 +188,7 @@ namespace WorldEditor.ViewModels
 
         private void ExectueOpenSpriteModelsWindowCommand()
         {
-            var spriteModelsViewModel = new SpriteModelsViewModel(WorldRepository);
+            var spriteModelsViewModel = new SpriteModelsViewModel();
             var spriteModelsWindow = new SpriteModelsWindow
             {
                 DataContext = spriteModelsViewModel
@@ -199,7 +199,7 @@ namespace WorldEditor.ViewModels
 
         private void ExectueOpenTilesWindowCommand()
         {
-            var tilesViewModel = new TilesViewModel(WorldRepository);
+            var tilesViewModel = new TilesViewModel();
             var tilesWindow = new TilesWindow
             {
                 DataContext = tilesViewModel

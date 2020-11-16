@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:WorldEditor.ViewModels"
         xmlns:utility="clr-namespace:WorldEditor.Utility"
         mc:Ignorable="d"
-        Title="Edit Contents" Height="450" Width="650">
+        Title="Edit Contents" Height="450" Width="650" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ObjectDataProvider MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}"
@@ -34,12 +34,31 @@
             SelectedItem="{Binding SelectedContentType}">
         </ListBox>
 
-        <local:TexturesGrid 
-            Grid.Column="1"
+        <Grid Grid.Column="1"
             Visibility="{Binding
                     Mode=OneWay,
                     Path=SelectedContentType,
                     Converter={StaticResource ContentTypeToVisibilityConverter},
-                    ConverterParameter={x:Static utility:ContentType.Texture}}"/>
+                    ConverterParameter={x:Static utility:ContentType.Texture}}">
+            <local:TexturesGrid />
+        </Grid>
+
+        <Grid Grid.Column="1"
+            Visibility="{Binding
+                    Mode=OneWay,
+                    Path=SelectedContentType,
+                    Converter={StaticResource ContentTypeToVisibilityConverter},
+                    ConverterParameter={x:Static utility:ContentType.SpriteModel}}">
+            <local:SpriteModelsGrid />
+        </Grid>
+
+        <Grid Grid.Column="1"
+            Visibility="{Binding
+                    Mode=OneWay,
+                    Path=SelectedContentType,
+                    Converter={StaticResource ContentTypeToVisibilityConverter},
+                    ConverterParameter={x:Static utility:ContentType.Tile}}">
+            <local:TileTypesGrid />
+        </Grid>
     </Grid>
 </Window>

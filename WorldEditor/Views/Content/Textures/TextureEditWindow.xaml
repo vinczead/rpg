@@ -7,7 +7,7 @@
         xmlns:vm="clr-namespace:WorldEditor.ViewModels"
         mc:Ignorable="d"
         x:Name="TextureWindow"
-        Title="Edit Texture" Height="400" Width="600">
+        Title="Edit Texture" Height="400" Width="600" ResizeMode="NoResize" WindowStartupLocation="CenterScreen">
     <Grid Grid.Column="1" Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
@@ -35,7 +35,7 @@
         
         <Label Content="Texture Preview:" Grid.Row="1"/>
         <Image Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
-               Stretch="Uniform">
+               Stretch="None">
             <Image.Style>
                 <Style TargetType="{x:Type Image}">
                     <Setter Property="Source" Value="{Binding ByteArrayValue}"/>

@@ -6,57 +6,64 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using WorldEditor.DataAccess;
 
 namespace WorldEditor.ViewModels
 {
-    public class TilesViewModel : ItemsViewModel<TileViewModel>
+    public class TilesViewModel : CollectionViewModel<TileViewModel>
     {
         public ObservableCollection<SpriteModelViewModel> SpriteModels { get; set; }
         public ObservableCollection<TextureViewModel> Textures { get; set; }
-        public TilesViewModel(WorldRepository worldRepository) : base(worldRepository)
+
+        protected override void RefreshItems()
         {
-            CreateTextures();
-            CreateSpriteModels();
-            CreateTiles();
-            worldRepository.Tiles.TileAdded += Tiles_TileAdded;
-        }
+            if(Textures == null)
+            {
+                var textures = World.Instance.Textures.Values.Select(texture => new TextureViewModel(texture)).ToList();
 
-        private void Tiles_TileAdded(object sender, Utility.EntityEventArgs<Common.Models.Tile> e)
-        {
-            var tileViewModel = new TileViewModel(e.Entity, SpriteModels);
-            Items.Add(tileViewModel);
-        }
+                Textures = new ObservableCollection<TextureViewModel>(textures);
+            }
 
-        void CreateTextures()
-        {
-            var textures = World.Instance.Textures.Values.Select(texture => new TextureViewModel(texture)).ToList();
+            if(SpriteModels == null)
+            {
+                var spriteModels = World.Instance.Models.Select(spriteModel => new SpriteModelViewModel(spriteModel.Value, Textures)).ToList();
 
-            Textures = new ObservableCollection<TextureViewModel>(textures);
-        }
+                SpriteModels = new ObservableCollection<SpriteModelViewModel>(spriteModels);
+            }
 
-        void CreateSpriteModels()
-        {
-            var spriteModels = WorldRepository.SpriteModels.GetSpriteModels().Select(spriteModel => new SpriteModelViewModel(spriteModel, Textures)).ToList();
-
-            SpriteModels = new ObservableCollection<SpriteModelViewModel>(spriteModels);
-        }
-
-        void CreateTiles()
-        {
-            var tiles = WorldRepository.Tiles.GetTiles().Select(tile => new TileViewModel(tile, SpriteModels)).ToList();
+            var tiles = World.Instance.Tiles.Select(tile => new TileViewModel(tile.Value, SpriteModels)).ToList();
 
             Items = new ObservableCollection<TileViewModel>(tiles);
         }
 
         protected override void ExecuteAddItem()
         {
-            WorldRepository.Tiles.AddNewTile();
+            
         }
 
         protected override void ExecuteRemoveItem()
         {
-            WorldRepository.Tiles.RemoveAt(SelectedIndex);
+            var references = World.Instance.Regions.Where(region => region.Value.Tiles.Count(tiles => tiles.Count(tile => tile == SelectedItem.Tile) > 0) > 0).ToList();
+
+            if (references.Count > 0)
+                MessageBox.Show($"{SelectedItem.Id} cannot be removed, because it is referenced in {references.Count} maps: {string.Join(',', references)}", "Error");
+            else
+            {
+                if (MessageBox.Show($"Delete {SelectedItem.Id}?", "Confirmation", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
+                    World.Instance.Tiles.Remove(SelectedItem.Id);
+                    Items.Remove(SelectedItem);
+                    SelectedItem = null;
+                }
+            }
+        }
+
+        
+
+        protected override void ExecuteEditItem()
+        {
+            throw new NotImplementedException();
         }
     }
 }

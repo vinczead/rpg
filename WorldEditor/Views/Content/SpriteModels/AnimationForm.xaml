@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WorldEditor.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="300">
-    <Grid DataContext="{Binding SelectedAnimation}">
+    <Grid DataContext="{Binding SelectedItem}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition/>
@@ -39,12 +39,11 @@
         <ListBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3"
                  AlternationCount="1000"
                  MinHeight="100" Margin="0,0,0,10"
-                 ItemsSource="{Binding Frames}"
-                 SelectedItem="{Binding SelectedFrame}"
-                 SelectedIndex="{Binding SelectedIndex, Mode=OneWayToSource}">
+                 ItemsSource="{Binding Items}"
+                 SelectedItem="{Binding SelectedItem}">
             <ListBox.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Remove frame" Command="{Binding RemoveFrame}"/>
+                    <MenuItem Header="Remove frame" Command="{Binding RemoveItem}"/>
                 </ContextMenu>
             </ListBox.ContextMenu>
             <ListBox.ItemTemplate>
@@ -60,9 +59,9 @@
 
         <Button Grid.Row="3" Grid.Column="1" Margin="0,0,0,10"
                 Content="Add Frame"
-                Command="{Binding AddFrame}"/>
+                Command="{Binding AddItem}"/>
         
         <local:FrameForm Grid.Row="4" Grid.Column="1"
-                         Visibility="{Binding IsFrameSelected, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"/>
+                         Visibility="{Binding IsItemSelected, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"/>
     </Grid>
 </UserControl>

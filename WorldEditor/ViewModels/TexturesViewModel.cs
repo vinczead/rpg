@@ -50,12 +50,14 @@ namespace WorldEditor.ViewModels
             var references = World.Instance.Models.Where(model => model.Value.SpriteSheet.Id == SelectedItem.Id).Select(model => model.Value.Id).ToList();
 
             if (references.Count > 0)
-                MessageBox.Show($"{SelectedItem.Id} cannot be removed, because it is referenced {references.Count} times: {string.Join(',', references)}");
+                MessageBox.Show($"{SelectedItem.Id} cannot be removed, because it is referenced {references.Count} times: {string.Join(',', references)}", "Error");
             else
             {
                 if (MessageBox.Show($"Delete {SelectedItem.Id}?", "Confirmation", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
                 {
                     World.Instance.Textures.Remove(SelectedItem.Id);
+                    Items.Remove(SelectedItem);
+                    SelectedItem = null;
                 }
             }
         }

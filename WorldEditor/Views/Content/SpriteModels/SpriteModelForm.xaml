@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WorldEditor.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="600">
-    <Grid Grid.Column="1" Margin="10" DataContext="{Binding SelectedSpriteModel}">
+    <Grid Grid.Column="1" Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="2*"/>
@@ -37,13 +37,19 @@
         <Label Grid.Row="2">Animations:</Label>
         <ListBox Grid.Column="1"
                  Grid.Row="2"
-                 ItemsSource="{Binding Animations}"
-                 SelectedItem="{Binding SelectedAnimation}"
+                 ItemsSource="{Binding Items}"
+                 SelectedItem="{Binding SelectedItem}"
                  DisplayMemberPath="Id"
-                 Margin="0,0,0,10"/>
-        <Button Grid.Row="3" Grid.Column="1" Command="{Binding AddAnimation}">Add Animation</Button>
+                 Margin="0,0,0,10">
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Remove animation" Command="{Binding RemoveItem}"/>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
+        <Button Grid.Row="3" Grid.Column="1" Command="{Binding AddItem}">Add Animation</Button>
         <local:AnimationForm Grid.Column="2" Grid.RowSpan="4"
                              Margin="10,0,0,0"
-                             Visibility="{Binding IsAnimationSelected, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"/>
+                             Visibility="{Binding IsItemSelected, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"/>
     </Grid>
 </UserControl>

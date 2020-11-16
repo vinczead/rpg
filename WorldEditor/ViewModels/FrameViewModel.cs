@@ -9,70 +9,61 @@ namespace WorldEditor.ViewModels
 {
     public class FrameViewModel : ViewModelBase
     {
-        readonly Frame frame;
+        public Frame Frame { get; set; }
         public FrameViewModel(Frame frame)
         {
-            this.frame = frame;
+            if(frame != null)
+            {
+                Frame = frame;
+                X = Frame.Source.X;
+                Y = Frame.Source.Y;
+                Width = Frame.Source.Width;
+                Height = Frame.Source.Height;
+                Duration = Frame.TimeSpan.TotalMilliseconds;
+            }
         }
 
+        public void Save()
+        {
+            if (Frame == null)
+                Frame = new Frame();
+            Frame.Source = new Rectangle(X, Y, Width, Height);
+            Frame.TimeSpan = TimeSpan.FromMilliseconds(Duration);
+        }
+
+        private int x;
         public int X
         {
-            get => frame.Source.X;
-            set
-            {
-                if (value == frame.Source.X)
-                    return;
-                frame.Source = new Rectangle(value, frame.Source.Y, frame.Source.Width, frame.Source.Height);
-                RaisePropertyChanged("X");
-            }
+            get => x;
+            set => Set(ref x, value);
         }
 
+        private int y;
         public int Y
         {
-            get => frame.Source.Y;
-            set
-            {
-                if (value == frame.Source.Y)
-                    return;
-                frame.Source = new Rectangle(frame.Source.X, value, frame.Source.Width, frame.Source.Height);
-                RaisePropertyChanged("Y");
-            }
+            get => y;
+            set => Set(ref y, value);
         }
 
+        private int width;
         public int Width
         {
-            get => frame.Source.Width;
-            set
-            {
-                if (value == frame.Source.Width)
-                    return;
-                frame.Source = new Rectangle(frame.Source.X, frame.Source.Y, value, frame.Source.Height);
-                RaisePropertyChanged("Width");
-            }
+            get => width;
+            set => Set(ref width, value);
         }
 
+        private int height;
         public int Height
         {
-            get => frame.Source.Height;
-            set
-            {
-                if (value == frame.Source.Height)
-                    return;
-                frame.Source = new Rectangle(frame.Source.X, frame.Source.Y, frame.Source.Width, value);
-                RaisePropertyChanged("Height");
-            }
+            get => height;
+            set => Set(ref height, value);
         }
 
+        private double duration;
         public double Duration
         {
-            get => frame.TimeSpan.TotalMilliseconds;
-            set
-            {
-                if (value == frame.TimeSpan.TotalMilliseconds)
-                    return;
-                frame.TimeSpan = TimeSpan.FromMilliseconds(value);
-                RaisePropertyChanged("Duration");
-            }
+            get => duration;
+            set => Set(ref duration, value);
         }
     }
 }

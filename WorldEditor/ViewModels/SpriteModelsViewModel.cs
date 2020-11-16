@@ -6,64 +6,29 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using WorldEditor.DataAccess;
+using WorldEditor.Views;
 
 namespace WorldEditor.ViewModels
 {
-    public class SpriteModelsViewModel : ViewModelBase
+    public class SpriteModelsViewModel : CollectionViewModel<SpriteModelViewModel>
     {
-        public WorldRepository WorldRepository { get; set; }
-        public ObservableCollection<SpriteModelViewModel> SpriteModels { get; set; }
         public ObservableCollection<TextureViewModel> Textures { get; set; }
 
-        private SpriteModelViewModel selectedSpriteModel;
-
-        public SpriteModelViewModel SelectedSpriteModel
+        protected override void RefreshItems()
         {
-            get => selectedSpriteModel;
-            set
+            if(Textures == null)
             {
-                Set(ref selectedSpriteModel, value);
-                RaisePropertyChanged(() => IsSpriteModelSelected);
+                CreateTextures();
             }
-        }
-
-        public bool IsSpriteModelSelected { get => SelectedSpriteModel != null; }
-
-        public RelayCommand<SpriteModelViewModel> SelectSpriteModel { get; }
-        public RelayCommand AddSpriteModel { get; }
-        public RelayCommand<SpriteModelViewModel> RemoveSpriteModel { get; }
-
-        public SpriteModelsViewModel(WorldRepository worldRepository)
-        {
-            WorldRepository = worldRepository;
-            SelectSpriteModel = new RelayCommand<SpriteModelViewModel>(ExecuteSelectSpriteModel);
-            AddSpriteModel = new RelayCommand(ExecuteAddSpriteModel);
-            RemoveSpriteModel = new RelayCommand<SpriteModelViewModel>(ExecuteRemoveSpriteModel);
-
-            worldRepository.SpriteModels.SpriteModelAdded += WorldRepository_SpriteModelAdded;
-
-            CreateTextures();
-            CreateSpriteModels();
-        }
-
-        private void WorldRepository_SpriteModelAdded(object sender, Utility.EntityEventArgs<SpriteModel> e)
-        {
-            var spriteModelViewModel = new SpriteModelViewModel(e.Entity, Textures);
-            this.SpriteModels.Add(spriteModelViewModel);
-        }
-
-        void CreateSpriteModels()
-        {
-            var spriteModels = WorldRepository
-                .SpriteModels
-                .GetSpriteModels()
-                .Select(spriteModel => new SpriteModelViewModel(spriteModel, Textures))
+            var spriteModels = World.Instance
+                .Models
+                .Select(spriteModel => new SpriteModelViewModel(spriteModel.Value, Textures))
                 .ToList();
 
-            SpriteModels = new ObservableCollection<SpriteModelViewModel>(spriteModels);
+            Items = new ObservableCollection<SpriteModelViewModel>(spriteModels);
         }
-
         void CreateTextures()
         {
             var textures = World.Instance.Textures.Values.Select(texture => new TextureViewModel(texture)).ToList();
@@ -71,20 +36,48 @@ namespace WorldEditor.ViewModels
             Textures = new ObservableCollection<TextureViewModel>(textures);
         }
 
-
-        private void ExecuteSelectSpriteModel(SpriteModelViewModel spriteModelViewModel)
+        protected override void ExecuteAddItem()
         {
-            SelectedSpriteModel = spriteModelViewModel;
+            var spriteModelViewModel = new SpriteModelViewModel(null, Textures);
+            var window = new SpriteModelEditWindow()
+            {
+                DataContext = spriteModelViewModel
+            };
+
+            if (window.ShowDialog() == true)
+            {
+                Items.Add(spriteModelViewModel);
+            }
         }
 
-        private void ExecuteAddSpriteModel()
+        protected override void ExecuteEditItem()
         {
-            WorldRepository.SpriteModels.AddNewSpriteModel();
+            new SpriteModelEditWindow()
+            {
+                DataContext = new SpriteModelViewModel(SelectedItem.SpriteModel, Textures)
+            }.ShowDialog();
+            RefreshItems();
+            RaisePropertyChanged("Items");
         }
 
-        private void ExecuteRemoveSpriteModel(SpriteModelViewModel spriteModelViewModel)
+        protected override void ExecuteRemoveItem()
         {
-            WorldRepository.SpriteModels.RemoveSpriteModel(spriteModelViewModel.Id);
+            var tileReferences = World.Instance.Tiles.Where(tile => tile.Value.Model.Id == SelectedItem.Id).Select(tile => tile.Value.Id).ToList();
+            var breedReferences = World.Instance.Breeds.Where(breed => breed.Value.Model?.Id == SelectedItem.Id).Select(breed => breed.Value.Id).ToList();
+            var references = tileReferences.Concat(breedReferences).ToList();
+
+
+            if (references.Count > 0)
+                MessageBox.Show($"{SelectedItem.Id} cannot be removed, because it is referenced {references.Count} times: {string.Join(',', references)}", "Error");
+            else
+            {
+                if (MessageBox.Show($"Delete {SelectedItem.Id}?", "Confirmation", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
+                {
+                    World.Instance.Models.Remove(SelectedItem.Id);
+                    Items.Remove(SelectedItem);
+                    SelectedItem = null;
+                }
+            }
         }
     }
 }

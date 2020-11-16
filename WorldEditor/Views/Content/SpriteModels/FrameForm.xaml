@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WorldEditor.Views"
              mc:Ignorable="d" 
              d:DesignHeight="250" d:DesignWidth="300">
-    <Grid DataContext="{Binding SelectedFrame}">
+    <Grid DataContext="{Binding SelectedItem}">
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>

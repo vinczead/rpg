@@ -8,71 +8,40 @@ using System.Text;
 
 namespace WorldEditor.ViewModels
 {
-    public class TileViewModel: ViewModelBase
+    public class TileViewModel : ViewModelBase
     {
-        readonly Tile tile;
+        public Tile Tile { get; private set; }
         public ObservableCollection<SpriteModelViewModel> SpriteModels { get; set; }
         public TileViewModel(Tile tile, ObservableCollection<SpriteModelViewModel> spriteModels)
         {
-            this.tile = tile ?? throw new ArgumentException("tile");
             SpriteModels = spriteModels;
+            if (tile != null)
+            {
+                Id = tile.Id;
+                SpriteModel = SpriteModels.FirstOrDefault(spriteModel => spriteModel.Id == tile.Model.Id);
+                IsWalkable = tile.IsWalkable;
+            }
         }
 
+        private string id;
         public string Id
         {
-            get => tile.Id;
-            set
-            {
-                if (value == Id)
-                    return;
-                tile.Id = value;
-                RaisePropertyChanged("Id");
-            }
+            get => id;
+            set => Set(ref id, value);
         }
 
+        private SpriteModelViewModel spriteModel;
         public SpriteModelViewModel SpriteModel
         {
-            get => SpriteModels.FirstOrDefault(spriteModel => spriteModel.Id == tile.SpriteModelId);
-            set
-            {
-                if (value == null)
-                {
-                    tile.SpriteModelId = null;
-                    RaisePropertyChanged("SpriteModel");
-                    return;
-                }
-
-                if (value.Id == tile.SpriteModelId)
-                    return;
-
-                tile.SpriteModelId = value.Id;
-                RaisePropertyChanged("SpriteModel");
-            }
+            get => spriteModel;
+            set => Set(ref spriteModel, value);
         }
 
-        public string SpriteModelId
-        {
-            get => tile.SpriteModelId;
-            set
-            {
-                if (value == SpriteModelId)
-                    return;
-                tile.SpriteModelId = value;
-                RaisePropertyChanged("SpriteModelId");
-            }
-        }
-
+        private bool isWalkable;
         public bool IsWalkable
         {
-            get => tile.IsWalkable;
-            set
-            {
-                if (value == IsWalkable)
-                    return;
-                tile.IsWalkable = value;
-                RaisePropertyChanged("IsWalkable");
-            }
+            get => isWalkable;
+            set => Set(ref isWalkable, value);
         }
-
     }
 }

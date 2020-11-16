@@ -9,76 +9,75 @@ using System.Text;
 
 namespace WorldEditor.ViewModels
 {
-    public class AnimationViewModel : ViewModelBase
+    public class AnimationViewModel : CollectionViewModel<FrameViewModel>
     {
-        readonly Animation animation;
+        public Animation Animation { get; private set; }
 
-        public RelayCommand AddFrame { get; set; }
-        public RelayCommand RemoveFrame { get; set; }
-
-        public AnimationViewModel(Animation animation)
+        public AnimationViewModel(Animation animation) : base()
         {
-            this.animation = animation;
-
-            var frames = animation.Frames.Select((frame) => new FrameViewModel(frame)).ToList();
-            Frames = new ObservableCollection<FrameViewModel>(frames);
-            AddFrame = new RelayCommand(ExecuteAddFrameCommand);
-            RemoveFrame = new RelayCommand(ExecuteRemoveFrameCommand);
+            if(animation != null)
+            {
+                Animation = animation;
+                Id = animation.Id;
+                IsLooping = animation.IsLooping;
+            }
+            
+            RefreshItems();
         }
 
-        public void ExecuteRemoveFrameCommand()
+        public void Save()
         {
-            if (!IsFrameSelected)
-                return;
-            animation.Frames.RemoveAt(SelectedIndex);
-            Frames.RemoveAt(SelectedIndex);
+            if (Animation == null)
+                Animation = new Animation();
+            Animation.Id = Id;
+            Animation.IsLooping = IsLooping;
+            foreach (var frameVM in Items)
+            {
+                frameVM.Save();
+            }
+            Animation.Frames = Items.Select(frameVM => frameVM.Frame).ToList();
         }
 
-        public void ExecuteAddFrameCommand()
+        protected override void RefreshItems()
         {
-            var frame = new Frame();
-            animation.Frames.Add(frame);
-            Frames.Add(new FrameViewModel(frame));
+            if (Animation != null)
+            {
+                var frames = Animation.Frames.Select(frame => new FrameViewModel(frame)).ToList();
+                Items = new ObservableCollection<FrameViewModel>(frames);
+            }
         }
 
+        protected override void ExecuteAddItem()
+        {
+            Items.Add(new FrameViewModel(null));
+        }
+
+        protected override void ExecuteEditItem()
+        {
+        }
+
+        protected override void ExecuteRemoveItem()
+        {
+            if (SelectedItem != null)
+            {
+                Items.Remove(SelectedItem);
+                SelectedItem = null;
+            }
+        }
+
+        private string id;
         public string Id
         {
-            get => animation.Id;
-            set
-            {
-                if (value == Id)
-                    return;
-                animation.Id = value;
-                RaisePropertyChanged("Id");
-            }
+            get => id;
+            set => Set(ref id, value);
         }
 
+        private bool isLooping;
         public bool IsLooping
         {
-            get => animation.IsLooping;
-            set
-            {
-                if (value == IsLooping)
-                    return;
-                animation.IsLooping = value;
-                RaisePropertyChanged("IsLooping");
-            }
+            get => isLooping;
+            set => Set(ref isLooping, value);
         }
 
-        public ObservableCollection<FrameViewModel> Frames { get; set; }
-
-        private FrameViewModel selectedFrame;
-
-        public FrameViewModel SelectedFrame
-        {
-            get => selectedFrame;
-            set {
-                Set(ref selectedFrame, value);
-                RaisePropertyChanged(() => IsFrameSelected);
-            }
-        }
-        public int SelectedIndex { get; set; }
-
-        public bool IsFrameSelected { get => SelectedFrame != null; }
     }
 }
