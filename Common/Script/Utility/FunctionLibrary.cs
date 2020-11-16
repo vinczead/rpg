@@ -32,13 +32,22 @@ namespace Common.Script.Utility
             return true;
         }
 
-        public static bool SetTiles(object[] parameters)
+        public static bool SetTile(object[] parameters)
         {
-            var region = parameters[0] as Region;
-            var objects = parameters[1] as object[];
-            var tiles = objects.Select(obj => obj as Tile).ToArray();
+            try { 
+                var region = parameters[0] as Region;
+                var x = (int)parameters[1];
+                var y = (int)parameters[2];
+                var tile = parameters[3] as Tile;
 
-            return true;
+                region.Tiles[x][y] = tile;
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
         }
 
     }

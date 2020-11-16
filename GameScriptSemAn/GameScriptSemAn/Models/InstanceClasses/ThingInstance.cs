@@ -1,4 +1,5 @@
 ﻿using GameScript.Models.BaseClasses;
+using GameScript.Models.Script;
 using GameScript.Visitors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -17,7 +18,12 @@ namespace GameScript.Models.InstanceClasses
 
         public virtual void Update(GameTime gameTime)
         {
-            ExecutionVisitor.ExecuteRunBlock(Region.GameModel, this, "InGame");
+            var elapsedMilliseconds = gameTime.ElapsedGameTime.TotalMilliseconds.ToString();
+            var parameters = new List<Symbol>()
+            {
+                new Symbol("ElapsedTime", TypeSystem.Instance["Number"], elapsedMilliseconds)
+            };
+            ExecutionVisitor.ExecuteRunBlock(Region.GameModel, this, "InGame", parameters);
         }
     }
 }

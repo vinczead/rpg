@@ -16,7 +16,7 @@ namespace Common.Script.Visitors
 {
     public sealed class ExecutionVisitor : ViGaSBaseVisitor<object>
     {
-        private Env env;
+        private Scope scope;
 
         private Thing currentBreed;
         private ThingInstance currentInstance;
@@ -45,7 +45,7 @@ namespace Common.Script.Visitors
         private ExecutionVisitor()
         {
             World.Instance.Clear();
-            env = new Env();
+            scope = new Scope();
             errors = new List<Error>();
         }
 
@@ -59,7 +59,7 @@ namespace Common.Script.Visitors
         public static void BuildWorld(string script, out List<Error> errors)
         {
             Instance.errors = new List<Error>();
-            Instance.env = new Env();
+            Instance.scope = new Scope();
             World.Instance.Clear();
             var tree = ScriptReader.MakeParseTree(script, out _);
             Instance.Visit(tree);
@@ -68,11 +68,11 @@ namespace Common.Script.Visitors
 
         public static List<Error> ExecuteRunBlock(ThingInstance currentInstance, string runBlockId, List<Symbol> parameters = null)
         {
-            Instance.env = new Env(World.Instance.ToEnv(), runBlockId);
+            Instance.scope = new Scope(World.Instance.ToScope(), runBlockId);
 
             if (parameters != null)
                 foreach (var p in parameters)
-                    Instance.env[p.Name] = p;
+                    Instance.scope[p.Name] = p;
 
             if (currentInstance.Breed.RunBlocks.TryGetValue(runBlockId, out var runBlock))
                 Instance.Visit(runBlock);
@@ -94,7 +94,7 @@ namespace Common.Script.Visitors
         {
             var modelId = context.modelId.Text;
             var textureId = context.textureId.Text;
-            AddSymbolToEnv(context, new Symbol(modelId, TypeSystem.Instance["Model"], modelId));
+            AddSymbolToScope(context, new Symbol(modelId, TypeSystem.Instance["Model"], modelId));
             currentModel = new SpriteModel()
             {
                 Id = modelId,
@@ -164,13 +164,13 @@ namespace Common.Script.Visitors
             var baseRef = context.baseRef.Text;
             var baseClass = context.baseClass.Text;
 
-            AddSymbolToEnv(context, new Symbol(baseRef, TypeSystem.Instance[baseClass], baseRef));
-            env = new Env(env, baseRef);
+            AddSymbolToScope(context, new Symbol(baseRef, TypeSystem.Instance[baseClass], baseRef));
+            scope = new Scope(scope, baseRef);
             currentBreed = GameObjectFactory.Create(baseClass);
             currentBreed.Id = baseRef;
             World.Instance.Breeds.Add(baseRef, currentBreed);
 
-            AddSymbolToEnv(context, new Symbol("Self", TypeSystem.Instance[baseClass], baseRef));
+            AddSymbolToScope(context, new Symbol("Self", TypeSystem.Instance[baseClass], baseRef));
 
             var retVal = base.VisitBaseDefinition(context);
 
@@ -215,17 +215,17 @@ namespace Common.Script.Visitors
             var x = float.Parse(context.x.Text);
             var y = float.Parse(context.y.Text);
 
-            var baseSymbol = GetSymbolFromEnv(context, baseRef);
+            var baseSymbol = GetSymbolFromScope(context, baseRef);
             var instanceType = TypeSystem.Instance[baseSymbol.Type + "Instance"]; //todo: this could be nicer - maybe read instanceType from json?
 
-            AddSymbolToEnv(context, new Symbol(instanceRef, instanceType, instanceRef));
-            env = new Env(env, instanceRef ?? $"Instance of {baseRef}");
+            AddSymbolToScope(context, new Symbol(instanceRef, instanceType, instanceRef));
+            scope = new Scope(scope, instanceRef ?? $"Instance of {baseRef}");
             currentInstance = World.Instance.Spawn(baseRef, currentRegion.Id, instanceRef);
             currentInstance.Region = currentRegion;
             currentRegion.instances.Add(currentInstance);
             currentInstance.Position = new Vector2(x, y);
 
-            AddSymbolToEnv(context, new Symbol("Self", instanceType, currentInstance.Id));
+            AddSymbolToScope(context, new Symbol("Self", instanceType, currentInstance.Id));
 
             var retVal = base.VisitInstanceDefinition(context);
 
@@ -247,7 +247,7 @@ namespace Common.Script.Visitors
             var width = int.Parse(context.width.Text);
             var height = int.Parse(context.height.Text);
 
-            AddSymbolToEnv(context, new Symbol(regionRef, TypeSystem.Instance["Region"], regionRef));
+            AddSymbolToScope(context, new Symbol(regionRef, TypeSystem.Instance["Region"], regionRef));
             currentRegion = new Region()
             {
                 Id = regionRef,
@@ -276,7 +276,7 @@ namespace Common.Script.Visitors
         {
             var retVal = base.VisitInitBlock(context);
 
-            env = env.Previous;
+            scope = scope.Previous;
 
             return retVal;
         }
@@ -317,7 +317,7 @@ namespace Common.Script.Visitors
 
         public override object VisitParamExpression([NotNull] ParamExpressionContext context)
         {
-            var symbol = GetSymbolFromEnv(context, context.param.Text);
+            var symbol = GetSymbolFromScope(context, context.param.Text);
             return World.Instance.GetById(symbol?.Value);
         }
 
@@ -350,9 +350,9 @@ namespace Common.Script.Visitors
             PropertyInfo thisPropertyInfo = null;
 
             if (context.param != null)
-                currentSymbol = GetSymbolFromEnv(context.param, context.param.Text);
+                currentSymbol = GetSymbolFromScope(context.param, context.param.Text);
             if (context.@ref != null)
-                currentSymbol = GetSymbolFromEnv(context.@ref, context.@ref.Text);
+                currentSymbol = GetSymbolFromScope(context.@ref, context.@ref.Text);
 
             if (currentSymbol == null)
                 return null;
@@ -403,7 +403,7 @@ namespace Common.Script.Visitors
                         var currentPropertyValue = thisPropertyInfo.GetValue(gameObject);
 
                         //and get the symbol for this id
-                        currentSymbol = GetSymbolFromEnv(part, gameObjectIdPropertyInfo.GetValue(currentPropertyValue).ToString());
+                        currentSymbol = GetSymbolFromScope(part, gameObjectIdPropertyInfo.GetValue(currentPropertyValue).ToString());
                     }
                     else
                     {
@@ -426,8 +426,8 @@ namespace Common.Script.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, errors);
-            var rightType = TypeVisitor.GetType(context.right, env, errors);
+            var leftType = TypeVisitor.GetType(context.left, scope, errors);
+            var rightType = TypeVisitor.GetType(context.right, scope, errors);
 
             var @operator = context.additiveOperator();
 
@@ -451,8 +451,8 @@ namespace Common.Script.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, errors);
-            var rightType = TypeVisitor.GetType(context.right, env, errors);
+            var leftType = TypeVisitor.GetType(context.left, scope, errors);
+            var rightType = TypeVisitor.GetType(context.right, scope, errors);
 
             var @operator = context.multiplOperator();
 
@@ -473,8 +473,8 @@ namespace Common.Script.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, errors);
-            var rightType = TypeVisitor.GetType(context.right, env, errors);
+            var leftType = TypeVisitor.GetType(context.left, scope, errors);
+            var rightType = TypeVisitor.GetType(context.right, scope, errors);
 
             var op = context.compOperator();
 
@@ -507,8 +507,8 @@ namespace Common.Script.Visitors
             var left = Visit(context.left);
             var right = Visit(context.right);
 
-            var leftType = TypeVisitor.GetType(context.left, env, errors);
-            var rightType = TypeVisitor.GetType(context.right, env, errors);
+            var leftType = TypeVisitor.GetType(context.left, scope, errors);
+            var rightType = TypeVisitor.GetType(context.right, scope, errors);
 
             var op = context.logicalOperator();
 
@@ -528,7 +528,7 @@ namespace Common.Script.Visitors
         public override object VisitNotExpression([NotNull] NotExpressionContext context)
         {
             var expression = Visit(context.expression());
-            var type = TypeVisitor.GetType(context.expression(), env, errors);
+            var type = TypeVisitor.GetType(context.expression(), scope, errors);
 
             if (type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 return !(bool)expression;
@@ -621,12 +621,12 @@ namespace Common.Script.Visitors
         }
         #endregion
 
-        private Symbol GetSymbolFromEnv(IToken token, string symbolName)
+        private Symbol GetSymbolFromScope(IToken token, string symbolName)
         {
             if (symbolName == null)
                 return null;
 
-            var symbol = env[symbolName];
+            var symbol = scope[symbolName];
             if (symbol != null)
                 return symbol;
 
@@ -634,12 +634,12 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        private Symbol GetSymbolFromEnv(ParserRuleContext context, string symbolName)
+        private Symbol GetSymbolFromScope(ParserRuleContext context, string symbolName)
         {
             if (symbolName == null)
                 return null;
 
-            var symbol = env[symbolName];
+            var symbol = scope[symbolName];
             if (symbol != null)
                 return symbol;
 
@@ -647,11 +647,11 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        private void AddSymbolToEnv(ParserRuleContext context, Symbol symbol)
+        private void AddSymbolToScope(ParserRuleContext context, Symbol symbol)
         {
             try
             {
-                env[symbol.Name] = symbol;
+                scope[symbol.Name] = symbol;
             }
             catch
             {

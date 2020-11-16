@@ -28,6 +28,7 @@ namespace Common.Models
 
         public Game Game { get; set; }
         public string FolderPath { get; set; }
+        public string FileName { get; set; }
         public Dictionary<string, Texture> Textures { get; set; }
         public Dictionary<string, SpriteModel> Models { get; set; }
         public Dictionary<string, Thing> Breeds { get; set; }
@@ -201,26 +202,26 @@ namespace Common.Models
             throw new ArgumentException("No entity was found with the specified id.", "id");
         }
 
-        public Env ToEnv()
+        public Scope ToScope()
         {
             //todo: optimalizalni, ezt eleg lenne egyszer letrehozni
-            var env = new Env(null, "Game Model");
+            var scope = new Scope(null, "Game Model");
             foreach (var b in Breeds)
             {
-                env[b.Key] = new Symbol(b.Key, TypeSystem.Instance[b.Value.GetType().Name], b.Key);
+                scope[b.Key] = new Symbol(b.Key, TypeSystem.Instance[b.Value.GetType().Name], b.Key);
             }
 
             foreach (var i in Instances)
             {
-                env[i.Key] = new Symbol(i.Key, TypeSystem.Instance[i.Value.GetType().Name], i.Key);
+                scope[i.Key] = new Symbol(i.Key, TypeSystem.Instance[i.Value.GetType().Name], i.Key);
             }
 
             foreach (var r in Regions)
             {
-                env[r.Key] = new Symbol(r.Key, TypeSystem.Instance[r.Value.GetType().Name], r.Key);
+                scope[r.Key] = new Symbol(r.Key, TypeSystem.Instance[r.Value.GetType().Name], r.Key);
             }
 
-            return env;
+            return scope;
         }
 
         public string Serialize()
@@ -229,7 +230,6 @@ namespace Common.Models
             using var sr = new StreamReader(stream);
             var content = sr.ReadToEnd();
             TemplateGroup templateGroup = new TemplateGroupString(content);
-            //TemplateGroupFile templateGroupFile = new TemplateGroupFile(@"C:\Users\Adam\sources\rpg\Common\bin\Debug\netcoreapp3.1\Templates.stg");
             var template = templateGroup.GetInstanceOf("world");
             template.Add("w", Instance);
             return template.Render();

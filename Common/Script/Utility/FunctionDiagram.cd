@@ -1,0 +1,38 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Common.Script.Utility.FunctionLibrary">
+    <Position X="2.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AJAAAAAAAAAAAAAAAAAAAAAAAAAABAAACAQAAAAAAAA=</HashCode>
+      <FileName>Script\Utility\FunctionLibrary.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Script.Utility.FunctionManager">
+    <Position X="4.5" Y="6" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAigAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Script\Utility\FunctionManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="functions" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Common.Script.Utility.Function">
+    <Position X="4.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAEAAAAAAQAAAAAAAAAAIAAAAAEAAA=</HashCode>
+      <FileName>Script\Utility\Function.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Parameters" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Common.Script.Utility.Parameter">
+    <Position X="2.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Script\Utility\Function.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

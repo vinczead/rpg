@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using Common.Models;
 using Common.Script.Utility;
 using System;
 using System.Collections.Generic;
@@ -11,20 +12,14 @@ namespace Common.Script.Visitors
 {
     public sealed class TypeVisitor : ViGaSBaseVisitor<Utility.Type>
     {
-        Env env;
-        List<Error> errors;
+        Scope scope = new Scope();
+        List<Error> errors = new List<Error>();
 
-        public static TypeVisitor Instance { get; } = new TypeVisitor();
+        private static TypeVisitor Instance { get; } = new TypeVisitor();
 
-        private TypeVisitor()
+        public static Utility.Type GetType(IParseTree parseTree, Scope scope, List<Error> errors)
         {
-            env = new Env();
-            errors = new List<Error>();
-        }
-
-        public static Utility.Type GetType(IParseTree parseTree, Env env, List<Error> errors)
-        {
-            Instance.env = env;
+            Instance.scope = scope;
             Instance.errors = errors;
 
             return Instance.Visit(parseTree);
@@ -36,9 +31,9 @@ namespace Common.Script.Visitors
             Symbol currentSymbol = null;
 
             if (context.param != null)
-                currentSymbol = GetSymbolFromEnv(context.param, context.param.Text);
+                currentSymbol = GetSymbolFromScope(context.param, context.param.Text);
             if (context.@ref != null)
-                currentSymbol = GetSymbolFromEnv(context.@ref, context.@ref.Text);
+                currentSymbol = GetSymbolFromScope(context.@ref, context.@ref.Text);
 
             if (currentSymbol == null)
                 return TypeSystem.Instance["ErrorType"];
@@ -54,7 +49,7 @@ namespace Common.Script.Visitors
                 if (char.IsLower(part.Text[0]))
                 {
                     //only variables of Instance classes can be accessed
-                    if (currentType.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
+                    if (currentType.InheritsFrom(TypeSystem.Instance["ThingInstance"]))
                     {
                         errors.Add(new Error(part, $"Warning: Expression type cannot be determined, instance may not have this variable."));
                         return TypeSystem.Instance["AnyType"];
@@ -75,14 +70,14 @@ namespace Common.Script.Visitors
                     if (isLastPart)
                         return property.Type;
 
-                    if (property.Type.InheritsFrom(TypeSystem.Instance["GameObject"]) ||
-                        property.Type.InheritsFrom(TypeSystem.Instance["GameObjectInstance"]))
+                    if (property.Type.InheritsFrom(TypeSystem.Instance["Thing"]) ||
+                        property.Type.InheritsFrom(TypeSystem.Instance["ThingInstance"]))
                     {
                         currentType = property.Type;
                     }
                     else
                     {
-                        errors.Add(new Error(part, $"Only properties of Instances and Bases can be accessed."));
+                        errors.Add(new Error(part, $"Only properties of Instances and Breeds can be accessed."));
                         return TypeSystem.Instance["ErrorType"];
                     }
                 }
@@ -157,14 +152,14 @@ namespace Common.Script.Visitors
 
         public override Utility.Type VisitRefExpression([NotNull] ViGaSParser.RefExpressionContext context)
         {
-            var symbol = GetSymbolFromEnv(context, context.GetText());
+            var symbol = GetSymbolFromScope(context, context.GetText());
 
             return symbol?.Type;
         }
 
         public override Utility.Type VisitParamExpression([NotNull] ViGaSParser.ParamExpressionContext context)
         {
-            var symbol = GetSymbolFromEnv(context, context.param.Text);
+            var symbol = GetSymbolFromScope(context, context.param.Text);
 
             return symbol?.Type;
         }
@@ -252,12 +247,12 @@ namespace Common.Script.Visitors
         }
 
 
-        private Symbol GetSymbolFromEnv(ParserRuleContext context, string symbolName)
+        private Symbol GetSymbolFromScope(ParserRuleContext context, string symbolName)
         {
             if (symbolName == null)
                 return null;
 
-            var symbol = env[symbolName];
+            var symbol = scope[symbolName];
             if (symbol != null)
                 return symbol;
 
@@ -265,12 +260,12 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        private Symbol GetSymbolFromEnv(IToken token, string symbolName)
+        private Symbol GetSymbolFromScope(IToken token, string symbolName)
         {
             if (symbolName == null)
                 return null;
 
-            var symbol = env[symbolName];
+            var symbol = scope[symbolName];
             if (symbol != null)
                 return symbol;
 

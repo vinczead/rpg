@@ -33,11 +33,11 @@ namespace WorldEditor.DataAccess
 
         public WorldRepository(string fileName, bool creating)
         {
+            FileName = fileName;
             if (creating)
             {
-                var file = File.Create(fileName);
+                using var file = File.Create(fileName);
                 file.Close();
-                FileName = fileName;
             }
             else
             {
@@ -51,6 +51,11 @@ namespace WorldEditor.DataAccess
             var a = World.Instance;
 
             var asdasd = World.Instance.Serialize();
+        }
+
+        public void SaveWorldScript()
+        {
+            File.WriteAllText(FileName, World.Instance.Serialize());
         }
 
         private void LoadWorldDescriptor(string fileName)

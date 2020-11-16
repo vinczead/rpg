@@ -4,14 +4,14 @@ using System.Text;
 
 namespace Common.Script.Utility
 {
-    public class Env
+    public class Scope
     {
         public string Name { get; set; }
-        public Env Previous { get; private set; }
+        public Scope Previous { get; private set; }
 
         private Dictionary<string, Symbol> table = new Dictionary<string, Symbol>();
 
-        public Env(Env previous = null, string name = "Default Scope")
+        public Scope(Scope previous = null, string name = "Default Scope")
         {
             Previous = previous;
             Name = name;

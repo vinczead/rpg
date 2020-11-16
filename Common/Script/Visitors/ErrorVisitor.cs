@@ -11,20 +11,20 @@ namespace Common.Script.Visitors
 {
     public sealed class ErrorVisitor : ViGaSBaseVisitor<object>
     {
-        Env env;
+        Scope scope;
         private List<Error> errors;
 
         private static ErrorVisitor Instance { get; } = new ErrorVisitor();
 
         private ErrorVisitor()
         {
-            env = new Env();
+            scope = new Scope();
             errors = new List<Error>();
         }
 
         public static List<Error> CheckErrors(string script)
         {
-            Instance.env = new Env();
+            Instance.scope = new Scope();
             Instance.errors = new List<Error>();
             var tree = ScriptReader.MakeParseTree(script, out var syntaxErrors);
             Instance.errors.AddRange(syntaxErrors);
@@ -82,26 +82,26 @@ namespace Common.Script.Visitors
                 {
                     errors.Add(new Error(baseClass, e.Message));
                 }
-                if (!baseClassType.InheritsFrom(TypeSystem.Instance["GameObject"]))
-                    errors.Add(new Error(baseClass, $"Type {baseClassType} is not valid here (must inherit from {TypeSystem.Instance["GameObject"]})."));
+                if (!baseClassType.InheritsFrom(TypeSystem.Instance["Thing"]))
+                    errors.Add(new Error(baseClass, $"Type {baseClassType} is not valid here (must inherit from {TypeSystem.Instance["Thing"]})."));
             }
 
-            AddSymbolToEnv(baseRef, new Symbol(baseRef.Text, baseClassType));
+            AddSymbolToScope(baseRef, new Symbol(baseRef.Text, baseClassType));
 
-            env = new Env(env, baseRef.Text);
-            AddSymbolToEnv(context, new Symbol("_Base", baseClassType));
-            AddSymbolToEnv(context, new Symbol("_Instance", instanceClassType));
+            scope = new Scope(scope, baseRef.Text);
+            AddSymbolToScope(context, new Symbol("_Base", baseClassType));
+            AddSymbolToScope(context, new Symbol("_Instance", instanceClassType));
 
 
-            env = new Env(env, $"{baseRef.Text} Initialization");
-            AddSymbolToEnv(context, new Symbol("Self", baseClassType));
+            scope = new Scope(scope, $"{baseRef.Text} Initialization");
+            AddSymbolToScope(context, new Symbol("Self", baseClassType));
 
             //            foreach (var prop in baseClassType.Properties)
             //                AddSymbolToEnv(baseClass, new Symbol(prop.Name, prop.Type));
 
             var result = base.VisitBaseDefinition(context);
 
-            env = env.Previous;
+            scope = scope.Previous;
 
             return result;
         }
@@ -110,7 +110,7 @@ namespace Common.Script.Visitors
         {
             var retVal = base.VisitInitBlock(context);
 
-            env = env.Previous;
+            scope = scope.Previous;
 
             return retVal;
         }
@@ -118,7 +118,7 @@ namespace Common.Script.Visitors
         public override object VisitInstanceDefinition([NotNull] InstanceDefinitionContext context)
         {
             var baseRef = context.baseRef;
-            var baseSymbol = GetSymbolFromEnv(baseRef, baseRef.Text);
+            var baseSymbol = GetSymbolFromScope(baseRef, baseRef.Text);
 
             var instanceRef = context.instanceRef;
             var instanceType = TypeSystem.Instance["ErrorType"];
@@ -127,7 +127,7 @@ namespace Common.Script.Visitors
 
             if (baseSymbol != null)
             {
-                if (baseSymbol.Type.InheritsFrom(TypeSystem.Instance["GameObject"]))
+                if (baseSymbol.Type.InheritsFrom(TypeSystem.Instance["Thing"]))
                 {
                     if (baseSymbol.Type != TypeSystem.Instance["ErrorType"])
                         try
@@ -140,14 +140,14 @@ namespace Common.Script.Visitors
                         }
                 }
                 else
-                    errors.Add(new Error(baseRef, $"Type of {baseRef.Text} must be {TypeSystem.Instance["GameObject"]}"));
+                    errors.Add(new Error(baseRef, $"Type of {baseRef.Text} must be {TypeSystem.Instance["Thing"]}"));
             }
 
             if (instanceRef != null)
-                AddSymbolToEnv(instanceRef, new Symbol(instanceRef.Text, instanceType));
+                AddSymbolToScope(instanceRef, new Symbol(instanceRef.Text, instanceType));
 
-            env = new Env(env, (instanceRef?.Text ?? $"Instance of {baseRef.Text}") + "Initialization");
-            AddSymbolToEnv(context, new Symbol("Self", instanceType, instanceRef?.Text ?? ""));
+            scope = new Scope(scope, (instanceRef?.Text ?? $"Instance of {baseRef.Text}") + "Initialization");
+            AddSymbolToScope(context, new Symbol("Self", instanceType, instanceRef?.Text ?? ""));
             //            foreach (var prop in instanceType.Properties)
             //                AddSymbolToEnv(context, new Symbol(prop.Name, prop.Type));
 
@@ -157,7 +157,7 @@ namespace Common.Script.Visitors
         public override object VisitPlayerDefinition([NotNull] PlayerDefinitionContext context)
         {
             var instanceId = context.instanceId.Text;
-            var instanceSymbol = GetSymbolFromEnv(context, instanceId);
+            var instanceSymbol = GetSymbolFromScope(context, instanceId);
             if (instanceSymbol != null && instanceSymbol.Type != TypeSystem.Instance["CharacterInstance"])
             {
                 errors.Add(new Error(context.instanceId, $"Type mismatch: the player keyword can only be used with Instances of Characters."));
@@ -196,7 +196,7 @@ namespace Common.Script.Visitors
                 errors.Add(new Error(context.width, $"Type mismatch: height must be an integer."));
             }
 
-            AddSymbolToEnv(context, new Symbol(regionRef, TypeSystem.Instance["Region"]));
+            AddSymbolToScope(context, new Symbol(regionRef, TypeSystem.Instance["Region"]));
 
             return base.VisitRegionDefinition(context);
         }
@@ -207,7 +207,7 @@ namespace Common.Script.Visitors
 
             foreach (var expression in expressions)
             {
-                var type = TypeVisitor.GetType(expression, env, errors);
+                var type = TypeVisitor.GetType(expression, scope, errors);
                 if (type != TypeSystem.Instance["TileArray"])
                 {
                     errors.Add(new Error(expression, "Type mismatch: must be array of Tile."));
@@ -236,13 +236,13 @@ namespace Common.Script.Visitors
                 errors.Add(new Error(context.typeName, e.Message));
             }
 
-            AddSymbolToEnv(context, new Symbol(varName, varType));
+            AddSymbolToScope(context, new Symbol(varName, varType));
 
             if (context.expression() != null)
             {
-                var expressionType = TypeVisitor.GetType(context.expression(), env, errors);
+                var expressionType = TypeVisitor.GetType(context.expression(), scope, errors);
 
-                var symbol = GetSymbolFromEnv(context, varName);
+                var symbol = GetSymbolFromScope(context, varName);
 
                 if (symbol != null)
                 {
@@ -260,7 +260,7 @@ namespace Common.Script.Visitors
         {
             var eventToken = context.eventTypeName;
 
-            var baseType = GetSymbolFromEnv(context, "_Base").Type;
+            var baseType = GetSymbolFromScope(context, "_Base").Type;
 
             var @event = baseType.Events.FirstOrDefault(e => e.Name == eventToken.Text);
 
@@ -271,23 +271,23 @@ namespace Common.Script.Visitors
             }
             else
             {
-                var instanceType = GetSymbolFromEnv(context, "_Instance").Type;
-                env = new Env(env, eventToken.Text);
-                AddSymbolToEnv(context, new Symbol("Self", instanceType));
+                var instanceType = GetSymbolFromScope(context, "_Instance").Type;
+                scope = new Scope(scope, eventToken.Text);
+                AddSymbolToScope(context, new Symbol("Self", instanceType));
 
                 foreach (var param in @event.Parameters)
-                    AddSymbolToEnv(eventToken, new Symbol(param.Name, param.Type));
+                    AddSymbolToScope(eventToken, new Symbol(param.Name, param.Type));
 
                 var result = base.VisitRunBlock(context);
 
-                env = env.Previous;
+                scope = scope.Previous;
                 return result;
             }
         }
 
         public override object VisitIfStatement([NotNull] IfStatementContext context)
         {
-            var type = TypeVisitor.GetType(context.expression(), env, errors);
+            var type = TypeVisitor.GetType(context.expression(), scope, errors);
 
             if (!type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 errors.Add(new Error(context, $"Expression type must be {TypeSystem.Instance["Boolean"]}"));
@@ -297,7 +297,7 @@ namespace Common.Script.Visitors
 
         public override object VisitRepeatStatement([NotNull] RepeatStatementContext context)
         {
-            var type = TypeVisitor.GetType(context.expression(), env, errors);
+            var type = TypeVisitor.GetType(context.expression(), scope, errors);
 
             if (!type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 errors.Add(new Error(context, $"Expression type must be {TypeSystem.Instance["Boolean"]}"));
@@ -307,7 +307,7 @@ namespace Common.Script.Visitors
 
         public override object VisitWhileStatement([NotNull] WhileStatementContext context)
         {
-            var type = TypeVisitor.GetType(context.expression(), env, errors);
+            var type = TypeVisitor.GetType(context.expression(), scope, errors);
 
             if (!type.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 errors.Add(new Error(context, $"Expression type must be {TypeSystem.Instance["Boolean"]}"));
@@ -332,7 +332,7 @@ namespace Common.Script.Visitors
                 {
                     for (int i = 0; i < function.Parameters.Count; i++)
                     {
-                        var paramType = TypeVisitor.GetType(paramsCtx.expression(i), env, errors);
+                        var paramType = TypeVisitor.GetType(paramsCtx.expression(i), scope, errors);
                         if (!paramType.InheritsFrom(function.Parameters[i].Type))
                             errors.Add(new Error(funcNameToken, $"Type mismatch: The function {function} expects {function.Parameters[i].Type} as parameter {i + 1}, not {paramType}."));
                     }
@@ -350,8 +350,8 @@ namespace Common.Script.Visitors
 
         public override object VisitAssignmentStatement([NotNull] AssignmentStatementContext context)
         {
-            var pathType = TypeVisitor.GetType(context.path(), env, errors);
-            var expressionType = TypeVisitor.GetType(context.expression(), env, errors) ?? TypeSystem.Instance["ErrorType"];
+            var pathType = TypeVisitor.GetType(context.path(), scope, errors);
+            var expressionType = TypeVisitor.GetType(context.expression(), scope, errors) ?? TypeSystem.Instance["ErrorType"];
 
             if (pathType != TypeSystem.Instance["ErrorType"] && !expressionType.InheritsFrom(pathType))
             {
@@ -361,11 +361,11 @@ namespace Common.Script.Visitors
             return base.VisitAssignmentStatement(context);
         }
 
-        private void AddSymbolToEnv(IToken token, Symbol symbol)
+        private void AddSymbolToScope(IToken token, Symbol symbol)
         {
             try
             {
-                env[symbol.Name] = symbol;
+                scope[symbol.Name] = symbol;
             }
             catch
             {
@@ -373,11 +373,11 @@ namespace Common.Script.Visitors
             }
         }
 
-        private void AddSymbolToEnv(ParserRuleContext context, Symbol symbol)
+        private void AddSymbolToScope(ParserRuleContext context, Symbol symbol)
         {
             try
             {
-                env[symbol.Name] = symbol;
+                scope[symbol.Name] = symbol;
             }
             catch
             {
@@ -385,12 +385,12 @@ namespace Common.Script.Visitors
             }
         }
 
-        private Symbol GetSymbolFromEnv(IToken token, string symbolName)
+        private Symbol GetSymbolFromScope(IToken token, string symbolName)
         {
             if (symbolName == null)
                 return null;
 
-            var symbol = env[symbolName];
+            var symbol = scope[symbolName];
             if (symbol != null)
                 return symbol;
 
@@ -398,12 +398,12 @@ namespace Common.Script.Visitors
             return null;
         }
 
-        private Symbol GetSymbolFromEnv(ParserRuleContext context, string symbolName)
+        private Symbol GetSymbolFromScope(ParserRuleContext context, string symbolName)
         {
             if (symbolName == null)
                 return null;
 
-            var symbol = env[symbolName];
+            var symbol = scope[symbolName];
             if (symbol != null)
                 return symbol;
 
