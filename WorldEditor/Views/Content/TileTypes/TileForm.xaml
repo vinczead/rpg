@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:WorldEditor.Views"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="400">
-    <Grid Grid.Column="1" Margin="10" DataContext="{Binding SelectedItem}">
+    <Grid Grid.Column="1" Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition />
@@ -36,6 +36,19 @@
         <CheckBox Grid.Row="2" Grid.Column="1" Content="Walkable" Margin="0,0,0,10" IsChecked="{Binding IsWalkable}"/>
 
         <Label Grid.Row="3">Preview:</Label>
-        <Image Grid.Row="3" Grid.Column="1" />
+        <Image Grid.Row="3" Grid.Column="1" Stretch="None">
+            <Image.Style>
+                <Style TargetType="{x:Type Image}">
+                    <Setter Property="Source" Value="{Binding SpriteModel.SpriteSheet.ByteArrayValue}"/>
+                    <Style.Triggers>
+                        <DataTrigger Binding="{Binding SpriteModel.SpriteSheet.ByteArrayValue}" Value="{x:Null}">
+                            <Setter
+                                Property="Source"
+                                Value="pack://application:,,,/WorldEditor;component/Resources/Unknown.png" />
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Image.Style>
+        </Image>
     </Grid>
 </UserControl>

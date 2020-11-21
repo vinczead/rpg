@@ -1,0 +1,22 @@
+﻿<Window x:Class="WorldEditor.Views.TileTypeEditWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WorldEditor.Views"
+        mc:Ignorable="d"
+        x:Name="TileTypeWindow"
+        Title="Edit Tile Type" Height="300" Width="300" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="75"/>
+        </Grid.ColumnDefinitions>
+        <local:TileForm Grid.Row="0" Grid.ColumnSpan="2"/>
+        <Button Grid.Row="1" Grid.Column="2" Content="Save" Margin="0,0,10,10" Command="{Binding SaveTileType}" CommandParameter="{Binding ElementName=TileTypeWindow}"/>
+    </Grid>
+</Window>

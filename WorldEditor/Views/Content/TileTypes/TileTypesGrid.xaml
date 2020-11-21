@@ -28,11 +28,21 @@
             </Image>
         </DataTemplate>
     </UserControl.Resources>
-    <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column">
+    <DataGrid ItemsSource="{Binding Items}" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single" SelectedItem="{Binding SelectedItem}">
         <DataGrid.Columns>
             <DataGridTextColumn Header="Id" Binding="{Binding Id}" Width="*"/>
             <DataGridCheckBoxColumn Header="Walkable" Binding="{Binding IsWalkable}" Width="Auto"/>
             <DataGridTemplateColumn Header="Preview" CellTemplate="{StaticResource PreviewTemplate}" CanUserSort="False" Width="Auto"/>
         </DataGrid.Columns>
+        <DataGrid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="New" Command="{Binding AddItem}" />
+                <MenuItem Header="Edit" Command="{Binding EditItem}" />
+                <MenuItem Header="Delete" Command="{Binding RemoveItem}"/>
+            </ContextMenu>
+        </DataGrid.ContextMenu>
+        <DataGrid.InputBindings>
+            <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding EditItem}" />
+        </DataGrid.InputBindings>
     </DataGrid>
 </UserControl>

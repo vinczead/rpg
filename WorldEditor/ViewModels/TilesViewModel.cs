@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Windows;
 using WorldEditor.DataAccess;
+using WorldEditor.Views;
 
 namespace WorldEditor.ViewModels
 {
@@ -39,7 +40,26 @@ namespace WorldEditor.ViewModels
 
         protected override void ExecuteAddItem()
         {
-            
+            var tileViewModel = new TileViewModel(null, SpriteModels);
+            var window = new TileTypeEditWindow()
+            {
+                DataContext = tileViewModel
+            };
+
+            if(window.ShowDialog() == true)
+            {
+                Items.Add(tileViewModel);
+            }
+        }
+
+        protected override void ExecuteEditItem()
+        {
+            new TileTypeEditWindow()
+            {
+                DataContext = new TileViewModel(SelectedItem.Tile, SpriteModels)
+            }.ShowDialog();
+            RefreshItems();
+            RaisePropertyChanged("Items");
         }
 
         protected override void ExecuteRemoveItem()
@@ -57,13 +77,6 @@ namespace WorldEditor.ViewModels
                     SelectedItem = null;
                 }
             }
-        }
-
-        
-
-        protected override void ExecuteEditItem()
-        {
-            throw new NotImplementedException();
         }
     }
 }
