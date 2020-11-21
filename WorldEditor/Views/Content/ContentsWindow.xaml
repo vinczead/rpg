@@ -60,5 +60,14 @@
                     ConverterParameter={x:Static utility:ContentType.Tile}}">
             <local:TileTypesGrid />
         </Grid>
+
+        <Grid Grid.Column="1"
+            Visibility="{Binding
+                    Mode=OneWay,
+                    Path=SelectedContentType,
+                    Converter={StaticResource ContentTypeToVisibilityConverter},
+                    ConverterParameter={x:Static utility:ContentType.Region}}">
+            <local:RegionsGrid />
+        </Grid>
     </Grid>
 </Window>

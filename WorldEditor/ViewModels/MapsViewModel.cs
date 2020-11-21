@@ -7,7 +7,7 @@ using WorldEditor.DataAccess;
 
 namespace WorldEditor.ViewModels
 {
-    public class MapsViewModel : ItemsViewModel<MapViewModel>
+    public class MapsViewModel : ItemsViewModel<RegionViewModel>
     {
         public MapsViewModel(WorldRepository worldRepository) : base(worldRepository)
         {
@@ -17,15 +17,15 @@ namespace WorldEditor.ViewModels
 
         private void Maps_MapAdded(object sender, Utility.EntityEventArgs<Common.Models.Region> e)
         {
-            var mapViewModel = new MapViewModel(e.Entity);
+            var mapViewModel = new RegionViewModel(e.Entity);
             Items.Add(mapViewModel);
         }
 
         private void CreateMaps()
         {
-            var maps = WorldRepository.Maps.GetMaps().Select(map => new MapViewModel(map)).ToList();
+            var maps = WorldRepository.Maps.GetMaps().Select(map => new RegionViewModel(map)).ToList();
 
-            Items = new ObservableCollection<MapViewModel>(maps);
+            Items = new ObservableCollection<RegionViewModel>(maps);
         }
 
         protected override void ExecuteAddItem()

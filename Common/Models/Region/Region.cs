@@ -11,7 +11,6 @@ namespace Common.Models
     public class Region
     {
         public string Id { get; set; }
-        public string Name { get; set; }
 
         public List<ThingInstance> instances = new List<ThingInstance>();
 
@@ -20,6 +19,9 @@ namespace Common.Models
 
         public int Width { get; set; }
         public int Height { get; set; }
+
+        public int TileWidth { get; set; } = 32; //todo: make it adjustable
+        public int TileHeight { get; set; } = 32; //todo: make it adjustable
         public Tile[][] Tiles { get; set; }
 
         public void Update(GameTime gameTime)

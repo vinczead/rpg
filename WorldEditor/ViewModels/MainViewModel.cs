@@ -58,9 +58,9 @@ namespace WorldEditor.ViewModels
 
         public string Title { get => "World Editor" + (IsWorldRepositoryOpen ? $" - {World.Instance.FileName}" : ""); }
 
-        private ObservableCollection<MapViewModel> maps;
+        private ObservableCollection<RegionViewModel> maps;
 
-        public ObservableCollection<MapViewModel> Maps
+        public ObservableCollection<RegionViewModel> Maps
         {
             get => maps;
             set => Set(ref maps, value);
@@ -99,9 +99,9 @@ namespace WorldEditor.ViewModels
 
         private void CreateMaps()
         {
-            var maps = World.Instance.Regions.Select(map => new MapViewModel(map.Value)).ToList();
+            var maps = World.Instance.Regions.Select(map => new RegionViewModel(map.Value)).ToList();
 
-            Maps = new ObservableCollection<MapViewModel>(maps);
+            Maps = new ObservableCollection<RegionViewModel>(maps);
         }
 
         private void ExecuteCloseWindow(Window window)

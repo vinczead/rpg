@@ -58,16 +58,19 @@ namespace WorldEditor.ViewModels
             {
                 DataContext = new TileViewModel(SelectedItem.Tile, SpriteModels)
             }.ShowDialog();
+            var a = World.Instance.Regions;
             RefreshItems();
             RaisePropertyChanged("Items");
         }
 
         protected override void ExecuteRemoveItem()
         {
-            var references = World.Instance.Regions.Where(region => region.Value.Tiles.Count(tiles => tiles.Count(tile => tile == SelectedItem.Tile) > 0) > 0).ToList();
+            var references = World.Instance.Regions
+                .Where(region => region.Value.Tiles.Cast<Tile>().Any(tile => tile == SelectedItem.Tile))
+                .Select(region => region.Value.Id).ToList();
 
             if (references.Count > 0)
-                MessageBox.Show($"{SelectedItem.Id} cannot be removed, because it is referenced in {references.Count} maps: {string.Join(',', references)}", "Error");
+                MessageBox.Show($"{SelectedItem.Id} cannot be removed, because it is referenced in {references.Count} regions: {string.Join(',', references)}", "Error");
             else
             {
                 if (MessageBox.Show($"Delete {SelectedItem.Id}?", "Confirmation", MessageBoxButton.OKCancel) == MessageBoxResult.OK)
