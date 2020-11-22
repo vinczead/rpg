@@ -52,7 +52,7 @@ namespace Common.Script.Utility
                     else return new Tile() { Id = Value };
                 }
 
-                if (Type == TypeSystem.Instance["Model"])
+                if (Type == TypeSystem.Instance["SpriteModel"])
                 {
                     if (Value == "")
                         return null;

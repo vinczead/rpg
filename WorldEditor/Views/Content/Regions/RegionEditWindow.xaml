@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WorldEditor.Views"
         mc:Ignorable="d"
         x:Name="RegionWindow"
-        Title="Edit Region" Height="200" Width="300">
+        Title="Edit Region" Height="200" Width="300" WindowStartupLocation="CenterScreen" ResizeMode="NoResize">
     <Grid Margin="10">
         <Grid.RowDefinitions>
             <RowDefinition />

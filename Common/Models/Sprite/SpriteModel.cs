@@ -12,9 +12,7 @@ namespace Common.Models
     public class SpriteModel
     {
         public string Id { get; set; }
-        [JsonIgnore]
         public Texture SpriteSheet { get; set; }
-        public string SpriteSheetId { get; set; }
         public List<Animation> Animations { get; set; } = new List<Animation>();
 
         public Animation this[string state]

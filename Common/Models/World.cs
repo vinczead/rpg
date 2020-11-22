@@ -225,6 +225,21 @@ namespace Common.Models
                 scope[r.Key] = new Symbol(r.Key, TypeSystem.Instance[r.Value.GetType().Name], r.Key);
             }
 
+            foreach (var t in Textures)
+            {
+                scope[t.Key] = new Symbol(t.Key, TypeSystem.Instance[t.Value.GetType().Name], t.Key);
+            }
+
+            foreach (var t in Tiles)
+            {
+                scope[t.Key] = new Symbol(t.Key, TypeSystem.Instance[t.Value.GetType().Name], t.Key);
+            }
+
+            foreach (var m in Models)
+            {
+                scope[m.Key] = new Symbol(m.Key, TypeSystem.Instance[m.Value.GetType().Name], m.Key);
+            }
+
             return scope;
         }
 

@@ -1,120 +1,90 @@
 <?xml version="1.0"?>
 <SyntaxDefinition name="ViGaS" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://icsharpcode.net/sharpdevelop/syntaxdefinition/2008">
-  <Color name="Comment" foreground="Green" fontStyle="italic"  />
-  <Color name="String" foreground="Red" />
-  <Color name="Number" foreground="DarkBlue" />
-  <Color name="Reference" foreground="Gray" />
-  <Color name="MethodCall" fontWeight="bold" foreground="Brown" />
-  <Color name="Keyword" fontWeight="bold" foreground="Blue" />
+	<Color name="Comment" foreground="Green" fontStyle="italic"  />
+	<Color name="String" foreground="Red" />
+	<Color name="Number" foreground="DarkBlue" />
+	<Color name="Reference" foreground="Gray" />
+	<Color name="MethodCall" fontWeight="bold" foreground="Brown" />
+	<Color name="Keyword" fontWeight="bold" foreground="Blue" />
 
-  <!-- This is the main ruleset. -->
-  <RuleSet>
-    <Span color="Comment" begin="//"/>
+	<!-- This is the main ruleset. -->
+	<RuleSet>
+		<Span color="Comment" begin="//"/>
 
-    <Span color="String">
-      <Begin>"</Begin>
-      <End>"</End>
-    </Span>
+		<Span color="String">
+			<Begin>"</Begin>
+			<End>"</End>
+		</Span>
 
-    <Keywords color="Keyword">
-      <Word>Base</Word>
-      <Word>Instance</Word>
-      <Word>Region</Word>
-      <Word>From</Word>
-      
-      <Word>Init</Word>
+		<Keywords color="Keyword">
+			<Word>or</Word>
+			<Word>and</Word>
+			<Word>not</Word>
+			<Word>xor</Word>
 
-      <Word>If</Word>
-      <Word>Then</Word>
-      <Word>Else</Word>
-      
-      <Word>Repeat</Word>
-      <Word>While</Word>
-      
-      <Word>Return</Word>
-      <Word>Variables</Word>
-      <Word>Is</Word>
-      <Word>Parameter</Word>
-      <Word>WithValue</Word>
-      <Word>Set</Word>
-      <Word>To</Word>
-      <Word>Run</Word>
-      <Word>When</Word>
-      <Word>End</Word>
+			<Word>texture</Word>
+			<Word>model</Word>
+			<Word>animation</Word>
+			<Word>looping</Word>
+			<Word>frame</Word>
+			<Word>tile</Word>
+			<Word>walkable</Word>
+			<Word>breed</Word>
+			<Word>region</Word>
+			<Word>tiles</Word>
+			<Word>instance</Word>
+			<Word>from</Word>
+			<Word>player</Word>
+			<Word>of</Word>
 
-      <Word>True</Word>
-      <Word>False</Word>
-      <Word>Null</Word>
+			<Word>variables</Word>
+			<Word>is</Word>
+			<Word>withvalue</Word>
 
-      <Word>Number</Word>
-      <Word>Boolean</Word>
-      <Word>String</Word>
-      <Word>Reference</Word>
+			<Word>init</Word>
 
-      <Word>Self</Word>
-      <Word>Base</Word>
+			<Word>run</Word>
+			<Word>when</Word>
 
-      <Word>Or</Word>
-      <Word>And</Word>
-      <Word>Not</Word>
-      <Word>Xor</Word>
+			<Word>if</Word>
+			<Word>then</Word>
+			<Word>else</Word>
 
-      <Word>base</Word>
-      <Word>instance</Word>
-      <Word>region</Word>
-      <Word>from</Word>
+			<Word>while</Word>
+			<Word>repeat</Word>
 
-      <Word>init</Word>
+			<Word>set</Word>
+			<Word>to</Word>
 
-      <Word>if</Word>
-      <Word>then</Word>
-      <Word>else</Word>
+			<Word>end</Word>
 
-      <Word>repeat</Word>
-      <Word>while</Word>
+			<Word>true</Word>
+			<Word>false</Word>
+			<Word>null</Word>
+			<Word>True</Word>
+			<Word>False</Word>
+			<Word>Null</Word>
 
-      <Word>return</Word>
-      <Word>variables</Word>
-      <Word>is</Word>
-      <Word>parameter</Word>
-      <Word>withvalue</Word>
-      <Word>set</Word>
-      <Word>to</Word>
-      <Word>run</Word>
-      <Word>when</Word>
-      <Word>end</Word>
+			<Word>Number</Word>
+			<Word>Boolean</Word>
+			<Word>String</Word>
 
-      <Word>true</Word>
-      <Word>false</Word>
-      <Word>null</Word>
+			<Word>Self</Word>
+		</Keywords>
 
-      <Word>number</Word>
-      <Word>boolean</Word>
-      <Word>string</Word>
-      <Word>reference</Word>
+		<Rule color="MethodCall">
+			\b
+			[\d\w_]+  # an identifier
+			(?=\s*\() # followed by (
+		</Rule>
 
-      <Word>self</Word>
-      <Word>base</Word>
-    
-      <Word>or</Word>
-      <Word>and</Word>
-      <Word>not</Word>
-      <Word>xor</Word>
-    </Keywords>
+		<Rule color="Number">
+			\d+(\.[0-9]+)?   #number with optional floating point
+		</Rule>
 
-    <Rule color="MethodCall">
-      \b
-      [\d\w_]+  # an identifier
-      (?=\s*\() # followed by (
-    </Rule>
+		<Rule color="Reference">
+			\$[A-Z][A-Za-z0-9_]*
+		</Rule>
 
-    <Rule color="Number">
-      \d+(\.[0-9]+)?   #number with optional floating point
-    </Rule>
-
-    <Rule color="Reference">
-      \$[A-Za-z0-9]*
-    </Rule>
-
-  </RuleSet>
+	</RuleSet>
 </SyntaxDefinition>

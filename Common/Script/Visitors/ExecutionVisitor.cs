@@ -28,6 +28,8 @@ namespace Common.Script.Visitors
 
         private static ExecutionVisitor Instance { get; } = new ExecutionVisitor();
 
+        private bool buildBreedOnly;
+
         /*/// <summary>
         /// This constructor should be used in game code when executing Run blocks
         /// </summary>
@@ -60,12 +62,34 @@ namespace Common.Script.Visitors
         public static void BuildWorld(string script, out List<Error> errors)
         {
             World.Instance.Clear();
-            Instance.errors = new List<Error>();
-            Instance.scope = new Scope();
+            Instance.ClearState();
             var tree = ScriptReader.MakeParseTree(script, out _);
             Instance.Visit(tree);
             errors = Instance.errors;
         }
+
+        public static Thing BuildBreed(string script, out List<Error> errors)
+        {
+            Instance.ClearState();
+            Instance.buildBreedOnly = true;
+            var tree = ScriptReader.MakeParseTree(script, out _);
+            Instance.Visit(tree);
+            errors = Instance.errors;
+            return Instance.currentBreed;
+        }
+
+        private void ClearState()
+        {
+            scope = new Scope();
+            errors = new List<Error>();
+            buildBreedOnly = false;
+            currentAnimation = null;
+            currentBreed = null;
+            currentInstance = null;
+            currentModel = null;
+            currentRegion = null;
+        }
+
 
         public static List<Error> ExecuteRunBlock(ThingInstance currentInstance, string runBlockId, List<Symbol> parameters = null)
         {
@@ -84,6 +108,12 @@ namespace Common.Script.Visitors
 
         public override object VisitTextureDefinition([NotNull] TextureDefinitionContext context)
         {
+            if (buildBreedOnly)
+            {
+                errors.Add(new Error(context, $"Breed scripts cannot contain Texture definitions."));
+                return null;
+            }
+
             var id = context.textureId.Text;
             var fileName = context.fileName.Text[1..^1];
 
@@ -93,9 +123,15 @@ namespace Common.Script.Visitors
 
         public override object VisitModelDefinition([NotNull] ModelDefinitionContext context)
         {
+            if (buildBreedOnly)
+            {
+                errors.Add(new Error(context, $"Breed scripts cannot contain Model definitions."));
+                return null;
+            }
+
             var modelId = context.modelId.Text;
             var textureId = context.textureId.Text;
-            AddSymbolToScope(context, new Symbol(modelId, TypeSystem.Instance["Model"], modelId));
+            AddSymbolToScope(context, new Symbol(modelId, TypeSystem.Instance["SpriteModel"], modelId));
             currentModel = new SpriteModel()
             {
                 Id = modelId,
@@ -110,6 +146,12 @@ namespace Common.Script.Visitors
 
         public override object VisitAnimationDefinition([NotNull] AnimationDefinitionContext context)
         {
+            if (buildBreedOnly)
+            {
+                errors.Add(new Error(context, $"Breed scripts cannot contain Animation definitions."));
+                return null;
+            }
+
             var animationId = context.animationId.Text;
             var looping = context.LOOPING() != null;
 
@@ -129,6 +171,12 @@ namespace Common.Script.Visitors
 
         public override object VisitFrameDefinition([NotNull] FrameDefinitionContext context)
         {
+            if (buildBreedOnly)
+            {
+                errors.Add(new Error(context, $"Breed scripts cannot contain Frame definitions."));
+                return null;
+            }
+
             var x = int.Parse(context.x.Text);
             var y = int.Parse(context.y.Text);
             var width = int.Parse(context.width.Text);
@@ -146,6 +194,12 @@ namespace Common.Script.Visitors
 
         public override object VisitTileDefinition([NotNull] TileDefinitionContext context)
         {
+            if (buildBreedOnly)
+            {
+                errors.Add(new Error(context, $"Breed scripts cannot contain Tile definitions."));
+                return null;
+            }
+
             var id = context.tileId.Text;
             var modelId = context.modelId.Text;
             var isWalkable = context.WALKABLE() != null;
@@ -162,6 +216,12 @@ namespace Common.Script.Visitors
 
         public override object VisitBaseDefinition([NotNull] BaseDefinitionContext context)
         {
+            if (buildBreedOnly && currentBreed != null)
+            {
+                errors.Add(new Error(context, $"Breed scripts can only contain exactly one Breed definition."));
+                return null;
+            }
+
             var baseRef = context.baseRef.Text;
             var baseClass = context.baseClass.Text;
 
@@ -175,8 +235,10 @@ namespace Common.Script.Visitors
 
             var retVal = base.VisitBaseDefinition(context);
 
-            currentBreed = null;
-
+            if (!buildBreedOnly)
+            {
+                currentBreed = null;
+            }
             return retVal;
         }
 
@@ -211,6 +273,12 @@ namespace Common.Script.Visitors
 
         public override object VisitInstanceDefinition([NotNull] InstanceDefinitionContext context)
         {
+            if (buildBreedOnly)
+            {
+                errors.Add(new Error(context, $"Breed scripts cannot contain Instance definitions."));
+                return null;
+            }
+
             var baseRef = context.baseRef.Text;
             var instanceRef = context.instanceRef?.Text;
             var x = float.Parse(context.x.Text);
@@ -237,6 +305,12 @@ namespace Common.Script.Visitors
 
         public override object VisitPlayerDefinition([NotNull] PlayerDefinitionContext context)
         {
+            if (buildBreedOnly)
+            {
+                errors.Add(new Error(context, $"Breed scripts cannot contain Player definitions."));
+                return null;
+            }
+
             var instanceId = context.instanceId.Text;
             World.Instance.Player = World.Instance.GetInstance(instanceId) as CharacterInstance;
             return base.VisitPlayerDefinition(context);
@@ -244,6 +318,12 @@ namespace Common.Script.Visitors
 
         public override object VisitRegionDefinition([NotNull] RegionDefinitionContext context)
         {
+            if (buildBreedOnly)
+            {
+                errors.Add(new Error(context, $"Breed scripts cannot contain Region definitions."));
+                return null;
+            }
+
             var regionRef = context.regionRef.Text;
             var width = int.Parse(context.width.Text);
             var height = int.Parse(context.height.Text);

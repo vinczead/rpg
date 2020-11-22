@@ -66,6 +66,15 @@
                     Mode=OneWay,
                     Path=SelectedContentType,
                     Converter={StaticResource ContentTypeToVisibilityConverter},
+                    ConverterParameter={x:Static utility:ContentType.Breed}}">
+            <local:BreedsGrid />
+        </Grid>
+        
+        <Grid Grid.Column="1"
+            Visibility="{Binding
+                    Mode=OneWay,
+                    Path=SelectedContentType,
+                    Converter={StaticResource ContentTypeToVisibilityConverter},
                     ConverterParameter={x:Static utility:ContentType.Region}}">
             <local:RegionsGrid />
         </Grid>

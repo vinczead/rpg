@@ -22,9 +22,9 @@ namespace Common.Script.Visitors
             errors = new List<Error>();
         }
 
-        public static List<Error> CheckErrors(string script)
+        public static List<Error> CheckErrors(string script, Scope scope = null)
         {
-            Instance.scope = new Scope();
+            Instance.scope = scope ?? new Scope();
             Instance.errors = new List<Error>();
             var tree = ScriptReader.MakeParseTree(script, out var syntaxErrors);
             Instance.errors.AddRange(syntaxErrors);

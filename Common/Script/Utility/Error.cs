@@ -13,14 +13,14 @@ namespace Common.Script.Utility
         public int Column { get; set; }
         public string Message { get; set; }
 
-        public ErrorSeverity Severirty { get; set; }
+        public ErrorSeverity Severity { get; set; }
 
         public Error(ParserRuleContext context, string message, ErrorSeverity severity = ErrorSeverity.Error)
         {
             Line = context.start.Line;
             Column = context.start.Column;
             Message = message;
-            Severirty = severity;
+            Severity = severity;
         }
 
         public Error(IToken token, string message, ErrorSeverity severity = ErrorSeverity.Error)
@@ -28,7 +28,7 @@ namespace Common.Script.Utility
             Line = token.Line;
             Column = token.Column;
             Message = message;
-            Severirty = severity;
+            Severity = severity;
         }
 
         public Error(int line, int column, string message, ErrorSeverity severity = ErrorSeverity.Error)
@@ -36,12 +36,12 @@ namespace Common.Script.Utility
             Line = line;
             Column = column;
             Message = message;
-            Severirty = severity;
+            Severity = severity;
         }
 
         public override string ToString()
         {
-            return $"{Severirty:f} at line {Line}, column {Column}: {Message}";
+            return $"{Severity:f} at line {Line}, column {Column}: {Message}";
         }
     }
 

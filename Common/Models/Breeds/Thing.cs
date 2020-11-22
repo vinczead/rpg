@@ -1,8 +1,10 @@
 ﻿using Antlr4.Runtime.Misc;
+using Antlr4.StringTemplate;
 using Common.Script.Utility;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -46,6 +48,17 @@ namespace Common.Models
             }
 
             return instance;
+        }
+
+        public string Serialize()
+        {
+            using var stream = typeof(FunctionManager).Assembly.GetManifestResourceStream("Common.Templates.stg");
+            using var sr = new StreamReader(stream);
+            var content = sr.ReadToEnd();
+            TemplateGroup templateGroup = new TemplateGroupString(content);
+            var template = templateGroup.GetInstanceOf("breed");
+            template.Add("b", this);
+            return template.Render();
         }
     }
 }

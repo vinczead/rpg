@@ -137,7 +137,6 @@ BRACKET_CLOSE: ')';
 COMMA: ',';
 DOT: '.';
 
-THIS: [Tt]'his';
 NULL: 'Null' | 'null';
 BOOLEAN: 'True' | 'true' | 'False' | 'false';
 STRING: '"' (~[\r\n])* '"';

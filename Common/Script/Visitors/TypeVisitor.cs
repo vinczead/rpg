@@ -51,7 +51,7 @@ namespace Common.Script.Visitors
                     //only variables of Instance classes can be accessed
                     if (currentType.InheritsFrom(TypeSystem.Instance["ThingInstance"]))
                     {
-                        errors.Add(new Error(part, $"Warning: Expression type cannot be determined, instance may not have this variable."));
+                        errors.Add(new Error(part, $"Expression type cannot be determined, instance may not have this variable.", ErrorSeverity.Warning));
                         return TypeSystem.Instance["AnyType"];
                     }
                     else
@@ -152,7 +152,7 @@ namespace Common.Script.Visitors
 
         public override Utility.Type VisitRefExpression([NotNull] ViGaSParser.RefExpressionContext context)
         {
-            var symbol = GetSymbolFromScope(context, context.GetText());
+            var symbol = GetSymbolFromScope(context, context.GetText().Substring(1));
 
             return symbol?.Type;
         }
@@ -187,6 +187,9 @@ namespace Common.Script.Visitors
             var rightType = Visit(context.right);
             var op = context.additiveOperator();
 
+            if (leftType == TypeSystem.Instance["AnyType"])
+                return TypeSystem.Instance["AnyType"];
+
             if (leftType.InheritsFrom(TypeSystem.Instance["String"]) && op.PLUS() != null)
                 return TypeSystem.Instance["String"];
 
@@ -202,6 +205,9 @@ namespace Common.Script.Visitors
             var leftType = Visit(context.left);
             var rightType = Visit(context.right);
 
+            if (leftType == TypeSystem.Instance["AnyType"])
+                return TypeSystem.Instance["AnyType"];
+
             if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
                 return TypeSystem.Instance["Number"];
 
@@ -214,6 +220,9 @@ namespace Common.Script.Visitors
         {
             var leftType = Visit(context.left);
             var rightType = Visit(context.right);
+
+            if (leftType == TypeSystem.Instance["AnyType"])
+                return TypeSystem.Instance["AnyType"];
 
             if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Boolean"]))
                 return TypeSystem.Instance["Boolean"];
@@ -229,6 +238,9 @@ namespace Common.Script.Visitors
             var rightType = Visit(context.right);
 
             var op = context.compOperator();
+
+            if (leftType == TypeSystem.Instance["AnyType"])
+                return TypeSystem.Instance["AnyType"];
 
             if (!leftType.InheritsFrom(rightType) && !rightType.InheritsFrom(leftType))
             {
