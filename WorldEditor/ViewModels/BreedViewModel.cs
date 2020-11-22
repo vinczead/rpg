@@ -37,7 +37,7 @@ namespace WorldEditor.ViewModels
             if (Thing != null)
                 World.Instance.Breeds.Remove(Thing.Id); //Temporarily remove old Breed from World
 
-            Messages = ErrorVisitor.CheckErrors(Script, World.Instance.ToScope());
+            Messages = ErrorVisitor.CheckBreedScriptErrors(Script, World.Instance.ToScope());
             if (Messages.Count(message => message.Severity == ErrorSeverity.Error) == 0)
             {
                 var createdBreed = ExecutionVisitor.BuildBreed(Script, out var executionErrors);

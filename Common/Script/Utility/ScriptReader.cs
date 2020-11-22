@@ -22,5 +22,17 @@ namespace Common.Script.Utility
             errors = syntaxErrorListener.errors;
             return context;
         }
+
+        public static ViGaSParser GetParserForScript(string script, out List<Error> errors)
+        {
+            var inputStream = new AntlrInputStream(script);
+            var lexer = new ViGaSLexer(inputStream);
+            var tokenStream = new CommonTokenStream(lexer);
+            var parser = new ViGaSParser(tokenStream);
+            var syntaxErrorListener = new SyntaxErrorListener();
+            parser.AddErrorListener(syntaxErrorListener);
+            errors = syntaxErrorListener.errors;
+            return parser;
+        } 
     }
 }

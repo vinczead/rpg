@@ -27,9 +27,24 @@ namespace Common.Script.Visitors
             Instance.scope = scope ?? new Scope();
             Instance.errors = new List<Error>();
             var tree = ScriptReader.MakeParseTree(script, out var syntaxErrors);
-            Instance.errors.AddRange(syntaxErrors);
+            if (syntaxErrors.Count > 0)
+                return syntaxErrors;
 
             Instance.Visit(tree);
+
+            return Instance.errors;
+        }
+
+        public static List<Error> CheckBreedScriptErrors(string script, Scope scope = null)
+        {
+            Instance.scope = scope ?? new Scope();
+            Instance.errors = new List<Error>();
+            var parser = ScriptReader.GetParserForScript(script, out var syntaxErrors);
+            var breedTree = parser.baseDefinition();
+            if (syntaxErrors.Count > 0)
+                return syntaxErrors;
+
+            Instance.Visit(breedTree);
 
             return Instance.errors;
         }
