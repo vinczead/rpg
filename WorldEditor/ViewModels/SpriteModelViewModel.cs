@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using WorldEditor.DataAccess;
 
 namespace WorldEditor.ViewModels
 {

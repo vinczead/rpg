@@ -8,7 +8,6 @@ using System.IO;
 using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
-using WorldEditor.DataAccess;
 using WorldEditor.Utility;
 
 namespace WorldEditor.ViewModels

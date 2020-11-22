@@ -7,7 +7,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using WorldEditor.DataAccess;
 using WorldEditor.Views;
 
 namespace WorldEditor.ViewModels
@@ -58,7 +57,6 @@ namespace WorldEditor.ViewModels
             {
                 DataContext = new TileViewModel(SelectedItem.Tile, SpriteModels)
             }.ShowDialog();
-            var a = World.Instance.Regions;
             RefreshItems();
             RaisePropertyChanged("Items");
         }

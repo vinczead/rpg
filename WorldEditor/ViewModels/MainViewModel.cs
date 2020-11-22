@@ -11,7 +11,6 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Windows;
-using WorldEditor.DataAccess;
 using WorldEditor.Utility;
 using WorldEditor.Views;
 
@@ -26,16 +25,6 @@ namespace WorldEditor.ViewModels
             set => Set(ref selectedTool, value);
         }
 
-        private WorldRepository worldRepository;
-        public WorldRepository WorldRepository
-        {
-            get => worldRepository;
-            set
-            {
-                Set(ref worldRepository, value);
-            }
-        }
-
         private bool isWorldRepositoryOpen;
         public bool IsWorldRepositoryOpen
         {
@@ -48,11 +37,6 @@ namespace WorldEditor.ViewModels
                 CloseProject.RaiseCanExecuteChanged();
                 SetTool.RaiseCanExecuteChanged();
                 OpenContents.RaiseCanExecuteChanged();
-                OpenTextures.RaiseCanExecuteChanged();
-                OpenSpriteModels.RaiseCanExecuteChanged();
-                OpenTiles.RaiseCanExecuteChanged();
-                OpenScripts.RaiseCanExecuteChanged();
-                OpenMaps.RaiseCanExecuteChanged();
             }
         }
 
@@ -76,11 +60,6 @@ namespace WorldEditor.ViewModels
             CloseProject = new RelayCommand(ExecuteCloseProjectCommand, () => IsWorldRepositoryOpen);
 
             OpenContents = new RelayCommand(ExecuteOpenContentsWindowCommand, () => IsWorldRepositoryOpen);
-            OpenTextures = new RelayCommand(ExecuteOpenTexturesWindowCommand, () => IsWorldRepositoryOpen);
-            OpenSpriteModels = new RelayCommand(ExectueOpenSpriteModelsWindowCommand, () => IsWorldRepositoryOpen);
-            OpenTiles = new RelayCommand(ExectueOpenTilesWindowCommand, () => IsWorldRepositoryOpen);
-            OpenScripts = new RelayCommand(ExectueOpenScriptsWindowCommand, () => IsWorldRepositoryOpen);
-            OpenMaps = new RelayCommand(ExectueOpenMapsWindowCommand, () => IsWorldRepositoryOpen);
         }
 
         public RelayCommand<ToolType> SetTool { get; }
@@ -91,11 +70,6 @@ namespace WorldEditor.ViewModels
         public RelayCommand CloseProject { get; }
 
         public RelayCommand OpenContents { get; }
-        public RelayCommand OpenTextures { get; }
-        public RelayCommand OpenSpriteModels { get; }
-        public RelayCommand OpenTiles { get; }
-        public RelayCommand OpenScripts { get; }
-        public RelayCommand OpenMaps { get; }
 
         private void CreateMaps()
         {
@@ -117,12 +91,13 @@ namespace WorldEditor.ViewModels
             if (IsWorldRepositoryOpen)
                 CloseProject.Execute(null);
 
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Vincze Game Script files|*.vgs";
+            OpenFileDialog openFileDialog = new OpenFileDialog
+            {
+                Filter = "Vincze Game Script files|*.vgs"
+            };
             if (openFileDialog.ShowDialog() == true)
             {
                 ExecutionVisitor.BuildWorldFromFile(openFileDialog.FileName, out var allerrors);  //todo: error handling
-                var a = World.Instance;
                 IsWorldRepositoryOpen = true;
                 CreateMaps();
             }
@@ -156,9 +131,11 @@ namespace WorldEditor.ViewModels
             if (IsWorldRepositoryOpen)
                 CloseProject.Execute(null);
 
-            SaveFileDialog saveFileDialog = new SaveFileDialog();
-            saveFileDialog.FileName = "NewWorld";
-            saveFileDialog.Filter = "Vincze Game Script files|*.vgs";
+            SaveFileDialog saveFileDialog = new SaveFileDialog
+            {
+                FileName = "NewWorld",
+                Filter = "Vincze Game Script files|*.vgs"
+            };
             if (saveFileDialog.ShowDialog() == true)
             {
                 using var file = File.Create(saveFileDialog.FileName);
@@ -173,62 +150,6 @@ namespace WorldEditor.ViewModels
         private void ExecuteOpenContentsWindowCommand()
         {
             new ContentsWindow().ShowDialog();
-        }
-
-        private void ExecuteOpenTexturesWindowCommand()
-        {
-            var texturesViewModel = new TexturesViewModel();
-            var texturesWindow = new TexturesWindow
-            {
-                DataContext = texturesViewModel
-            };
-
-            texturesWindow.ShowDialog();
-        }
-
-        private void ExectueOpenSpriteModelsWindowCommand()
-        {
-            var spriteModelsViewModel = new SpriteModelsViewModel();
-            var spriteModelsWindow = new SpriteModelsWindow
-            {
-                DataContext = spriteModelsViewModel
-            };
-
-            spriteModelsWindow.ShowDialog();
-        }
-
-        private void ExectueOpenTilesWindowCommand()
-        {
-            var tilesViewModel = new TilesViewModel();
-            var tilesWindow = new TilesWindow
-            {
-                DataContext = tilesViewModel
-            };
-
-            tilesWindow.ShowDialog();
-        }
-
-        private void ExectueOpenScriptsWindowCommand()
-        {
-            var scriptFilesViewModel = new ScriptFilesViewModel(WorldRepository);
-            var scriptsWindow = new ScriptFilesWindow
-            {
-                DataContext = scriptFilesViewModel
-            };
-
-            scriptsWindow.ShowDialog();
-        }
-
-        private void ExectueOpenMapsWindowCommand()
-        {
-            var mapsViewModel = new MapsViewModel(WorldRepository);
-            var mapsWindow = new MapsWindow
-            {
-                DataContext = mapsViewModel
-            };
-
-            mapsWindow.ShowDialog();
-            CreateMaps();
         }
     }
 }

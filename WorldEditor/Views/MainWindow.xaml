@@ -75,11 +75,6 @@
             </MenuItem>
             <MenuItem Header="Contents">
                 <MenuItem Header="Edit Contents..." Command="{Binding OpenContents}"/>
-                <MenuItem Header="Textures..." Command="{Binding OpenTextures}"/>
-                <MenuItem Header="Sprite Models..." Command="{Binding OpenSpriteModels}"/>
-                <MenuItem Header="Tile Types..." Command="{Binding OpenTiles}"/>
-                <MenuItem Header="Scripts..." Command="{Binding OpenScripts}"/>
-                <MenuItem Header="Maps..." Command="{Binding OpenMaps}"/>
             </MenuItem>
             <MenuItem Header="Help">
                 <MenuItem Header="View GitHub Page..."/>
