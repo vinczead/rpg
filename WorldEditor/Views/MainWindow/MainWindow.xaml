@@ -6,7 +6,10 @@
         xmlns:local="clr-namespace:WorldEditor.Views"
         xmlns:vm="clr-namespace:WorldEditor.ViewModels"
         mc:Ignorable="d"
-        Title="{Binding Title}" Height="768" Width="1024" WindowState="Maximized" MinHeight="500" MinWidth="600" x:Name="MainEditorWindow">
+        Title="{Binding Title}"
+        Height="768" Width="1024"
+        MinHeight="500" MinWidth="600"
+        WindowState="Maximized" >
     <Window.DataContext>
         <vm:MainViewModel/>
     </Window.DataContext>
@@ -24,7 +27,7 @@
                 <ColumnDefinition Width="200"/>
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
-            <local:Sidebar Grid.Column="0"/>
+            <local:Sidebar Grid.Column="0" DataContext="{Binding Sidebar}"/>
             <local:RegionTabs Grid.Column="1"/>
         </Grid>
     </Grid>

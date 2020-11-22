@@ -35,7 +35,7 @@
                 </MenuItem.Icon>
             </MenuItem>
             <Separator/>
-            <MenuItem Header="Exit" Command="{Binding Close}" CommandParameter="{Binding ElementName=MainEditorWindow}"/>
+            <MenuItem Header="Exit" Command="{Binding Close}" CommandParameter="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:MainWindow}}}"/>
         </MenuItem>
         <MenuItem Header="View">
             <MenuItem Header="Mini Map" />
@@ -44,10 +44,10 @@
             <MenuItem Header="Toolbar"/>
         </MenuItem>
         <MenuItem Header="Tools">
-            <MenuItem Header="Selection Tool" Command="{Binding SetTool}" CommandParameter="{x:Static utility:ToolType.SelectionTool}"/>
-            <MenuItem Header="Object Tool" Command="{Binding SetTool}" CommandParameter="{x:Static utility:ToolType.ObjectTool}"/>
-            <MenuItem Header="Eraser Tool" Command="{Binding SetTool}" CommandParameter="{x:Static utility:ToolType.EraserTool}"/>
-            <MenuItem Header="Tile Tool" Command="{Binding SetTool}" CommandParameter="{x:Static utility:ToolType.TileTool}"/>
+            <MenuItem Header="Selection Tool" Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.SelectionTool}"/>
+            <MenuItem Header="Object Tool" Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.ObjectTool}"/>
+            <MenuItem Header="Eraser Tool" Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.EraserTool}"/>
+            <MenuItem Header="Tile Tool" Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.TileTool}"/>
         </MenuItem>
         <MenuItem Header="Contents">
             <MenuItem Header="Edit Contents..." Command="{Binding OpenContents}"/>

@@ -16,14 +16,9 @@ using WorldEditor.Views;
 
 namespace WorldEditor.ViewModels
 {
-    public class MainViewModel : CollectionViewModel<RegionViewModel>
+    public class MainViewModel : CollectionViewModel<RegionEditorViewModel>
     {
-        private ToolType selectedTool;
-        public ToolType SelectedTool
-        {
-            get => selectedTool;
-            set => Set(ref selectedTool, value);
-        }
+        public SidebarViewModel Sidebar { get; set; }
 
         private bool isProjectOpen;
         public bool IsProjectOpen
@@ -35,7 +30,7 @@ namespace WorldEditor.ViewModels
                 RaisePropertyChanged(() => Title);
                 SaveProject.RaiseCanExecuteChanged();
                 CloseProject.RaiseCanExecuteChanged();
-                SetTool.RaiseCanExecuteChanged();
+                Sidebar.SetTool.RaiseCanExecuteChanged();
                 OpenContents.RaiseCanExecuteChanged();
             }
         }
@@ -44,7 +39,6 @@ namespace WorldEditor.ViewModels
 
         public MainViewModel() : base()
         {
-            SetTool = new RelayCommand<ToolType>(tool => SelectedTool = tool, tool => IsProjectOpen);
             Close = new RelayCommand<Window>(ExecuteCloseWindow);
             NewProject = new RelayCommand(ExecuteNewProjectCommand);
             OpenProject = new RelayCommand(ExecuteOpenProjectCommand);
@@ -52,9 +46,9 @@ namespace WorldEditor.ViewModels
             CloseProject = new RelayCommand(ExecuteCloseProjectCommand, () => IsProjectOpen);
 
             OpenContents = new RelayCommand(ExecuteOpenContentsWindowCommand, () => IsProjectOpen);
+            Sidebar = new SidebarViewModel(this);
         }
 
-        public RelayCommand<ToolType> SetTool { get; }
         public RelayCommand<Window> Close { get; }
         public RelayCommand NewProject { get; }
         public RelayCommand OpenProject { get; }
@@ -135,25 +129,32 @@ namespace WorldEditor.ViewModels
         private void ExecuteOpenContentsWindowCommand()
         {
             new ContentsWindow().ShowDialog();
+            RefreshItems();
         }
+
+        private int selectedIndex;
+
+        public int SelectedIndex
+        {
+            get => selectedIndex;
+            set => Set(ref selectedIndex, value);
+        }
+
 
         protected override void RefreshItems()
         {
-            var regions = World.Instance.Regions.Select(region => new RegionViewModel(region.Value)).ToList();
-            Items = new ObservableCollection<RegionViewModel>(regions);
+            var regions = World.Instance.Regions.Select(region => new RegionEditorViewModel(this, region.Value)).ToList();
+            Items = new ObservableCollection<RegionEditorViewModel>(regions);
+            var oldSelectedIndex = SelectedIndex;
             RaisePropertyChanged("Items");
+            SelectedIndex = oldSelectedIndex >= Items.Count ? Items.Count - 1 : oldSelectedIndex;
+            Sidebar?.RefreshItems();
         }
 
         protected override void ExecuteAddItem() {}
 
-        protected override void ExecuteEditItem()
-        {
-            MessageBox.Show("Region edited."); //todo: actually implement
-        }
+        protected override void ExecuteEditItem() {}
 
-        protected override void ExecuteRemoveItem()
-        {
-            MessageBox.Show("Region removed."); //todo: actually implement
-        }
+        protected override void ExecuteRemoveItem() {}
     }
 }

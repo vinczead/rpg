@@ -33,14 +33,17 @@ namespace WorldEditor.ViewModels
             var newTiles = new Tile[Width][];
             for (int i = 0; i < Width; i++)
             {
-                if (i >= Region.Width)
-                    break;
                 newTiles[i] = new Tile[Height];
                 for (int j = 0; j < Height; j++)
                 {
-                    if (j >= Region.Height)
-                        break;
-                    newTiles[i][j] = Region.Tiles[i][j];
+                    if (i >= Region.Width || j >= Region.Height)
+                    {
+                        newTiles[i][j] = World.Instance.Tiles["EMPTY"]; //todo: this should be default
+                    }
+                    else
+                    {
+                        newTiles[i][j] = Region.Tiles[i][j];
+                    }
                 }
             }
             Region.Tiles = newTiles;

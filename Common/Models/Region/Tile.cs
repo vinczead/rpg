@@ -9,7 +9,6 @@ namespace Common.Models
     {
         public string Id { get; set; }
         public bool IsWalkable { get; set; }
-        [JsonIgnore]
         public SpriteModel Model { get; set; }
     }
 }

@@ -4,16 +4,60 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WorldEditor.Views"
-             mc:Ignorable="d" 
+             xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
+             mc:Ignorable="d"
              d:DesignHeight="450" d:DesignWidth="800">
-    <TabControl ItemsSource="{Binding Items}" SelectedItem="{Binding SelectedItem}" DisplayMemberPath="Id">
+    <UserControl.Resources>
+        <SolidColorBrush x:Key="LightOverlay" Color="#50FFFFFF"/>
+        <DataTemplate x:Key="TileView">
+            <Canvas Width="32" Height="32">
+                <Image Canvas.Top="0" Canvas.Left="0" Panel.ZIndex="1" Source="{Binding SpriteModel.SpriteSheet.ByteArrayValue}"/>
+                <Rectangle Canvas.Top="0" Canvas.Left="0" x:Name="Overlay" Panel.ZIndex="5" Width="32" Height="32" Fill="{StaticResource LightOverlay}" Visibility="Hidden" />
+                <b:Interaction.Triggers>
+                    <b:EventTrigger EventName="MouseEnter">
+                        <b:ChangePropertyAction TargetName="Overlay" PropertyName="Visibility" Value="Visible"/>
+                    </b:EventTrigger>
+                    <b:EventTrigger EventName="MouseLeave">
+                        <b:ChangePropertyAction TargetName="Overlay" PropertyName="Visibility" Value="Hidden"/>
+                    </b:EventTrigger>
+                </b:Interaction.Triggers>
+                <Canvas.InputBindings>
+                    <MouseBinding
+                        MouseAction="LeftClick"
+                        Command="{Binding Path=DataContext.TileClicked, RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}}"
+                        CommandParameter="{Binding Position}"/>
+                </Canvas.InputBindings>
+            </Canvas>
+        </DataTemplate>
+
+        <DataTemplate x:Key="RegionView">
+            <ItemsControl
+                ItemsSource="{Binding}"
+                ItemTemplate="{StaticResource TileView}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal"/>
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+            </ItemsControl>
+        </DataTemplate>
+    </UserControl.Resources>
+
+    <TabControl
+        ItemsSource="{Binding Items}"
+        SelectedItem="{Binding SelectedItem}"
+        SelectedIndex="{Binding SelectedIndex}"
+        DisplayMemberPath="Region.Id">
         <TabControl.ContentTemplate>
-            <DataTemplate>
-                <UserControl>
-                    <Canvas Background="Black" x:Name="mapCanvas" />
-                </UserControl>
+            <DataTemplate x:Name="CurrentRegionView">
+                <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+                    <Border Background="DarkGray">
+                        <ItemsControl
+                    ItemTemplate="{StaticResource RegionView}"
+                    ItemsSource="{Binding Tiles}"/>
+                    </Border>
+                </ScrollViewer>
             </DataTemplate>
         </TabControl.ContentTemplate>
-
     </TabControl>
 </UserControl>

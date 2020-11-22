@@ -4,6 +4,8 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WorldEditor.Views"
+             xmlns:utility="clr-namespace:WorldEditor.Utility"
+             xmlns:sys="clr-namespace:System;assembly=mscorlib" 
              mc:Ignorable="d" 
              d:DesignHeight="400" d:DesignWidth="200">
     <Grid>
@@ -18,19 +20,13 @@
         </Grid.ColumnDefinitions>
         <Label Grid.Row="0" Grid.ColumnSpan="2" HorizontalContentAlignment="Center">Tile Tool</Label>
         <Label Grid.Row="1" Grid.Column="0">Tile Type:</Label>
-        <ComboBox Grid.Row="1" Grid.Column="1">
-            <ComboBoxItem>Grass</ComboBoxItem>
-            <ComboBoxItem>Road</ComboBoxItem>
-            <ComboBoxItem>Sand</ComboBoxItem>
-            <ComboBoxItem>Water</ComboBoxItem>
-        </ComboBox>
+        <ComboBox Grid.Row="1" Grid.Column="1"
+                  ItemsSource="{Binding Tiles}"
+                  SelectedItem="{Binding SelectedTile}" DisplayMemberPath="Id"/>
         <Label Grid.Row="2" Grid.Column="0">Brush Size:</Label>
-        <ComboBox Grid.Row="2" Grid.Column="1">
-            <ComboBoxItem>1x1</ComboBoxItem>
-            <ComboBoxItem>2x2</ComboBoxItem>
-            <ComboBoxItem>3x3</ComboBoxItem>
-            <ComboBoxItem>4x4</ComboBoxItem>
-            <ComboBoxItem>5x5</ComboBoxItem>
-        </ComboBox>
+        <ComboBox
+            Grid.Row="2" Grid.Column="1"
+            ItemsSource="{Binding BrushSizes}"
+            SelectedItem="{Binding BrushSize}"/>
     </Grid>
 </UserControl>
