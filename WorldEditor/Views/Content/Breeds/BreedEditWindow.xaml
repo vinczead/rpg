@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:WorldEditor.Views"
         xmlns:util="clr-namespace:WorldEditor.Utility"
         xmlns:ae="http://icsharpcode.net/sharpdevelop/avalonedit"
-        xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
+        xmlns:b="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         x:Name="BreedWindow"
         Title="Edit Breed" Height="700" Width="1000" WindowStartupLocation="CenterScreen">
@@ -30,9 +30,9 @@
             ShowLineNumbers="True"
             Name="editor"
             SyntaxHighlighting="ViGaS">
-            <i:Interaction.Behaviors>
+            <b:Interaction.Behaviors>
                 <util:AvalonEditBehaviour BoundText="{Binding Script, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
-            </i:Interaction.Behaviors>
+            </b:Interaction.Behaviors>
         </ae:TextEditor>
         <GridSplitter Grid.Row="1" Height="5" HorizontalAlignment="Stretch"/>
         <DataGrid 

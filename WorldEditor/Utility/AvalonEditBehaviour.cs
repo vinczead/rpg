@@ -1,10 +1,9 @@
 ﻿using ICSharpCode.AvalonEdit;
+using Microsoft.Xaml.Behaviors;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Windows;
-using System.Windows.Interactivity;
-
 namespace WorldEditor.Utility
 {
     public sealed class AvalonEditBehaviour : Behavior<TextEditor>
@@ -35,8 +34,7 @@ namespace WorldEditor.Utility
 
         private void AssociatedObjectOnTextChanged(object sender, EventArgs eventArgs)
         {
-            var textEditor = sender as TextEditor;
-            if (textEditor != null)
+            if (sender is TextEditor textEditor)
             {
                 if (textEditor.Document != null)
                     BoundText = textEditor.Document.Text;
