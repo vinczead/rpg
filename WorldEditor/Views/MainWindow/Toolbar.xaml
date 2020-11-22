@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:WorldEditor.Views"
+             xmlns:utility="clr-namespace:WorldEditor.Utility"
              mc:Ignorable="d" 
              d:DesignHeight="20" d:DesignWidth="800">
     <ToolBar>
@@ -34,17 +35,25 @@
             <Image Source="/Resources/Icons/Paste_16x.png"/>
         </Button>
         <Separator/>
-        <ToggleButton ToolTip="Selection Tool">
+        <Button
+            ToolTip="Selection Tool"
+            Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.SelectionTool}">
             <Image Source="/Resources/Icons/Select_16x.png"/>
-        </ToggleButton>
-        <ToggleButton ToolTip="Tile Tool">
+        </Button>
+        <Button
+            ToolTip="Tile Tool"
+            Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.TileTool}">
             <Image Source="/Resources/Icons/Grid_16x.png"/>
-        </ToggleButton>
-        <ToggleButton ToolTip="Object Tool">
+        </Button>
+        <Button
+            ToolTip="Object Tool"
+            Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.ObjectTool}">
             <Image Source="/Resources/Icons/Object_16x.png"/>
-        </ToggleButton>
-        <ToggleButton ToolTip="Eraser Tool">
+        </Button>
+        <Button
+            ToolTip="Eraser Tool"
+            Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.EraserTool}">
             <Image Source="/Resources/Icons/Eraser_16x.png"/>
-        </ToggleButton>
+        </Button>
     </ToolBar>
 </UserControl>
