@@ -1,0 +1,31 @@
+﻿<Window x:Class="WorldEditor.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WorldEditor.Views"
+        xmlns:vm="clr-namespace:WorldEditor.ViewModels"
+        mc:Ignorable="d"
+        Title="{Binding Title}" Height="768" Width="1024" WindowState="Maximized" MinHeight="500" MinWidth="600" x:Name="MainEditorWindow">
+    <Window.DataContext>
+        <vm:MainViewModel/>
+    </Window.DataContext>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition/>
+        </Grid.RowDefinitions>
+        <local:MainMenu Grid.Row="0" />
+        <local:Toolbar Grid.Row="1"/>
+        <Grid Grid.Row="2" Visibility="{Binding IsProjectOpen, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="200"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <local:Sidebar Grid.Column="0"/>
+            <local:RegionTabs Grid.Column="1"/>
+        </Grid>
+    </Grid>
+</Window>

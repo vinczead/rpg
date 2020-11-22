@@ -1,0 +1,30 @@
+﻿<UserControl x:Class="WorldEditor.Views.EraserTool"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:WorldEditor.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="400" d:DesignWidth="200">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+        <Label Grid.Row="0" HorizontalContentAlignment="Center">Eraser Tool</Label>
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition/>
+            </Grid.ColumnDefinitions>
+            <Label Grid.Column="0" HorizontalContentAlignment="Center">Brush Size:</Label>
+            <ComboBox Grid.Column="1">
+                <ComboBoxItem>1x1</ComboBoxItem>
+                <ComboBoxItem>2x2</ComboBoxItem>
+                <ComboBoxItem>3x3</ComboBoxItem>
+                <ComboBoxItem>4x4</ComboBoxItem>
+                <ComboBoxItem>5x5</ComboBoxItem>
+            </ComboBox>
+        </Grid>
+    </Grid>
+</UserControl>

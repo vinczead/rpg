@@ -16,7 +16,7 @@ using WorldEditor.Views;
 
 namespace WorldEditor.ViewModels
 {
-    public class MainViewModel : ViewModelBase
+    public class MainViewModel : CollectionViewModel<RegionViewModel>
     {
         private ToolType selectedTool;
         public ToolType SelectedTool
@@ -25,13 +25,13 @@ namespace WorldEditor.ViewModels
             set => Set(ref selectedTool, value);
         }
 
-        private bool isWorldRepositoryOpen;
-        public bool IsWorldRepositoryOpen
+        private bool isProjectOpen;
+        public bool IsProjectOpen
         {
-            get => isWorldRepositoryOpen;
+            get => isProjectOpen;
             set
             {
-                Set(ref isWorldRepositoryOpen, value);
+                Set(ref isProjectOpen, value);
                 RaisePropertyChanged(() => Title);
                 SaveProject.RaiseCanExecuteChanged();
                 CloseProject.RaiseCanExecuteChanged();
@@ -40,26 +40,18 @@ namespace WorldEditor.ViewModels
             }
         }
 
-        public string Title { get => "World Editor" + (IsWorldRepositoryOpen ? $" - {World.Instance.FileName}" : ""); }
+        public string Title { get => "World Editor" + (IsProjectOpen ? $" - {World.Instance.FileName}" : ""); }
 
-        private ObservableCollection<RegionViewModel> maps;
-
-        public ObservableCollection<RegionViewModel> Maps
+        public MainViewModel() : base()
         {
-            get => maps;
-            set => Set(ref maps, value);
-        }
-
-        public MainViewModel()
-        {
-            SetTool = new RelayCommand<ToolType>(tool => SelectedTool = tool, tool => IsWorldRepositoryOpen);
+            SetTool = new RelayCommand<ToolType>(tool => SelectedTool = tool, tool => IsProjectOpen);
             Close = new RelayCommand<Window>(ExecuteCloseWindow);
             NewProject = new RelayCommand(ExecuteNewProjectCommand);
             OpenProject = new RelayCommand(ExecuteOpenProjectCommand);
-            SaveProject = new RelayCommand(ExecuteSaveProjectCommand, () => IsWorldRepositoryOpen);
-            CloseProject = new RelayCommand(ExecuteCloseProjectCommand, () => IsWorldRepositoryOpen);
+            SaveProject = new RelayCommand(ExecuteSaveProjectCommand, () => IsProjectOpen);
+            CloseProject = new RelayCommand(ExecuteCloseProjectCommand, () => IsProjectOpen);
 
-            OpenContents = new RelayCommand(ExecuteOpenContentsWindowCommand, () => IsWorldRepositoryOpen);
+            OpenContents = new RelayCommand(ExecuteOpenContentsWindowCommand, () => IsProjectOpen);
         }
 
         public RelayCommand<ToolType> SetTool { get; }
@@ -71,13 +63,6 @@ namespace WorldEditor.ViewModels
 
         public RelayCommand OpenContents { get; }
 
-        private void CreateMaps()
-        {
-            var maps = World.Instance.Regions.Select(map => new RegionViewModel(map.Value)).ToList();
-
-            Maps = new ObservableCollection<RegionViewModel>(maps);
-        }
-
         private void ExecuteCloseWindow(Window window)
         {
             //todo: ask to save project before closing
@@ -88,7 +73,7 @@ namespace WorldEditor.ViewModels
 
         private void ExecuteOpenProjectCommand()
         {
-            if (IsWorldRepositoryOpen)
+            if (IsProjectOpen)
                 CloseProject.Execute(null);
 
             OpenFileDialog openFileDialog = new OpenFileDialog
@@ -98,14 +83,14 @@ namespace WorldEditor.ViewModels
             if (openFileDialog.ShowDialog() == true)
             {
                 ExecutionVisitor.BuildWorldFromFile(openFileDialog.FileName, out var allerrors);  //todo: error handling
-                IsWorldRepositoryOpen = true;
-                CreateMaps();
+                IsProjectOpen = true;
+                RefreshItems();
             }
         }
 
         public void ExecuteSaveProjectCommand()
         {
-            if (!IsWorldRepositoryOpen)
+            if (!IsProjectOpen)
                 return;
 
             File.WriteAllText(World.Instance.FileName, World.Instance.Serialize());
@@ -123,12 +108,12 @@ namespace WorldEditor.ViewModels
             {
                 return;
             }
-            IsWorldRepositoryOpen = false;
+            IsProjectOpen = false;
         }
 
         private void ExecuteNewProjectCommand()
         {
-            if (IsWorldRepositoryOpen)
+            if (IsProjectOpen)
                 CloseProject.Execute(null);
 
             SaveFileDialog saveFileDialog = new SaveFileDialog
@@ -142,14 +127,33 @@ namespace WorldEditor.ViewModels
                 World.Instance.FolderPath = Path.GetDirectoryName(saveFileDialog.FileName);
                 World.Instance.FileName = saveFileDialog.FileName;
                 file.Close();
-                CreateMaps();
-                IsWorldRepositoryOpen = true;
+                RefreshItems();
+                IsProjectOpen = true;
             }
         }
 
         private void ExecuteOpenContentsWindowCommand()
         {
             new ContentsWindow().ShowDialog();
+        }
+
+        protected override void RefreshItems()
+        {
+            var regions = World.Instance.Regions.Select(region => new RegionViewModel(region.Value)).ToList();
+            Items = new ObservableCollection<RegionViewModel>(regions);
+            RaisePropertyChanged("Items");
+        }
+
+        protected override void ExecuteAddItem() {}
+
+        protected override void ExecuteEditItem()
+        {
+            MessageBox.Show("Region edited."); //todo: actually implement
+        }
+
+        protected override void ExecuteRemoveItem()
+        {
+            MessageBox.Show("Region removed."); //todo: actually implement
         }
     }
 }
