@@ -55,6 +55,7 @@ namespace WorldEditor.ViewModels
                         Animations = Items.Select(animation => animation.Animation).ToList()
                     };
                     World.Instance.Models.Add(id, modelToAdd);
+                    SpriteModel = modelToAdd;
                     window.DialogResult = true;
                 }
                 else

@@ -65,9 +65,7 @@ namespace WorldEditor.ViewModels
 
         protected override void ExecuteRemoveItem()
         {
-            var references = World.Instance.Regions
-                .Where(region => region.Value.Tiles.Cast<Tile>().Any(tile => tile == SelectedItem.Tile))
-                .Select(region => region.Value.Id).ToList();
+            var references = World.Instance.Regions.Where(region => region.Value.Tiles.Count(tiles => tiles.Count(tile => tile == SelectedItem.Tile) > 0) > 0).ToList();
 
             if (references.Count > 0)
                 MessageBox.Show($"{SelectedItem.Id} cannot be removed, because it is referenced in {references.Count} regions: {string.Join(',', references)}", "Error");

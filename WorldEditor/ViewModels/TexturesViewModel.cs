@@ -53,7 +53,9 @@ namespace WorldEditor.ViewModels
                 MessageBox.Show($"{SelectedItem.Id} cannot be removed, because it is referenced {references.Count} times: {string.Join(',', references)}", "Error");
             else
             {
-
+                World.Instance.Textures.Remove(SelectedItem.Id);
+                Items.Remove(SelectedItem);
+                SelectedItem = null;
             }
         }
     }

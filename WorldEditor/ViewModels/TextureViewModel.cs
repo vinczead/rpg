@@ -97,6 +97,7 @@ namespace WorldEditor.ViewModels
                         ByteArrayValue = ByteArrayValue
                     };
                     World.Instance.Textures.Add(Id, textureToAdd);
+                    Texture = textureToAdd;
                     window.DialogResult = true;
                 }
                 else

@@ -41,10 +41,11 @@ namespace WorldEditor.ViewModels
             if (Messages.Count(message => message.Severity == ErrorSeverity.Error) == 0)
             {
                 var createdBreed = ExecutionVisitor.BuildBreed(Script, out var executionErrors);
-                if (executionErrors.Count > 0)
+                if (executionErrors.Count > 0 || createdBreed == null)
                 {
                     Messages = executionErrors;
-                    World.Instance.Breeds.Remove(createdBreed.Id); //remove newly inserted breed from World
+                    if (createdBreed != null)
+                        World.Instance.Breeds.Remove(createdBreed.Id); //remove newly inserted breed from World
                     if (Thing != null)
                         World.Instance.Breeds.Add(Thing.Id, Thing); //Reinsert old breed to World
                     MessageBox.Show("Failed to save Breed.");

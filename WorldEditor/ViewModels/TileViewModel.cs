@@ -46,6 +46,7 @@ namespace WorldEditor.ViewModels
                         IsWalkable = IsWalkable
                     };
                     World.Instance.Tiles.Add(Id, tileToAdd);
+                    Tile = tileToAdd;
                     window.DialogResult = true;
                 }
                 else

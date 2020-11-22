@@ -77,6 +77,7 @@ namespace WorldEditor.ViewModels
                         regionToAdd.Tiles[i] = new Tile[Height];
                     }
                     World.Instance.Regions.Add(id, regionToAdd);
+                    Region = regionToAdd;
                     window.DialogResult = true;
                 }
                 else
