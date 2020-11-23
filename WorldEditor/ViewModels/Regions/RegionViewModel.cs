@@ -33,16 +33,14 @@ namespace WorldEditor.ViewModels
             for (int y = 0; y < Height; y++)
             {
                 newTiles[y] = new Tile[Width];
+                if (y >= Region.Height)
+                    continue;
                 for (int x = 0; x < Width; x++)
                 {
-                    if (y >= Region.Height || x >= Region.Width)
-                    {
-                        newTiles[y][x] = World.Instance.Tiles["EMPTY"]; //todo: this should be default
-                    }
-                    else
-                    {
-                        newTiles[y][x] = Region.Tiles[y][x];
-                    }
+                    if (x >= Region.Width)
+                        break;
+
+                    newTiles[y][x] = Region.Tiles[y][x];
                 }
             }
             Region.Tiles = newTiles;
@@ -77,10 +75,6 @@ namespace WorldEditor.ViewModels
                     for (int i = 0; i < Height; i++)
                     {
                         regionToAdd.Tiles[i] = new Tile[Width];
-                        for (int j = 0; j < Width; j++)
-                        {
-                            regionToAdd.Tiles[i][j] = World.Instance.Tiles["EMPTY"];
-                        }
                     }
                     World.Instance.Regions.Add(id, regionToAdd);
                     Region = regionToAdd;

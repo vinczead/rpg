@@ -13,7 +13,7 @@
         <SolidColorBrush x:Key="LightOverlay" Color="#30FFFFFF"/>
         <SolidColorBrush x:Key="TransparentOverlay" Color="#00FFFFFF"/>
         <DataTemplate x:Key="TileView">
-            <Canvas Width="{Binding TileWidth}" Height="{Binding TileHeight}" ClipToBounds="True">
+            <Canvas Width="{Binding TileWidth}" Height="{Binding TileHeight}" ClipToBounds="True" Background="Black">
                 <Image
                     Canvas.Top="{Binding OffsetY}" Canvas.Left="{Binding OffsetX}"
                     Panel.ZIndex="1"

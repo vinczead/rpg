@@ -84,7 +84,7 @@ end<\n><\n>
 >>
 
 tileArray(ts) ::= <<
-    [<trunc(ts):{t | $<t.id>, }> $<last(ts).id>]<\n>
+    [<trunc(ts):{t | $<t.id>, }; null="null, "> <if(last(ts))>$<last(ts).id><else>null<endif>]<\n>
 >>
 
 instance(i,w) ::= <<

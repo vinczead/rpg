@@ -19,19 +19,20 @@ namespace WorldEditor.ViewModels
 
         public RegionTileViewModel(Tile tile, Region region, int x, int y, ObservableCollection<SpriteModelViewModel> spriteModels)
         {
-            Tile = tile ?? throw new ArgumentNullException("tile");
+            Tile = tile;
             SpriteModels = spriteModels;
             Position = new Vector2(x, y);
-            SpriteModel = SpriteModels.FirstOrDefault(spriteModel => spriteModel.Id == tile.Model.Id);
-            IsWalkable = tile.IsWalkable;
-
             TileWidth = region.TileWidth;
             TileHeight = region.TileHeight;
 
-            var animation = tile.Model.Animations.Find(animation => animation.Id.Contains("IDLE")) ?? tile.Model.Animations[0];
-            var source = animation.Frames?[0].Source ?? new Microsoft.Xna.Framework.Rectangle(0, 0, TileWidth, TileHeight);
-            OffsetX = -source.X;
-            OffsetY = -source.Y;
+            if (tile!= null) {
+                SpriteModel = SpriteModels.FirstOrDefault(spriteModel => spriteModel.Id == tile.Model.Id);
+                IsWalkable = tile.IsWalkable;
+                var animation = tile.Model.Animations.Find(animation => animation.Id.Contains("IDLE")) ?? tile.Model.Animations[0];
+                var source = animation.Frames?[0].Source ?? new Microsoft.Xna.Framework.Rectangle(0, 0, TileWidth, TileHeight);
+                OffsetX = -source.X;
+                OffsetY = -source.Y;
+            }
         }
 
         private SpriteModelViewModel spriteModel;
