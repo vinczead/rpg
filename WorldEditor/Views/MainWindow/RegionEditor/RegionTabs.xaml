@@ -99,7 +99,14 @@
                                 ConverterParameter={x:Static utility:ToolType.TileTool}}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <Canvas Background="{StaticResource TransparentOverlay}"/>
+                                    <Canvas Background="{StaticResource TransparentOverlay}" x:Name="InstancesCanvas">
+                                        <Canvas.InputBindings>
+                                            <MouseBinding
+                        MouseAction="LeftClick"
+                        Command="{Binding Path=DataContext.CreateInstance, RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}}"
+                        CommandParameter="{Binding ElementName=InstancesCanvas}"/>
+                                        </Canvas.InputBindings>
+                                    </Canvas>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                             <ItemsControl.ItemContainerStyle>

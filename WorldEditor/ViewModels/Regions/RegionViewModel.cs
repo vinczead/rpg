@@ -1,7 +1,6 @@
 ﻿using Common.Models;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using System.Text;

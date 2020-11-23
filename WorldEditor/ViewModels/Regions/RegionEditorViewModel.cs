@@ -1,7 +1,6 @@
 ﻿using Common.Models;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using SharpDX.Direct3D11;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -9,6 +8,8 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using WorldEditor.Views;
 
 namespace WorldEditor.ViewModels
@@ -21,6 +22,7 @@ namespace WorldEditor.ViewModels
         public ObservableCollection<TextureViewModel> Textures { get; set; }
         public RelayCommand<Vector2> TileClicked { get; }
         public RelayCommand<RegionInstanceViewModel> InstanceClicked { get; }
+        public RelayCommand<Canvas> CreateInstance { get; }
 
         public RegionEditorViewModel(MainViewModel mainViewModel, Region region)
         {
@@ -29,6 +31,7 @@ namespace WorldEditor.ViewModels
             RefreshItems();
             TileClicked = new RelayCommand<Vector2>(ExecuteTileClicked);
             InstanceClicked = new RelayCommand<RegionInstanceViewModel>(ExecuteInstanceClicked);
+            CreateInstance = new RelayCommand<Canvas>(ExecuteCreateInstance);
         }
 
         private void ExecuteInstanceClicked(RegionInstanceViewModel regionInstanceViewModel)
@@ -47,7 +50,6 @@ namespace WorldEditor.ViewModels
                 case Utility.ToolType.SelectionTool:
                     break;
                 case Utility.ToolType.ObjectTool:
-                    ExecuteAddBreed(position);
                     break;
                 case Utility.ToolType.EraserTool:
                     break;
@@ -59,10 +61,11 @@ namespace WorldEditor.ViewModels
             }
         }
 
-        private void ExecuteAddBreed(Vector2 position)
+        private void ExecuteCreateInstance(Canvas canvas)
         {
+            var position = Mouse.GetPosition(canvas);
             var selectedBreed = MainViewModel?.Sidebar?.SelectedBreed;
-            if(selectedBreed == null)
+            if (selectedBreed == null)
             {
                 MessageBox.Show("Please select a Breed!");
                 return;
@@ -75,16 +78,16 @@ namespace WorldEditor.ViewModels
 
             for (int i = -radius; i <= radius; i++)
             {
-                var x = centerX + i;
-                if (x < 0 || x >= Region.Width)
+                var x = centerX + i * Region.TileWidth;
+                if (x < 0 || x >= Region.Width * Region.TileWidth)
                     continue;
                 for (int j = -radius; j <= radius; j++)
                 {
-                    var y = centerY + j;
-                    if (y < 0 || y >= Region.Height)
+                    var y = centerY + j * Region.TileHeight;
+                    if (y < 0 || y >= Region.Height * Region.TileHeight)
                         continue;
 
-                    var instance = World.Instance.Spawn(selectedBreed.Id, Region.Id, new Microsoft.Xna.Framework.Vector2(x * Region.TileWidth, y * Region.TileHeight));
+                    var instance = World.Instance.Spawn(selectedBreed.Id, Region.Id, new Microsoft.Xna.Framework.Vector2(x, y));
                     Instances.Add(new RegionInstanceViewModel(instance));
                 }
             }
