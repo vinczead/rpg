@@ -15,24 +15,25 @@
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
-        <!--<local:MiniMap Grid.Row="0"/>-->
+        <!--<local:MiniMap Grid.Row="0"/>
         <local:SelectionTool Grid.Row="1" Visibility="{Binding
                     Path=SelectedTool,
                     Mode=OneWay,
                     Converter={StaticResource ToolTypeToVisibilityConverter},
                     ConverterParameter={x:Static utility:ToolType.SelectionTool}}"/>
+        
+        <local:EraserTool Grid.Row="1" Visibility="{Binding
+                    Mode=OneWay, 
+                    Path=SelectedTool,
+                    Converter={StaticResource ToolTypeToVisibilityConverter},
+                    ConverterParameter={x:Static utility:ToolType.EraserTool}}"/>
+        -->
 
         <local:ObjectTool Grid.Row="1" Visibility="{Binding
                     Mode=OneWay,
                     Path=SelectedTool,
                     Converter={StaticResource ToolTypeToVisibilityConverter},
                     ConverterParameter={x:Static utility:ToolType.ObjectTool}}"/>
-
-        <local:EraserTool Grid.Row="1" Visibility="{Binding
-                    Mode=OneWay, 
-                    Path=SelectedTool,
-                    Converter={StaticResource ToolTypeToVisibilityConverter},
-                    ConverterParameter={x:Static utility:ToolType.EraserTool}}"/>
 
         <local:TileTool Grid.Row="1" Visibility="{Binding
                     Mode=OneWay,

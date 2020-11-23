@@ -7,6 +7,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -46,6 +47,10 @@ namespace WorldEditor.ViewModels
             CloseProject = new RelayCommand(ExecuteCloseProjectCommand, () => IsProjectOpen);
 
             OpenContents = new RelayCommand(ExecuteOpenContentsWindowCommand, () => IsProjectOpen);
+
+            OpenGithubPage = new RelayCommand(ExecuteOpenGithubPage);
+            OpenAboutWindow = new RelayCommand(ExecuteOpenAboutWindow);
+
             Sidebar = new SidebarViewModel(this);
         }
 
@@ -56,6 +61,9 @@ namespace WorldEditor.ViewModels
         public RelayCommand CloseProject { get; }
 
         public RelayCommand OpenContents { get; }
+
+        public RelayCommand OpenGithubPage { get; }
+        public RelayCommand OpenAboutWindow { get; }
 
         private void ExecuteCloseWindow(Window window)
         {
@@ -132,6 +140,21 @@ namespace WorldEditor.ViewModels
             RefreshItems();
         }
 
+        private void ExecuteOpenGithubPage()
+        {
+            var psi = new ProcessStartInfo
+            {
+                FileName = "https://github.com/vinczead/rpg",
+                UseShellExecute = true
+            };
+            Process.Start(psi);
+        }
+
+        private void ExecuteOpenAboutWindow()
+        {
+            MessageBox.Show("Created for Master's Thesis at Budapest Univeristy of Technology and Economics.\nCreated by Ádám Vincze\n2020", "About World Editor");
+        }
+
         private int selectedIndex;
 
         public int SelectedIndex
@@ -150,6 +173,8 @@ namespace WorldEditor.ViewModels
             SelectedIndex = oldSelectedIndex >= Items.Count ? Items.Count - 1 : oldSelectedIndex;
             Sidebar?.RefreshItems();
         }
+
+
 
         protected override void ExecuteAddItem() {}
 

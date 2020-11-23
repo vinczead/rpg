@@ -4,8 +4,10 @@ using GalaSoft.MvvmLight.Command;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
+using System.Windows;
 using WorldEditor.Utility;
 
 namespace WorldEditor.ViewModels
@@ -18,6 +20,8 @@ namespace WorldEditor.ViewModels
         public SidebarViewModel(MainViewModel mainViewModel)
         {
             MainViewModel = mainViewModel;
+            SelectedTool = ToolType.ObjectTool;
+
             SetTool = new RelayCommand<ToolType>(tool => SelectedTool = tool, tool => MainViewModel.IsProjectOpen);
             BrushSize = 1;
             RefreshItems();
@@ -68,6 +72,8 @@ namespace WorldEditor.ViewModels
         }
 
         private Thing selectedBreed;
+        private object url;
+
         public Thing SelectedBreed
         {
             get => selectedBreed;
