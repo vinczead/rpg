@@ -297,6 +297,16 @@ namespace Common.Script.Visitors
             return retVal;
         }
 
+        public override object VisitTileSizeBlock([NotNull] TileSizeBlockContext context)
+        {
+            var width = int.Parse(context.width.Text);
+            var height = int.Parse(context.height.Text);
+            currentRegion.TileWidth = width;
+            currentRegion.TileHeight = height;
+
+            return base.VisitTileSizeBlock(context);
+        }
+
         public override object VisitTilesBlock([NotNull] TilesBlockContext context)
         {
             var expressions = context.expression()?.ToList() ?? new List<ExpressionContext>();

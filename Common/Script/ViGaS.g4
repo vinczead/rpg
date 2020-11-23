@@ -6,18 +6,19 @@ textureDefinition: TEXTURE textureId=ID FROM fileName=STRING;
 
 modelDefinition: MODEL modelId=ID FROM textureId=ID animationDefinition+ END;
 animationDefinition: ANIMATION animationId=ID LOOPING? frameDefinition+ END;
-frameDefinition: FRAME x=NUMBER ',' y=NUMBER ',' width=NUMBER ',' height=NUMBER ',' duration=NUMBER;
+frameDefinition: FRAME AT? x=NUMBER ',' y=NUMBER (',' | SIZE) width=NUMBER ',' height=NUMBER (',' | FOR) duration=NUMBER MS?;
 
 tileDefinition: TILE tileId=ID FROM modelId=ID WALKABLE?;
 
 baseDefinition: BASE baseRef=ID FROM baseClass=ID baseBody END;
 baseBody: initBlock variablesBlock? runBlock*;
 
-regionDefinition: REGION regionRef=ID width=NUMBER ',' height=NUMBER regionBody END;
-regionBody: tilesBlock instanceDefinition*;
+regionDefinition: REGION regionRef=ID SIZE? width=NUMBER ',' height=NUMBER regionBody END;
+regionBody: tileSizeBlock tilesBlock instanceDefinition*;
+tileSizeBlock: TILE SIZE width=NUMBER ',' height=NUMBER;
 tilesBlock: TILES expression* END;
 
-instanceDefinition: INSTANCE instanceRef=ID? OF baseRef=ID TO x=NUMBER ',' y=NUMBER (initBlock END)?;
+instanceDefinition: INSTANCE instanceRef=ID? OF baseRef=ID AT x=NUMBER ',' y=NUMBER (initBlock END)?;
 
 playerDefinition: PLAYER instanceId=ID?;
 
@@ -99,6 +100,10 @@ ANIMATION: 'animation';
 LOOPING: 'looping';
 FRAME: 'frame';
 TILE: 'tile';
+AT: 'at';
+FOR: 'for';
+MS: 'ms';
+SIZE: 'size';
 WALKABLE: 'walkable';
 BASE: 'breed';
 REGION: 'region';

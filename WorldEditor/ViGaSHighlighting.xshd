@@ -28,6 +28,10 @@
 			<Word>looping</Word>
 			<Word>frame</Word>
 			<Word>tile</Word>
+			<Word>at</Word>
+			<Word>for</Word>
+			<Word>ms</Word>
+			<Word>size</Word>
 			<Word>walkable</Word>
 			<Word>breed</Word>
 			<Word>region</Word>

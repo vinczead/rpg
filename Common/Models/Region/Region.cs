@@ -20,13 +20,13 @@ namespace Common.Models
         public int Width { get; set; }
         public int Height { get; set; }
 
-        public int TileWidth { get; set; } = 32;
-        public int TileHeight { get; set; } = 32;
+        public int TileWidth { get; set; }
+        public int TileHeight { get; set; }
         public Tile[][] Tiles { get; set; }
 
         public void Update(GameTime gameTime)
         {
-            foreach (var thing in instances)    //todo: why not make a shallow copy?
+            foreach (var thing in instances)
                 thing.Update(gameTime);
 
             foreach (var thing in instancesToDelete) {

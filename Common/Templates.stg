@@ -75,6 +75,7 @@ value(b,prop) ::= <<
 
 region(r,w) ::= <<
 region <r.id> <r.width>, <r.height>
+    tile size <r.tileWidth>, <r.tileHeight>
     tiles
         <r.tiles:tileArray()>
     end
@@ -88,7 +89,7 @@ tileArray(ts) ::= <<
 >>
 
 instance(i,w) ::= <<
-instance <if(!i.isIdGenerated)><i.id> <endif>of <i.breed.id> to <i.position.X>, <i.position.Y><\n>
+instance <if(!i.isIdGenerated)><i.id> <endif>of <i.breed.id> at <i.position.X>, <i.position.Y><\n>
 >>
 
 player(p) ::= <<

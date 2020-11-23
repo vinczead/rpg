@@ -216,6 +216,12 @@ namespace Common.Script.Visitors
             return base.VisitRegionDefinition(context);
         }
 
+        public override object VisitTileSizeBlock([NotNull] TileSizeBlockContext context)
+        {
+            //todo: check if > 0
+            return base.VisitTileSizeBlock(context);
+        }
+
         public override object VisitTilesBlock([NotNull] TilesBlockContext context)
         {
             var expressions = context.expression()?.ToList() ?? new List<ExpressionContext>();
