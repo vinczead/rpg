@@ -63,8 +63,6 @@
   <ItemGroup>
     <PackageReference Include="AvalonEdit" Version="6.0.1" />
     <PackageReference Include="Microsoft.Xaml.Behaviors.Wpf" Version="1.1.19" />
-    <PackageReference Include="MonoGame.Content.Builder.Task" Version="3.8.0.1641" />
-    <PackageReference Include="MonoGame.Framework.WpfInterop" Version="1.8.0" />
     <PackageReference Include="MvvmLightLibsStd10" Version="5.4.1.1" />
   </ItemGroup>
 
