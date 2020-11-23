@@ -28,7 +28,7 @@ frame <f.source.X>, <f.source.Y>, <f.source.Width>, <f.source.Height>, <f.timeSp
 >>
 
 tile(t) ::= <<
-tile <t.id> from <t.model.id><\n>
+tile <t.id> from <t.model.id><if(t.isWalkable)> walkable<endif><\n>
 >>
 
 typeMap ::= [
