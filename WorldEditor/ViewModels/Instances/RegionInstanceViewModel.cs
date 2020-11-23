@@ -46,6 +46,7 @@ namespace WorldEditor.ViewModels
                 ThingInstance.Id = Id;
                 ThingInstance.Position = new Microsoft.Xna.Framework.Vector2(X, Y);
                 World.Instance.Instances.Add(Id, ThingInstance);
+                PressedButton = InstanceWindowButton.Save;
                 window.Close();
             }
             catch
@@ -60,6 +61,7 @@ namespace WorldEditor.ViewModels
             {
                 World.Instance.Instances.Remove(ThingInstance.Id);
                 region.instances.Remove(ThingInstance);
+                PressedButton = InstanceWindowButton.Remove;
                 window.Close();
             }
             catch
@@ -98,5 +100,12 @@ namespace WorldEditor.ViewModels
         public int FrameWidth { get; }
         public int FrameHeight { get; }
         public string WindowTitle { get => $"Edit {ThingInstance.Id}"; }
+        public InstanceWindowButton PressedButton { get; set; }
+
+        public enum InstanceWindowButton
+        {
+            Save,
+            Remove
+        }
     }
 }

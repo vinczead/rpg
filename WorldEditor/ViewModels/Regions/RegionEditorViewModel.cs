@@ -40,7 +40,15 @@ namespace WorldEditor.ViewModels
             {
                 DataContext = regionInstanceViewModel
             }.ShowDialog();
-            RefreshInstances();
+            if(regionInstanceViewModel.PressedButton == RegionInstanceViewModel.InstanceWindowButton.Save)
+            {
+                Instances.Remove(regionInstanceViewModel);
+                Instances.Add(new RegionInstanceViewModel(regionInstanceViewModel.ThingInstance, Region));
+            }
+            if (regionInstanceViewModel.PressedButton == RegionInstanceViewModel.InstanceWindowButton.Remove)
+            {
+                Instances.Remove(regionInstanceViewModel);
+            }
         }
 
         private void ExecuteTileClicked(Vector2 position)
