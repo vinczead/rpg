@@ -12,25 +12,23 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Label Grid.Row="0" HorizontalContentAlignment="Center">Object Tool</Label>
-        <TreeView Grid.Row="1">
-            <TreeViewItem Header="Things">
-                <TreeViewItem Header="Bush"/>
-            </TreeViewItem>
-        </TreeView>
-        <Grid Grid.Row="2">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
-                <ColumnDefinition/>
-            </Grid.ColumnDefinitions>
-            <Label Grid.Column="0">Brush Size:</Label>
-            <ComboBox Grid.Column="1">
-                <ComboBoxItem>1x1</ComboBoxItem>
-                <ComboBoxItem>2x2</ComboBoxItem>
-                <ComboBoxItem>3x3</ComboBoxItem>
-                <ComboBoxItem>4x4</ComboBoxItem>
-                <ComboBoxItem>5x5</ComboBoxItem>
-            </ComboBox>
-        </Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition/>
+        </Grid.ColumnDefinitions>
+        <Label
+            Grid.Row="0" Grid.ColumnSpan="2"
+            HorizontalContentAlignment="Center"
+            Content="Object Tool"/>
+        <ListView
+            Grid.Row="1" Grid.ColumnSpan="2"
+            ItemsSource="{Binding Breeds}"
+            DisplayMemberPath="Id"
+            SelectedItem="{Binding SelectedBreed}"/>
+        <Label Grid.Row="2" Grid.Column="0">Brush Size:</Label>
+        <ComboBox
+            Grid.Row="2" Grid.Column="1"
+            ItemsSource="{Binding BrushSizes}"
+            SelectedItem="{Binding BrushSize}"/>
     </Grid>
 </UserControl>

@@ -19,6 +19,7 @@ namespace WorldEditor.ViewModels
         public ObservableCollection<SpriteModelViewModel> SpriteModels { get; set; }
         public ObservableCollection<TextureViewModel> Textures { get; set; }
         public RelayCommand<Vector2> TileClicked { get; }
+        public RelayCommand<Vector2> InstanceClicked { get; }
 
         public RegionEditorViewModel(MainViewModel mainViewModel, Region region)
         {
@@ -29,18 +30,38 @@ namespace WorldEditor.ViewModels
         }
         private void ExecuteTileClicked(Vector2 position)
         {
-            var selectedTile = MainViewModel?.Sidebar?.SelectedTile;
-            if(selectedTile == null)
+            switch (MainViewModel.Sidebar.SelectedTool)
             {
-                MessageBox.Show("Please select a Tile Type!");
+                case Utility.ToolType.SelectionTool:
+                    break;
+                case Utility.ToolType.ObjectTool:
+                    ExecuteAddBreed(position);
+                    break;
+                case Utility.ToolType.EraserTool:
+                    break;
+                case Utility.ToolType.TileTool:
+                    ExecuteSetTileType(position);
+                    break;
+                default:
+                    break;
+            }
+        }
+
+        private void ExecuteAddBreed(Vector2 position)
+        {
+            var selectedBreed = MainViewModel?.Sidebar?.SelectedBreed;
+            if(selectedBreed == null)
+            {
+                MessageBox.Show("Please select a Breed!");
                 return;
             }
+
             var centerX = (int)position.X;
             var centerY = (int)position.Y;
             var brushSize = MainViewModel.Sidebar.BrushSize;
             var radius = brushSize / 2;
 
-            for (int i = -radius; i <= radius ; i++)
+            for (int i = -radius; i <= radius; i++)
             {
                 var x = centerX + i;
                 if (x < 0 || x >= Region.Width)
@@ -50,9 +71,39 @@ namespace WorldEditor.ViewModels
                     var y = centerY + j;
                     if (y < 0 || y >= Region.Height)
                         continue;
-                    
-                    Region.Tiles[x][y] = MainViewModel.Sidebar.SelectedTile;
-                    Tiles[x][y] = new RegionTileViewModel(Region.Tiles[x][y], x, y, SpriteModels);
+
+                    var instance = World.Instance.Spawn(selectedBreed.Id, Region.Id, new Microsoft.Xna.Framework.Vector2(x * Region.TileWidth, y * Region.TileHeight));
+                    Instances.Add(new RegionInstanceViewModel(instance));
+                }
+            }
+        }
+
+        private void ExecuteSetTileType(Vector2 position)
+        {
+            var selectedTile = MainViewModel?.Sidebar?.SelectedTile;
+            if (selectedTile == null)
+            {
+                MessageBox.Show("Please select a Tile Type!");
+                return;
+            }
+            var centerX = (int)position.X;
+            var centerY = (int)position.Y;
+            var brushSize = MainViewModel.Sidebar.BrushSize;
+            var radius = brushSize / 2;
+
+            for (int i = -radius; i <= radius; i++)
+            {
+                var x = centerX + i;
+                if (x < 0 || x >= Region.Width)
+                    continue;
+                for (int j = -radius; j <= radius; j++)
+                {
+                    var y = centerY + j;
+                    if (y < 0 || y >= Region.Height)
+                        continue;
+
+                    Region.Tiles[y][x] = MainViewModel.Sidebar.SelectedTile;
+                    Tiles[y][x] = new RegionTileViewModel(Region.Tiles[y][x], x, y, SpriteModels);
                 }
             }
 
@@ -76,15 +127,19 @@ namespace WorldEditor.ViewModels
             }
 
             Tiles = new ObservableCollection<ObservableCollection<RegionTileViewModel>>();
-            for (int i = 0; i < Region.Width; i++)
+            for (int y = 0; y < Region.Height; y++)
             {
                 Tiles.Add(new ObservableCollection<RegionTileViewModel>());
-                for (int j = 0; j < Region.Height; j++)
+                for (int x = 0; x < Region.Width; x++)
                 {
-                    Tiles[i].Add(new RegionTileViewModel(Region.Tiles[i][j], i, j, SpriteModels));
+                    Tiles[y].Add(new RegionTileViewModel(Region.Tiles[y][x], x, y, SpriteModels));
                 }
             }
+
+            var instances = World.Instance.Instances.Values.Select(instance => new RegionInstanceViewModel(instance));
+            Instances = new ObservableCollection<RegionInstanceViewModel>(instances);
             RaisePropertyChanged("Tiles");
+            RaisePropertyChanged("Instances");
         }
 
         private ObservableCollection<ObservableCollection<RegionTileViewModel>> tiles;
@@ -93,6 +148,14 @@ namespace WorldEditor.ViewModels
         {
             get => tiles;
             set => Set(ref tiles, value);
+        }
+
+        private ObservableCollection<RegionInstanceViewModel> instances;
+
+        public ObservableCollection<RegionInstanceViewModel> Instances
+        {
+            get => instances;
+            set => Set(ref instances, value);
         }
     }
 }

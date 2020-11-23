@@ -30,19 +30,19 @@ namespace WorldEditor.ViewModels
 
         private void ResizeTiles()
         {
-            var newTiles = new Tile[Width][];
-            for (int i = 0; i < Width; i++)
+            var newTiles = new Tile[Height][];
+            for (int y = 0; y < Height; y++)
             {
-                newTiles[i] = new Tile[Height];
-                for (int j = 0; j < Height; j++)
+                newTiles[y] = new Tile[Width];
+                for (int x = 0; x < Width; x++)
                 {
-                    if (i >= Region.Width || j >= Region.Height)
+                    if (y >= Region.Height || x >= Region.Width)
                     {
-                        newTiles[i][j] = World.Instance.Tiles["EMPTY"]; //todo: this should be default
+                        newTiles[y][x] = World.Instance.Tiles["EMPTY"]; //todo: this should be default
                     }
                     else
                     {
-                        newTiles[i][j] = Region.Tiles[i][j];
+                        newTiles[y][x] = Region.Tiles[y][x];
                     }
                 }
             }
@@ -73,11 +73,11 @@ namespace WorldEditor.ViewModels
                         Height = Height,
                         TileWidth = TileWidth,
                         TileHeight = TileHeight,
-                        Tiles = new Tile[Width][]
+                        Tiles = new Tile[Height][]
                     };
-                    for (int i = 0; i < Width; i++)
+                    for (int i = 0; i < Height; i++)
                     {
-                        regionToAdd.Tiles[i] = new Tile[Height];
+                        regionToAdd.Tiles[i] = new Tile[Width];
                     }
                     World.Instance.Regions.Add(id, regionToAdd);
                     Region = regionToAdd;

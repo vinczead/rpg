@@ -301,7 +301,9 @@ namespace Common.Script.Visitors
         {
             var expressions = context.expression()?.ToList() ?? new List<ExpressionContext>();
 
-            currentRegion.Tiles = expressions.Select(expression => (VisitArrayExpression(expression as ArrayExpressionContext) as object[]).Select(tile => tile as Tile).ToArray()).ToArray();
+            currentRegion.Tiles = expressions
+                .Select(expression => (VisitArrayExpression(expression as ArrayExpressionContext) as object[])
+                .Select(tile => tile as Tile).ToArray()).ToArray();
 
             return base.VisitTilesBlock(context);
         }

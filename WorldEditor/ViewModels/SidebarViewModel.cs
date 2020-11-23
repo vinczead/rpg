@@ -26,13 +26,14 @@ namespace WorldEditor.ViewModels
         public void RefreshItems()
         {
             Tiles = new ObservableCollection<Tile>(World.Instance.Tiles.Values.ToList());
+            Breeds = new ObservableCollection<Thing>(World.Instance.Breeds.Values.ToList());
         }
 
-        private Tile selectedTile;
-        public Tile SelectedTile
+        private ToolType selectedTool;
+        public ToolType SelectedTool
         {
-            get => selectedTile;
-            set => Set(ref selectedTile, value);
+            get => selectedTool;
+            set => Set(ref selectedTool, value);
         }
 
         public int[] BrushSizes { get; } = { 1, 3, 5, 7, 9 };
@@ -45,18 +46,32 @@ namespace WorldEditor.ViewModels
             set => Set(ref brushSize, value);
         }
 
-        private ToolType selectedTool;
-        public ToolType SelectedTool
-        {
-            get => selectedTool;
-            set => Set(ref selectedTool, value);
-        }
-
         private ObservableCollection<Tile> tiles;
         public ObservableCollection<Tile> Tiles
         {
             get => tiles;
             set => Set(ref tiles, value);
+        }
+
+        private Tile selectedTile;
+        public Tile SelectedTile
+        {
+            get => selectedTile;
+            set => Set(ref selectedTile, value);
+        }
+
+        private ObservableCollection<Thing> breeds;
+        public ObservableCollection<Thing> Breeds
+        {
+            get => breeds;
+            set => Set(ref breeds, value);
+        }
+
+        private Thing selectedBreed;
+        public Thing SelectedBreed
+        {
+            get => selectedBreed;
+            set => Set(ref selectedBreed, value);
         }
     }
 }

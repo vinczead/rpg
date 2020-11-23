@@ -29,12 +29,12 @@ namespace Common.Models
         public Game Game { get; set; }
         public string FolderPath { get; set; }
         public string FileName { get; set; }
-        public Dictionary<string, Texture> Textures { get; set; }
-        public Dictionary<string, SpriteModel> Models { get; set; }
-        public Dictionary<string, Thing> Breeds { get; set; }
-        public Dictionary<string, ThingInstance> Instances { get; set; }
-        public Dictionary<string, Tile> Tiles { get; set; }
-        public Dictionary<string, Region> Regions { get; set; }
+        public Dictionary<string, Texture> Textures { get; set; } = new Dictionary<string, Texture>();
+        public Dictionary<string, SpriteModel> Models { get; set; } = new Dictionary<string, SpriteModel>();
+        public Dictionary<string, Thing> Breeds { get; set; } = new Dictionary<string, Thing>();
+        public Dictionary<string, ThingInstance> Instances { get; set; } = new Dictionary<string, ThingInstance>();
+        public Dictionary<string, Tile> Tiles { get; set; } = new Dictionary<string, Tile>();
+        public Dictionary<string, Region> Regions { get; set; } = new Dictionary<string, Region>();
 
         public CharacterInstance Player { get; set; }
 
@@ -49,12 +49,13 @@ namespace Common.Models
                 FileName = null;
                 FolderPath = null;
             }
-            Textures = new Dictionary<string, Texture>();
-            Models = new Dictionary<string, SpriteModel>();
-            Breeds = new Dictionary<string, Thing>();
-            Instances = new Dictionary<string, ThingInstance>();
-            Tiles = new Dictionary<string, Tile>();
-            Regions = new Dictionary<string, Region>();
+
+            Textures.Clear();
+            Models.Clear();
+            Breeds.Clear();
+            Instances.Clear();
+            Tiles.Clear();
+            Regions.Clear();
             Player = null;
         }
 

@@ -40,7 +40,7 @@ namespace Common.Script.Utility
                 var y = (int)parameters[2];
                 var tile = parameters[3] as Tile;
 
-                region.Tiles[x][y] = tile;
+                region.Tiles[y][x] = tile;
 
                 return true;
             }
