@@ -27,7 +27,7 @@ namespace Common.Models
         }
 
         public Game Game { get; set; }
-        public string FolderPath { get; set; }
+        public string FolderPath { get => Path.GetDirectoryName(FileName); }
         public string FileName { get; set; }
         public Dictionary<string, Texture> Textures { get; set; } = new Dictionary<string, Texture>();
         public Dictionary<string, SpriteModel> Models { get; set; } = new Dictionary<string, SpriteModel>();
@@ -47,7 +47,6 @@ namespace Common.Models
         {
             if(clearFileName) {
                 FileName = null;
-                FolderPath = null;
             }
 
             Textures.Clear();

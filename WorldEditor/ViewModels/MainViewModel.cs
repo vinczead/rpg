@@ -1,4 +1,5 @@
 ﻿using Common.Models;
+using Common.Script.Utility;
 using Common.Script.Visitors;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
@@ -84,7 +85,13 @@ namespace WorldEditor.ViewModels
             };
             if (openFileDialog.ShowDialog() == true)
             {
-                ExecutionVisitor.BuildWorldFromFile(openFileDialog.FileName, out var allerrors);  //todo: error handling
+                ExecutionVisitor.CheckErrorsAndBuildFromFile(openFileDialog.FileName, out var messages);
+                var errorCount = messages.Count(message => message.Severity == ErrorSeverity.Error);
+                if (errorCount > 0)
+                {
+                    MessageBox.Show($"Failed to build World! {errorCount} error(s) found: \n" + string.Join('\n', messages));
+                    return;
+                }
                 IsProjectOpen = true;
                 RefreshItems();
             }
@@ -126,7 +133,6 @@ namespace WorldEditor.ViewModels
             if (saveFileDialog.ShowDialog() == true)
             {
                 using var file = File.Create(saveFileDialog.FileName);
-                World.Instance.FolderPath = Path.GetDirectoryName(saveFileDialog.FileName);
                 World.Instance.FileName = saveFileDialog.FileName;
                 file.Close();
                 RefreshItems();

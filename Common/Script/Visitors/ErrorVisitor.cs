@@ -51,31 +51,99 @@ namespace Common.Script.Visitors
 
         public override object VisitTextureDefinition([NotNull] TextureDefinitionContext context)
         {
-            //todo: check if file exists
+            var textureId = context.textureId?.Text;
+            var fileName = context.fileName?.Text;  //todo: check if file exists
+            AddSymbolToScope(context, new Symbol(textureId, TypeSystem.Instance["Texture"]));
+
             return base.VisitTextureDefinition(context);
         }
 
         public override object VisitModelDefinition([NotNull] ModelDefinitionContext context)
         {
-            //todo: check if textureId is Texture
-            return base.VisitModelDefinition(context);
+            var modelId = context.modelId?.Text;
+            var textureId = context.textureId?.Text;    //todo: check if textureId is Texture
+            AddSymbolToScope(context, new Symbol(modelId, TypeSystem.Instance["SpriteModel"]));
+            scope = new Scope(scope, $"Model {modelId}");
+
+            var result = base.VisitModelDefinition(context);
+            scope = scope.Previous;
+            return result;
         }
 
         public override object VisitAnimationDefinition([NotNull] AnimationDefinitionContext context)
         {
-            //todo: check if animationId is unique LOCALLY (may be equal to other ID)
+            var animationId = context.animationId?.Text;
+            AddSymbolToScope(context, new Symbol(animationId, null));
             return base.VisitAnimationDefinition(context);
         }
 
         public override object VisitFrameDefinition([NotNull] FrameDefinitionContext context)
         {
-            //todo: check if all numbers are positive
+            var x = context.x.Text;
+            var y = context.y.Text;
+            var width = context.width.Text;
+            var height = context.height.Text;
+            var duration = context.duration.Text;
+
+            if (int.TryParse(x, out int xValue))
+            {
+                if (xValue < 0)
+                    errors.Add(new Error(context.x, $"Invalid value: X position must be at least 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.x, $"Type mismatch: X position must be an integer."));
+            }
+
+            if (int.TryParse(y, out int yValue))
+            {
+                if (yValue < 0)
+                    errors.Add(new Error(context.y, $"Invalid value: Y position must be at least 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.y, $"Type mismatch: Y position must be an integer."));
+            }
+
+            if (int.TryParse(width, out int widthValue))
+            {
+                if (widthValue <= 0)
+                    errors.Add(new Error(context.width, $"Invalid value: width must greater than 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.width, $"Type mismatch: width must be an integer."));
+            }
+
+            if (int.TryParse(height, out int heightValue))
+            {
+                if (heightValue <= 0)
+                    errors.Add(new Error(context.width, $"Invalid value: height must be greater than 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.width, $"Type mismatch: height must be an integer."));
+            }
+
+            if (int.TryParse(duration, out int durationValue))
+            {
+                if (durationValue <= 0)
+                    errors.Add(new Error(context.duration, $"Invalid value: duration must be greater than 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.duration, $"Type mismatch: duration must be an integer."));
+            }
+
             return base.VisitFrameDefinition(context);
         }
 
         public override object VisitTileDefinition([NotNull] TileDefinitionContext context)
         {
-            //todo: check if modelId is Model
+            var tileId = context.tileId?.Text;
+            var modelId = context.modelId?.Text;    //todo: check if modelId is Model
+            AddSymbolToScope(context, new Symbol(tileId, TypeSystem.Instance["Tile"]));
+
             return base.VisitTileDefinition(context);
         }
 
@@ -196,11 +264,6 @@ namespace Common.Script.Visitors
                 errors.Add(new Error(context.width, $"Type mismatch: width must be an integer."));
             }
 
-            if (widthValue <= 0)
-            {
-                errors.Add(new Error(context.width, $"Invalid value: width must greater than 0."));
-            }
-
             if (int.TryParse(height, out int heightValue))
             {
                 if (heightValue <= 0)
@@ -218,7 +281,25 @@ namespace Common.Script.Visitors
 
         public override object VisitTileSizeBlock([NotNull] TileSizeBlockContext context)
         {
-            //todo: check if > 0
+            var width = context.width.Text;
+            var height = context.height.Text;
+
+            if (int.TryParse(width, out int widthValue))
+            {
+                if (widthValue <= 0)
+                    errors.Add(new Error(context.width, $"Invalid value: width must greater than 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.width, $"Type mismatch: width must be an integer."));
+            }
+
+            if (int.TryParse(height, out int heightValue))
+            {
+                if (heightValue <= 0)
+                    errors.Add(new Error(context.width, $"Invalid value: height must be greater than 0."));
+            }
+
             return base.VisitTileSizeBlock(context);
         }
 
@@ -232,7 +313,8 @@ namespace Common.Script.Visitors
                 if (type != TypeSystem.Instance["TileArray"])
                 {
                     errors.Add(new Error(expression, "Type mismatch: must be array of Tile."));
-                } else
+                }
+                else
                 {
                     //todo check width
                 }

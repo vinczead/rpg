@@ -50,10 +50,32 @@ namespace Common.Script.Visitors
             errors = new List<Error>();
         }
 
+        public static void CheckErrorsAndBuildFromFile(string fileName, out List<Error> messages)
+        {
+            var script = File.ReadAllText(fileName);
+            var precheckMessages = ErrorVisitor.CheckErrors(script, null);
+            var errorCount = precheckMessages.Count(error => error.Severity == ErrorSeverity.Error);
+            if (errorCount > 0)
+            {
+                messages = precheckMessages;
+                return;
+            }
+
+            World.Instance.FileName = fileName;
+            BuildWorld(script, out var buildTimeMessages);
+            var buildTimeErrorCount = buildTimeMessages.Count(message => message.Severity == ErrorSeverity.Error);
+            if (buildTimeErrorCount > 0)
+            {
+                messages = precheckMessages.Concat(buildTimeMessages).ToList();
+                World.Instance.Clear(true);
+                return;
+            }
+            messages = new List<Error>();
+        }
+
         public static void BuildWorldFromFile(string fileName, out List<Error> errors)
         {
             World.Instance.Clear(true);
-            World.Instance.FolderPath = Path.GetDirectoryName(fileName);
             World.Instance.FileName = fileName;
             var script = File.ReadAllText(fileName);
             BuildWorld(script, out errors);
@@ -252,9 +274,18 @@ namespace Common.Script.Visitors
             var baseSymbol = GetSymbolFromScope(context, baseRef);
             var instanceType = TypeSystem.Instance[baseSymbol.Type + "Instance"]; //todo: this could be nicer - maybe read instanceType from json?
 
-            AddSymbolToScope(context, new Symbol(instanceRef, instanceType, instanceRef));
-            scope = new Scope(scope, instanceRef ?? $"Instance of {baseRef}");
+            if (instanceRef != null)
+            {
+                AddSymbolToScope(context, new Symbol(instanceRef, instanceType, instanceRef));
+                scope = new Scope(scope, $"Instance {instanceRef} of {baseRef}");
+            }
             currentInstance = World.Instance.Spawn(baseRef, currentRegion.Id, instanceRef);
+            if (instanceRef == null)
+            {
+                AddSymbolToScope(context, new Symbol(currentInstance.Id, instanceType, instanceRef));
+                scope = new Scope(scope, $"Anomymous Instance of {baseRef}");
+            }
+
             currentInstance.Region = currentRegion;
             currentRegion.instances.Add(currentInstance);
             currentInstance.Position = new Vector2(x, y);
@@ -263,6 +294,7 @@ namespace Common.Script.Visitors
 
             var retVal = base.VisitInstanceDefinition(context);
 
+            scope = scope.Previous;
             currentInstance = null;
 
             return retVal;
