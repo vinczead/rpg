@@ -17,11 +17,11 @@ namespace Common.Models
         private List<ThingInstance> instancesToDelete = new List<ThingInstance>();
         private List<ThingInstance> instancesToAdd = new List<ThingInstance>();
 
-        public int Width { get; set; }
-        public int Height { get; set; }
+        public int Width { get; set; };
+        public int Height { get; set; };
 
-        public int TileWidth { get; set; } = 32; //todo: make it adjustable
-        public int TileHeight { get; set; } = 32; //todo: make it adjustable
+        public int TileWidth { get; set; } = 32;
+        public int TileHeight { get; set; } = 32;
         public Tile[][] Tiles { get; set; }
 
         public void Update(GameTime gameTime)
