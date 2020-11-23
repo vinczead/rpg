@@ -9,6 +9,7 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using System.Windows;
+using WorldEditor.Views;
 
 namespace WorldEditor.ViewModels
 {
@@ -19,7 +20,7 @@ namespace WorldEditor.ViewModels
         public ObservableCollection<SpriteModelViewModel> SpriteModels { get; set; }
         public ObservableCollection<TextureViewModel> Textures { get; set; }
         public RelayCommand<Vector2> TileClicked { get; }
-        public RelayCommand<Vector2> InstanceClicked { get; }
+        public RelayCommand<RegionInstanceViewModel> InstanceClicked { get; }
 
         public RegionEditorViewModel(MainViewModel mainViewModel, Region region)
         {
@@ -27,7 +28,18 @@ namespace WorldEditor.ViewModels
             Region = region ?? throw new ArgumentNullException("region");
             RefreshItems();
             TileClicked = new RelayCommand<Vector2>(ExecuteTileClicked);
+            InstanceClicked = new RelayCommand<RegionInstanceViewModel>(ExecuteInstanceClicked);
         }
+
+        private void ExecuteInstanceClicked(RegionInstanceViewModel regionInstanceViewModel)
+        {
+            new InstanceEditWindow()
+            {
+                DataContext = regionInstanceViewModel
+            }.ShowDialog();
+            RefreshInstances();
+        }
+
         private void ExecuteTileClicked(Vector2 position)
         {
             switch (MainViewModel.Sidebar.SelectedTool)
@@ -103,7 +115,7 @@ namespace WorldEditor.ViewModels
                         continue;
 
                     Region.Tiles[y][x] = MainViewModel.Sidebar.SelectedTile;
-                    Tiles[y][x] = new RegionTileViewModel(Region.Tiles[y][x], x, y, SpriteModels);
+                    Tiles[y][x] = new RegionTileViewModel(Region.Tiles[y][x], Region, x, y, SpriteModels);
                 }
             }
 
@@ -132,18 +144,21 @@ namespace WorldEditor.ViewModels
                 Tiles.Add(new ObservableCollection<RegionTileViewModel>());
                 for (int x = 0; x < Region.Width; x++)
                 {
-                    Tiles[y].Add(new RegionTileViewModel(Region.Tiles[y][x], x, y, SpriteModels));
+                    Tiles[y].Add(new RegionTileViewModel(Region.Tiles[y][x], Region, x, y, SpriteModels));
                 }
             }
+            RaisePropertyChanged("Tiles");
+            RefreshInstances();
+        }
 
+        private void RefreshInstances()
+        {
             var instances = World.Instance.Instances.Values.Select(instance => new RegionInstanceViewModel(instance));
             Instances = new ObservableCollection<RegionInstanceViewModel>(instances);
-            RaisePropertyChanged("Tiles");
             RaisePropertyChanged("Instances");
         }
 
         private ObservableCollection<ObservableCollection<RegionTileViewModel>> tiles;
-
         public ObservableCollection<ObservableCollection<RegionTileViewModel>> Tiles
         {
             get => tiles;
@@ -151,7 +166,6 @@ namespace WorldEditor.ViewModels
         }
 
         private ObservableCollection<RegionInstanceViewModel> instances;
-
         public ObservableCollection<RegionInstanceViewModel> Instances
         {
             get => instances;
