@@ -88,6 +88,7 @@ namespace WorldEditor.ViewModels
                         continue;
 
                     var instance = World.Instance.Spawn(selectedBreed.Id, Region.Id, new Microsoft.Xna.Framework.Vector2(x, y));
+                    Region.instances.Add(instance);
                     Instances.Add(new RegionInstanceViewModel(instance, Region));
                 }
             }
@@ -156,7 +157,7 @@ namespace WorldEditor.ViewModels
 
         private void RefreshInstances()
         {
-            var instances = World.Instance.Instances.Values.Select(instance => new RegionInstanceViewModel(instance, Region));
+            var instances = Region.instances.Select(instance => new RegionInstanceViewModel(instance, Region));
             Instances = new ObservableCollection<RegionInstanceViewModel>(instances);
             RaisePropertyChanged("Instances");
         }

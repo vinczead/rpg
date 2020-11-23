@@ -10,8 +10,7 @@
              d:DesignHeight="450" d:DesignWidth="800">
     <UserControl.Resources>
         <utility:InverseToolTypeToVisibilityConverter x:Key="InverseToolTypeToVisibilityConverter"/>
-        <SolidColorBrush x:Key="LightOverlay" Color="#50FFFFFF"/>
-        <SolidColorBrush x:Key="BlueOverlay" Color="#500000FF"/>
+        <SolidColorBrush x:Key="LightOverlay" Color="#30FFFFFF"/>
         <SolidColorBrush x:Key="TransparentOverlay" Color="#00FFFFFF"/>
         <DataTemplate x:Key="TileView">
             <Canvas Width="{Binding TileWidth}" Height="{Binding TileHeight}" ClipToBounds="True">
@@ -22,7 +21,11 @@
                     Stretch="None"
                     >
                 </Image>
-                <Rectangle Canvas.Top="0" Canvas.Left="0" x:Name="Overlay" Panel.ZIndex="5" Width="{Binding TileWidth}" Height="{Binding TileHeight}" Fill="{StaticResource LightOverlay}" Visibility="Hidden" />
+                <Rectangle
+                    Canvas.Top="0" Canvas.Left="0" Panel.ZIndex="5"
+                    Width="{Binding TileWidth}" Height="{Binding TileHeight}"
+                    x:Name="Overlay"
+                    Fill="{StaticResource LightOverlay}" Visibility="Hidden" />
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="MouseEnter">
                         <b:ChangePropertyAction TargetName="Overlay" PropertyName="Visibility" Value="Visible"/>
@@ -59,12 +62,17 @@
                     Source="{Binding Texture}"
                     Stretch="None">
                 </Image>
+                <Rectangle
+                    Canvas.Top="0" Canvas.Left="0" Panel.ZIndex="5"
+                    Width="{Binding FrameWidth}" Height="{Binding FrameHeight}"
+                    x:Name="Overlay" 
+                    Fill="{StaticResource LightOverlay}" Visibility="Hidden" />
                 <b:Interaction.Triggers>
                     <b:EventTrigger EventName="MouseEnter">
-                        <b:ChangePropertyAction PropertyName="Background" Value="{StaticResource LightOverlay}"/>
+                        <b:ChangePropertyAction TargetName="Overlay" PropertyName="Visibility" Value="Visible"/>
                     </b:EventTrigger>
                     <b:EventTrigger EventName="MouseLeave">
-                        <b:ChangePropertyAction PropertyName="Background" Value="{x:Null}"/>
+                        <b:ChangePropertyAction TargetName="Overlay" PropertyName="Visibility" Value="Hidden"/>
                     </b:EventTrigger>
                 </b:Interaction.Triggers>
                 <Canvas.InputBindings>

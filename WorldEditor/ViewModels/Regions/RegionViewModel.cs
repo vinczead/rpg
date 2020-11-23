@@ -77,6 +77,10 @@ namespace WorldEditor.ViewModels
                     for (int i = 0; i < Height; i++)
                     {
                         regionToAdd.Tiles[i] = new Tile[Width];
+                        for (int j = 0; j < Width; j++)
+                        {
+                            regionToAdd.Tiles[i][j] = World.Instance.Tiles["EMPTY"];
+                        }
                     }
                     World.Instance.Regions.Add(id, regionToAdd);
                     Region = regionToAdd;
