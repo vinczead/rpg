@@ -28,7 +28,7 @@
             FontFamily="Consolas"
             FontSize="15"
             ShowLineNumbers="True"
-            Name="editor"
+            x:Name="CodeEditor"
             SyntaxHighlighting="ViGaS">
             <b:Interaction.Behaviors>
                 <util:AvalonEditBehaviour BoundText="{Binding Script, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"/>
@@ -38,7 +38,10 @@
         <DataGrid 
             Grid.Row="2"
             Grid.ColumnSpan="2"
-            ItemsSource="{Binding Messages}" AutoGenerateColumns="False" IsReadOnly="True" HeadersVisibility="Column" SelectionMode="Single">
+            ItemsSource="{Binding Messages}"
+            SelectedItem="{Binding SelectedItem}"
+            AutoGenerateColumns="False" IsReadOnly="True"
+            HeadersVisibility="Column" SelectionMode="Single">
             <DataGrid.Columns>
                 <DataGridTextColumn Header="Line" Binding="{Binding Line}" Width="Auto" />
                 <DataGridTextColumn Header="Column" Binding="{Binding Column}" Width="Auto" />
@@ -46,7 +49,7 @@
                 <DataGridTextColumn Header="Message" Binding="{Binding Message}" Width="*" />
             </DataGrid.Columns>
             <DataGrid.InputBindings>
-                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding GoToError}" CommandParameter="{Binding Path=SelectedItem, RelativeSource={RelativeSource AncestorType=DataGrid}}" />
+                <MouseBinding MouseAction="LeftDoubleClick" Command="{Binding GoToError}" CommandParameter="{Binding ElementName=CodeEditor}" />
             </DataGrid.InputBindings>
         </DataGrid>
         <Button Content="Save" Grid.Column="1" Grid.Row="3" Margin="10" Command="{Binding SaveBreed}" CommandParameter="{Binding ElementName=BreedWindow}"/>

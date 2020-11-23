@@ -3,6 +3,8 @@ using Common.Script.Utility;
 using Common.Script.Visitors;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
+using ICSharpCode.AvalonEdit;
+using ICSharpCode.AvalonEdit.Document;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,7 +18,7 @@ namespace WorldEditor.ViewModels
         public Thing Thing { get; private set; }
 
         public RelayCommand<Window> SaveBreed { get; set; }
-        public RelayCommand<Error> GoToError { get; set; }
+        public RelayCommand<TextEditor> GoToError { get; set; }
 
         public BreedViewModel(Thing thing)
         {
@@ -29,7 +31,7 @@ namespace WorldEditor.ViewModels
             }
             Messages = new List<Error>();
             SaveBreed = new RelayCommand<Window>(ExecuteSaveBreedCommand);
-            GoToError = new RelayCommand<Error>(ExecuteGoToErrorCommand);
+            GoToError = new RelayCommand<TextEditor>(ExecuteGoToErrorCommand);
         }
 
         private void ExecuteSaveBreedCommand(Window window)
@@ -80,9 +82,12 @@ namespace WorldEditor.ViewModels
             }
         }
 
-        private void ExecuteGoToErrorCommand(Error error)
+        private void ExecuteGoToErrorCommand(TextEditor editor)
         {
-            MessageBox.Show($"Goto {error.Line} {error.Column}");
+            var offset = editor.Document.GetOffset(new TextLocation(SelectedItem.Line, SelectedItem.Column));
+            editor.CaretOffset = offset;
+            editor.ScrollToLine(SelectedItem.Line);
+            editor.Focus();
         }
 
         private string id;
@@ -108,6 +113,7 @@ namespace WorldEditor.ViewModels
             get => script;
             set => Set(ref script, value);
         }
+        public Error SelectedItem { get; set; }
 
         private List<Error> messages;
 
