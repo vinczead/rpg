@@ -61,7 +61,14 @@ namespace Common.Script.Visitors
         public override object VisitModelDefinition([NotNull] ModelDefinitionContext context)
         {
             var modelId = context.modelId?.Text;
-            var textureId = context.textureId?.Text;    //todo: check if textureId is Texture
+            var textureId = context.textureId?.Text;
+            var textureSymbol = GetSymbolFromScope(context.textureId, textureId);
+            if (textureSymbol != null)
+            {
+                if (textureSymbol.Type != TypeSystem.Instance["Texture"])
+                    errors.Add(new Error(context.textureId, $"Type of {textureId} must be {TypeSystem.Instance["Texture"]}"));
+            }
+
             AddSymbolToScope(context, new Symbol(modelId, TypeSystem.Instance["SpriteModel"]));
             scope = new Scope(scope, $"Model {modelId}");
 
@@ -141,7 +148,14 @@ namespace Common.Script.Visitors
         public override object VisitTileDefinition([NotNull] TileDefinitionContext context)
         {
             var tileId = context.tileId?.Text;
-            var modelId = context.modelId?.Text;    //todo: check if modelId is Model
+            var modelId = context.modelId?.Text;
+            var modelSymbol = GetSymbolFromScope(context.modelId, modelId);
+            if (modelSymbol != null)
+            {
+                if(modelSymbol.Type != TypeSystem.Instance["SpriteModel"])
+                    errors.Add(new Error(context.modelId, $"Type of {modelId} must be {TypeSystem.Instance["SpriteModel"]}"));
+            }
+
             AddSymbolToScope(context, new Symbol(tileId, TypeSystem.Instance["Tile"]));
 
             return base.VisitTileDefinition(context);
@@ -206,7 +220,7 @@ namespace Common.Script.Visitors
             var instanceRef = context.instanceRef;
             var instanceType = TypeSystem.Instance["ErrorType"];
 
-            //todo: check if x,y in bounds
+            //todo: check if x,y in bounds (implement subsymbols first)
 
             if (baseSymbol != null)
             {
@@ -316,10 +330,10 @@ namespace Common.Script.Visitors
                 }
                 else
                 {
-                    //todo check width
+                    //todo check width (implement subsymbols first)
                 }
             }
-            //todo check height
+            //todo check height (implement subsymbols first)
             return base.VisitTilesBlock(context);
         }
 
