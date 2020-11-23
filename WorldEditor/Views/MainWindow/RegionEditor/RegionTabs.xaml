@@ -69,7 +69,7 @@
                 </b:Interaction.Triggers>
                 <Canvas.InputBindings>
                     <MouseBinding
-                        MouseAction="LeftDoubleClick"
+                        MouseAction="LeftClick"
                         Command="{Binding Path=DataContext.InstanceClicked, RelativeSource={RelativeSource AncestorType={x:Type ScrollViewer}}}"
                         CommandParameter="{Binding}"/>
                 </Canvas.InputBindings>

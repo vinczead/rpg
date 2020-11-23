@@ -72,8 +72,6 @@ namespace WorldEditor.ViewModels
         }
 
         private Thing selectedBreed;
-        private object url;
-
         public Thing SelectedBreed
         {
             get => selectedBreed;
