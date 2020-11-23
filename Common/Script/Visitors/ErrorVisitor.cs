@@ -40,7 +40,7 @@ namespace Common.Script.Visitors
             Instance.scope = scope ?? new Scope();
             Instance.errors = new List<Error>();
             var parser = ScriptReader.GetParserForScript(script, out var syntaxErrors);
-            var breedTree = parser.baseDefinition();
+            var breedTree = parser.breedScript();
             if (syntaxErrors.Count > 0)
                 return syntaxErrors;
 

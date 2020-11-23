@@ -1,6 +1,7 @@
 grammar ViGaS;
 
-script: (textureDefinition | modelDefinition | tileDefinition | baseDefinition | regionDefinition)* playerDefinition?;
+script: (textureDefinition | modelDefinition | tileDefinition | baseDefinition | regionDefinition)* playerDefinition? EOF;
+breedScript: baseDefinition EOF;
 
 textureDefinition: TEXTURE textureId=ID FROM fileName=STRING;
 
