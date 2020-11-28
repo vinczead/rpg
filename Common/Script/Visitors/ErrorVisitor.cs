@@ -324,7 +324,7 @@ namespace Common.Script.Visitors
             foreach (var expression in expressions)
             {
                 var type = TypeVisitor.GetType(expression, scope, errors);
-                if (type != TypeSystem.Instance["TileArray"])
+                if (!type.InheritsFrom(TypeSystem.Instance["TileArray"]))
                 {
                     errors.Add(new Error(expression, "Type mismatch: must be array of Tile."));
                 }

@@ -30,6 +30,7 @@ namespace Common.Script.Utility
             types.Add("NullType", new Type("NullType"));
 
             types.Add("Array", new Type("Array"));
+            types.Add("NullTypeArray", new Type("NullTypeArray"));
             types.Add("StringArray", new Type("StringArray"));
             types.Add("BooleanArray", new Type("BooleanArray"));
             types.Add("NumberArray", new Type("NumberArray"));
@@ -45,6 +46,7 @@ namespace Common.Script.Utility
             this["Array"].Parents.Add(this["StringArray"]);
             this["Array"].Parents.Add(this["BooleanArray"]);
             this["Array"].Parents.Add(this["NumberArray"]);
+            this["Array"].Parents.Add(this["NullTypeArray"]);
         }
 
         public void ReadTypes()
@@ -63,7 +65,7 @@ namespace Common.Script.Utility
                     var name = type.GetProperty("name").GetString();
                     types.Add(name, new Type(name));
                     types.Add($"{name}Array", new Type($"{name}Array"));
-                    this["Array"].Parents.Add(this[$"{name}Array"]);
+                    this["NullTypeArray"].Parents.Add(this[$"{name}Array"]);
                 }
                 foreach (var type in root.EnumerateArray())
                 {
