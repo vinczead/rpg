@@ -67,7 +67,7 @@ namespace WorldEditor.ViewModels
                     Tile.Model = SpriteModel.SpriteModel;
                     originalViewModel.SpriteModel = SpriteModel;
 
-                    //todo: raisePropertyChanged Tiles.Items ?
+                    originalViewModel.NotifyReferencesOfChange();
 
                     World.Instance.Tiles.Add(id, Tile);
                 }
@@ -76,6 +76,22 @@ namespace WorldEditor.ViewModels
             catch
             {
                 MessageBox.Show("Failed to add Tile Type! A Tile Type with the same id already exists!");
+            }
+        }
+
+        public void NotifyReferencesOfChange()
+        {
+            RaisePropertyChanged("SpriteModel");
+            foreach (var region in Tiles.MainViewModel.Regions.Items)
+            {
+                foreach (var tileRow in region.Tiles)
+                {
+                    foreach (var tile in tileRow)
+                    {
+                        if (tile.Tile == this)
+                            tile.RaisePropertiesChanged();
+                    }
+                }
             }
         }
 

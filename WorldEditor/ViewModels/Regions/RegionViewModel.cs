@@ -21,7 +21,7 @@ namespace WorldEditor.ViewModels
 
         public RelayCommand<Window> SaveRegion { get; }
         public RelayCommand<Vector2> TileClicked { get; }
-        public RelayCommand<RegionInstanceViewModel> InstanceClicked { get; }
+        public RelayCommand<InstanceViewModel> InstanceClicked { get; }
         public RelayCommand<Canvas> CreateInstance { get; }
 
         public RegionViewModel(Region region, RegionsViewModel regionsViewModel)
@@ -35,39 +35,36 @@ namespace WorldEditor.ViewModels
                 Height = region.Height;
                 TileWidth = region.TileWidth;
                 TileHeight = region.TileHeight;
-                Tiles = new ObservableCollection<ObservableCollection<RegionTileViewModel>>();
+                Tiles = new ObservableCollection<ObservableCollection<TileInstanceViewModel>>();
                 for (int y = 0; y < region.Height; y++)
                 {
-                    Tiles.Add(new ObservableCollection<RegionTileViewModel>());
+                    Tiles.Add(new ObservableCollection<TileInstanceViewModel>());
                     for (int x = 0; x < region.Width; x++)
                     {
-                        Tiles[y].Add(new RegionTileViewModel(region.Tiles[y][x], this, x, y));
+                        var viewModel = Regions.MainViewModel.Tiles.Items.FirstOrDefault(tile => tile.Id == region.Tiles[y][x]?.Id);
+                        Tiles[y].Add(new TileInstanceViewModel(viewModel, this, x, y));
                     }
                 }
-                var instances = Region.instances.Select(instance => new RegionInstanceViewModel(instance, Region));
-                Instances = new ObservableCollection<RegionInstanceViewModel>(instances);
+                var instances = Region.instances
+                    .Select(instance =>
+                    {
+                        var breedViewModel = Regions.MainViewModel.Breeds.Items.FirstOrDefault(breed => breed.Id == instance.Breed.Id);
+                        return new InstanceViewModel(breedViewModel, instance, this);
+                    });
+                Instances = new ObservableCollection<InstanceViewModel>(instances);
             }
             SaveRegion = new RelayCommand<Window>(ExecuteSaveRegionCommand);
             TileClicked = new RelayCommand<Vector2>(ExecuteTileClicked);
-            InstanceClicked = new RelayCommand<RegionInstanceViewModel>(ExecuteInstanceClicked);
+            InstanceClicked = new RelayCommand<InstanceViewModel>(ExecuteInstanceClicked);
             CreateInstance = new RelayCommand<Canvas>(ExecuteCreateInstance);
         }
 
-        private void ExecuteInstanceClicked(RegionInstanceViewModel regionInstanceViewModel)
+        private void ExecuteInstanceClicked(InstanceViewModel instanceViewModel)
         {
             new InstanceEditWindow()
             {
-                DataContext = regionInstanceViewModel
+                DataContext = new InstanceViewModel(instanceViewModel.Breed, instanceViewModel.ThingInstance, this)
             }.ShowDialog();
-            if (regionInstanceViewModel.PressedButton == RegionInstanceViewModel.InstanceWindowButton.Save)
-            {
-                Instances.Remove(regionInstanceViewModel);
-                Instances.Add(new RegionInstanceViewModel(regionInstanceViewModel.ThingInstance, Region));  //todo: update instead of new
-            }
-            if (regionInstanceViewModel.PressedButton == RegionInstanceViewModel.InstanceWindowButton.Remove)
-            {
-                Instances.Remove(regionInstanceViewModel);
-            }
         }
 
         private void ExecuteTileClicked(Vector2 position)
@@ -116,7 +113,7 @@ namespace WorldEditor.ViewModels
 
                     var instance = World.Instance.Spawn(selectedBreed.Id, Region.Id, new Microsoft.Xna.Framework.Vector2(x, y));
                     Region.instances.Add(instance);
-                    Instances.Add(new RegionInstanceViewModel(instance, Region));
+                    Instances.Add(new InstanceViewModel(selectedBreed, instance, this));
                 }
             }
         }
@@ -146,11 +143,9 @@ namespace WorldEditor.ViewModels
                         continue;
 
                     Region.Tiles[y][x] = Regions.MainViewModel.Sidebar.SelectedTile.Tile;
-                    Tiles[y][x] = new RegionTileViewModel(Region.Tiles[y][x], this, x, y);    //todo: should update instead
+                    Tiles[y][x].Tile = Regions.MainViewModel.Sidebar.SelectedTile;
                 }
             }
-
-            RaisePropertyChanged("Tiles");
         }
 
         private void ResizeTiles()
@@ -166,10 +161,10 @@ namespace WorldEditor.ViewModels
             {
                 if (heightDifference > 0)
                 {
-                    Tiles.Add(new ObservableCollection<RegionTileViewModel>());
+                    Tiles.Add(new ObservableCollection<TileInstanceViewModel>());
                     for (int x = 0; x < Width; x++)
                     {
-                        Tiles[^1].Add(new RegionTileViewModel(null, this, x, Tiles.Count - 1));
+                        Tiles[^1].Add(new TileInstanceViewModel(null, this, x, Tiles.Count - 1));
                     }
                 }
                 else
@@ -193,7 +188,7 @@ namespace WorldEditor.ViewModels
                 {
                     if (widthDifference > 0)
                     {
-                        Tiles[y].Add(new RegionTileViewModel(null, this, Region.Width + i, y));
+                        Tiles[y].Add(new TileInstanceViewModel(null, this, Region.Width + i, y));
                     }
                     else
                     {
@@ -237,8 +232,8 @@ namespace WorldEditor.ViewModels
                         regionToAdd.Tiles[i] = new Tile[Width];
                     }
                     Region = regionToAdd;
-                    Tiles = new ObservableCollection<ObservableCollection<RegionTileViewModel>>();
-                    Instances = new ObservableCollection<RegionInstanceViewModel>();
+                    Tiles = new ObservableCollection<ObservableCollection<TileInstanceViewModel>>();
+                    Instances = new ObservableCollection<InstanceViewModel>();
 
                     World.Instance.Regions.Add(id, regionToAdd);
                     Regions.Items.Add(this);
@@ -275,15 +270,26 @@ namespace WorldEditor.ViewModels
                     Region.TileWidth = TileWidth;
                     Region.TileHeight = TileHeight;
 
+                    originalViewModel.NotifyReferencesOfChange();
+
                     World.Instance.Regions.Add(id, Region);
-                    originalViewModel.RaisePropertyChanged("Tiles");
-                    //todo: raisepropchanged regions.items ?
                 }
                 window.Close();
             }
             catch
             {
                 MessageBox.Show("Failed to save Region!");
+            }
+        }
+
+        public void NotifyReferencesOfChange()
+        {
+            foreach (var tileRow in Tiles)
+            {
+                foreach (var tile in tileRow)
+                {
+                    tile.RaisePropertiesChanged();
+                }
             }
         }
 
@@ -322,15 +328,15 @@ namespace WorldEditor.ViewModels
             set => Set(ref tileHeight, value);
         }
 
-        private ObservableCollection<ObservableCollection<RegionTileViewModel>> tiles;
-        public ObservableCollection<ObservableCollection<RegionTileViewModel>> Tiles
+        private ObservableCollection<ObservableCollection<TileInstanceViewModel>> tiles;
+        public ObservableCollection<ObservableCollection<TileInstanceViewModel>> Tiles
         {
             get => tiles;
             set => Set(ref tiles, value);
         }
 
-        private ObservableCollection<RegionInstanceViewModel> instances;
-        public ObservableCollection<RegionInstanceViewModel> Instances
+        private ObservableCollection<InstanceViewModel> instances;
+        public ObservableCollection<InstanceViewModel> Instances
         {
             get => instances;
             set => Set(ref instances, value);

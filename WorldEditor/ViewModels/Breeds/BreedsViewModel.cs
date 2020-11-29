@@ -20,13 +20,13 @@ namespace WorldEditor.ViewModels
 
         protected override void ReloadItems()
         {
-            var breeds = World.Instance.Breeds.Values.Select(breed => new BreedViewModel(breed));
+            var breeds = World.Instance.Breeds.Values.Select(breed => new BreedViewModel(breed, this));
             Items = new ObservableCollection<BreedViewModel>(breeds);
         }
 
         protected override void ExecuteAddItem()
         {
-            var breedViewModel = new BreedViewModel(null);
+            var breedViewModel = new BreedViewModel(null, this);
             var window = new BreedEditWindow()
             {
                 DataContext = breedViewModel
@@ -41,7 +41,7 @@ namespace WorldEditor.ViewModels
         {
             new BreedEditWindow()
             {
-                DataContext = new BreedViewModel(SelectedItem.Thing)
+                DataContext = new BreedViewModel(SelectedItem.Thing, this)
             }.ShowDialog();
             ReloadItems();
             RaisePropertyChanged("Items");

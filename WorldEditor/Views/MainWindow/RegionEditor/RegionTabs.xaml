@@ -17,7 +17,7 @@
                 <Image
                     Canvas.Top="{Binding OffsetY}" Canvas.Left="{Binding OffsetX}"
                     Panel.ZIndex="1"
-                    Source="{Binding Tile.Model.SpriteSheet.ByteArrayValue}"
+                    Source="{Binding Tile.SpriteModel.SpriteSheet.ByteArrayValue}"
                     Stretch="None"
                     >
                 </Image>
@@ -59,7 +59,7 @@
             <Canvas Width="{Binding FrameWidth}" Height="{Binding FrameHeight}" ClipToBounds="True">
                 <Image
                     Canvas.Top="{Binding FrameOffsetY}" Canvas.Left="{Binding FrameOffsetX}"
-                    Source="{Binding Texture}"
+                    Source="{Binding Breed.SpriteModel.SpriteSheet.ByteArrayValue}"
                     Stretch="None">
                 </Image>
                 <Rectangle

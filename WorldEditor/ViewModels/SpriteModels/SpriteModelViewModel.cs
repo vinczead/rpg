@@ -79,14 +79,30 @@ namespace WorldEditor.ViewModels
                     }
                     SpriteModel.Animations = Items.Select(animation => animation.Animation).ToList();
 
+                    originalViewModel.NotifyReferencesOfChange();
+
                     World.Instance.Models.Add(id, SpriteModel);
-                    //todo: raisePropertyChanged SpriteModels.Items ?
                 }
                 window.Close();
             }
             catch
             {
                 MessageBox.Show("Failed to add Sprite Model! A Sprite Model with the same id already exists!");
+            }
+        }
+
+        public void NotifyReferencesOfChange()
+        {
+            RaisePropertyChanged("SpriteSheet");
+            foreach (var breed in SpriteModels.MainViewModel.Breeds.Items)
+            {
+                if (breed.SpriteModel == this)
+                    breed.NotifyReferencesOfChange();
+            }
+            foreach (var tile in SpriteModels.MainViewModel.Tiles.Items)
+            {
+                if (tile.SpriteModel == this)
+                    tile.NotifyReferencesOfChange();
             }
         }
 

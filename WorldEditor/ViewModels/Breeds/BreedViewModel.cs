@@ -18,14 +18,17 @@ namespace WorldEditor.ViewModels
         public Thing Thing { get; private set; }
         public RelayCommand<Window> SaveBreed { get; set; }
         public RelayCommand<TextEditor> GoToError { get; set; }
+        public BreedsViewModel Breeds { get; set; }
 
-        public BreedViewModel(Thing thing)
+        public BreedViewModel(Thing thing, BreedsViewModel breedsViewModel)
         {
+            Breeds = breedsViewModel;
             if (thing != null)
             {
                 Thing = thing;
                 Id = Thing.Id;
                 Type = Thing.GetType().Name;
+                SpriteModel = Breeds.MainViewModel.SpriteModels.Items.FirstOrDefault(spriteModel => spriteModel.Id == Thing.Model.Id);
                 Script = Thing.Serialize();
             }
             Messages = new List<Error>();
@@ -56,6 +59,7 @@ namespace WorldEditor.ViewModels
                     Id = createdBreed.Id;
                     type = createdBreed.GetType().Name;
                     Script = createdBreed.Serialize();
+                    SpriteModel = Breeds.MainViewModel.SpriteModels.Items.FirstOrDefault(spriteModel => spriteModel.Id == createdBreed.Model.Id);
                     if (Thing == null)
                     {
                         window.DialogResult = true;
@@ -69,6 +73,8 @@ namespace WorldEditor.ViewModels
                                 instance.Value.Breed = createdBreed;    //todo: should update $ID texts in scripts?
                             }
                         }
+                        
+                        NotifyReferencesOfChange();
                     }
                     Thing = createdBreed;
                     window.Close();
@@ -78,6 +84,19 @@ namespace WorldEditor.ViewModels
             {
                 if (Thing != null)
                     World.Instance.Breeds.Add(Thing.Id, Thing); //Reinsert old breed to World
+            }
+        }
+
+        public void NotifyReferencesOfChange()
+        {
+            RaisePropertyChanged("SpriteModel");
+            foreach (var region in Breeds.MainViewModel.Regions.Items)
+            {
+                foreach (var instance in region.Instances)
+                {
+                    if (instance.Breed == this)
+                        instance.RaisePropertiesChanged();
+                }
             }
         }
 
@@ -103,6 +122,14 @@ namespace WorldEditor.ViewModels
         {
             get => type;
             set => Set(ref type, value);
+        }
+
+        private SpriteModelViewModel spriteModel;
+
+        public SpriteModelViewModel SpriteModel
+        {
+            get => spriteModel;
+            set => Set(ref spriteModel, value);
         }
 
         private string script;

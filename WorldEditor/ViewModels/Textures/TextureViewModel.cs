@@ -119,7 +119,7 @@ namespace WorldEditor.ViewModels
                     Texture.ByteArrayValue = ByteArrayValue;
                     originalViewModel.ByteArrayValue = ByteArrayValue;
 
-                    //todo: raisePropertyChanged Textures.Items ?
+                    originalViewModel.NotifyReferencesOfChange();
 
                     World.Instance.Textures.Add(Id, Texture);
                 }
@@ -128,6 +128,15 @@ namespace WorldEditor.ViewModels
             catch
             {
                 MessageBox.Show("Failed to add Texture! A texture with the same id already exists!");
+            }
+        }
+
+        public void NotifyReferencesOfChange()
+        {
+            foreach (var spriteModel in Textures.MainViewModel.SpriteModels.Items)
+            {
+                if (spriteModel.SpriteSheet == this)
+                    spriteModel.NotifyReferencesOfChange();
             }
         }
     }
