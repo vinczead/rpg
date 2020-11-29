@@ -13,35 +13,33 @@ namespace WorldEditor.ViewModels
 {
     public class TexturesViewModel : CollectionViewModel<TextureViewModel>
     {
-        protected override void RefreshItems()
+        public MainViewModel MainViewModel { get; set; }
+        public TexturesViewModel(MainViewModel mainViewModel) : base()
         {
-            var textures = World.Instance.Textures.Values.Select(texture => new TextureViewModel(texture)).ToList();
+            MainViewModel = mainViewModel;
+            ReloadItems();
+        }
+        protected override void ReloadItems()
+        {
+            var textures = World.Instance.Textures.Values.Select(texture => new TextureViewModel(texture, this)).ToList();
 
             Items = new ObservableCollection<TextureViewModel>(textures);
         }
 
         protected override void ExecuteAddItem()
         {
-            var textureViewModel = new TextureViewModel(null);
-            var window = new TextureEditWindow()
+            new TextureEditWindow()
             {
-                DataContext = textureViewModel
-            };
-
-            if (window.ShowDialog() == true)
-            {
-                Items.Add(textureViewModel);
-            }
+                DataContext = new TextureViewModel(null, this)
+            }.ShowDialog();
         }
 
         protected override void ExecuteEditItem()
         {
             new TextureEditWindow()
             {
-                DataContext = new TextureViewModel(SelectedItem.Texture)
+                DataContext = new TextureViewModel(SelectedItem.Texture, this)
             }.ShowDialog();
-            RefreshItems();
-            RaisePropertyChanged("Items");
         }
 
         protected override void ExecuteRemoveItem()

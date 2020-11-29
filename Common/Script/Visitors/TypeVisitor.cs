@@ -103,7 +103,7 @@ namespace Common.Script.Visitors
 
             foreach (var expr in context.expression())
             {
-                if (Visit(expr) != firstType)
+                if (!Visit(expr).InheritsFrom(firstType))
                 {
                     errors.Add(new Error(expr, $"Invalid array expression: arrays can only contain elements of the same type."));
                     return TypeSystem.Instance["ErrorType"];

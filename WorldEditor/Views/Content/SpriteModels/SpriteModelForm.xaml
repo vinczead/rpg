@@ -30,7 +30,7 @@
 
         <Label Grid.Row="1">Sprite Sheet:</Label>
         <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,0,0,10"
-                  ItemsSource="{Binding Textures}"
+                  ItemsSource="{Binding SpriteModels.MainViewModel.Textures.Items}"
                   SelectedValue="{Binding SpriteSheet}"
                   x:Name="texturesList"
                   DisplayMemberPath="Id"/>

@@ -14,32 +14,22 @@ namespace WorldEditor.ViewModels
     public class RegionTileViewModel : ViewModelBase
     {
         public Tile Tile { get; private set; }
+        private RegionViewModel region;
+        public RegionViewModel Region { get => region; set => Set(ref region, value); }
 
-        public ObservableCollection<SpriteModelViewModel> SpriteModels { get; set; }
-
-        public RegionTileViewModel(Tile tile, Region region, int x, int y, ObservableCollection<SpriteModelViewModel> spriteModels)
+        public RegionTileViewModel(Tile tile, RegionViewModel regionViewModel, int x, int y)
         {
             Tile = tile;
-            SpriteModels = spriteModels;
             Position = new Vector2(x, y);
-            TileWidth = region.TileWidth;
-            TileHeight = region.TileHeight;
+            Region = regionViewModel;
 
             if (tile!= null) {
-                SpriteModel = SpriteModels.FirstOrDefault(spriteModel => spriteModel.Id == tile.Model.Id);
                 IsWalkable = tile.IsWalkable;
                 var animation = tile.Model.Animations.Find(animation => animation.Id.Contains("IDLE")) ?? tile.Model.Animations[0];
-                var source = animation.Frames?[0].Source ?? new Microsoft.Xna.Framework.Rectangle(0, 0, TileWidth, TileHeight);
+                var source = animation.Frames?[0].Source ?? new Microsoft.Xna.Framework.Rectangle(0, 0, Region.TileWidth, Region.TileHeight);
                 OffsetX = -source.X;
                 OffsetY = -source.Y;
             }
-        }
-
-        private SpriteModelViewModel spriteModel;
-        public SpriteModelViewModel SpriteModel
-        {
-            get => spriteModel;
-            set => Set(ref spriteModel, value);
         }
 
         private bool isWalkable;
@@ -56,8 +46,6 @@ namespace WorldEditor.ViewModels
             set => Set(ref position, value);
         }
 
-        public int TileWidth { get; }
-        public int TileHeight { get; }
         public int OffsetX { get; }
         public int OffsetY { get; }
 

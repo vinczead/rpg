@@ -12,6 +12,9 @@ namespace WorldEditor.Utility
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
+            if (value == null)
+                return Visibility.Hidden;
+
             if ((ContentType)value == (ContentType)parameter)
                 return Visibility.Visible;
 

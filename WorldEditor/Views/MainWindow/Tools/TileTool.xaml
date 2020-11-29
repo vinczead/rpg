@@ -21,7 +21,7 @@
         <Label Grid.Row="0" Grid.ColumnSpan="2" HorizontalContentAlignment="Center">Tile Tool</Label>
         <Label Grid.Row="1" Grid.Column="0">Tile Type:</Label>
         <ComboBox Grid.Row="1" Grid.Column="1"
-                  ItemsSource="{Binding Tiles}"
+                  ItemsSource="{Binding MainViewModel.Tiles.Items}"
                   SelectedItem="{Binding SelectedTile}" DisplayMemberPath="Id"/>
         <Label Grid.Row="2" Grid.Column="0">Brush Size:</Label>
         <ComboBox

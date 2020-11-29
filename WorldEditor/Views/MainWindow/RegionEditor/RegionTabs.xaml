@@ -13,17 +13,17 @@
         <SolidColorBrush x:Key="LightOverlay" Color="#30FFFFFF"/>
         <SolidColorBrush x:Key="TransparentOverlay" Color="#00FFFFFF"/>
         <DataTemplate x:Key="TileView">
-            <Canvas Width="{Binding TileWidth}" Height="{Binding TileHeight}" ClipToBounds="True" Background="Black">
+            <Canvas Width="{Binding Region.TileWidth}" Height="{Binding Region.TileHeight}" ClipToBounds="True" Background="Black">
                 <Image
                     Canvas.Top="{Binding OffsetY}" Canvas.Left="{Binding OffsetX}"
                     Panel.ZIndex="1"
-                    Source="{Binding SpriteModel.SpriteSheet.ByteArrayValue}"
+                    Source="{Binding Tile.Model.SpriteSheet.ByteArrayValue}"
                     Stretch="None"
                     >
                 </Image>
                 <Rectangle
                     Canvas.Top="0" Canvas.Left="0" Panel.ZIndex="5"
-                    Width="{Binding TileWidth}" Height="{Binding TileHeight}"
+                    Width="{Binding Region.TileWidth}" Height="{Binding Region.TileHeight}"
                     x:Name="Overlay"
                     Fill="{StaticResource LightOverlay}" Visibility="Hidden" />
                 <b:Interaction.Triggers>
@@ -84,12 +84,10 @@
             </Canvas>
         </DataTemplate>
     </UserControl.Resources>
-
     <TabControl
         ItemsSource="{Binding Items}"
         SelectedItem="{Binding SelectedItem}"
-        SelectedIndex="{Binding SelectedIndex}"
-        DisplayMemberPath="Region.Id">
+        DisplayMemberPath="Id">
         <TabControl.ContentTemplate>
             <DataTemplate x:Name="CurrentRegionView">
                 <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
@@ -101,7 +99,7 @@
                             ItemsSource="{Binding Instances}"
                             ItemTemplate="{StaticResource InstanceView}"
                             Visibility="{Binding
-                                Path=MainViewModel.Sidebar.SelectedTool,
+                                Path=Regions.MainViewModel.Sidebar.SelectedTool,
                                 Mode=OneWay,
                                 Converter={StaticResource InverseToolTypeToVisibilityConverter},
                                 ConverterParameter={x:Static utility:ToolType.TileTool}}">

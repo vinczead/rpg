@@ -22,7 +22,7 @@ namespace WorldEditor.ViewModels
                 IsLooping = animation.IsLooping;
             }
             
-            RefreshItems();
+            ReloadItems();
         }
 
         public void Save()
@@ -38,7 +38,7 @@ namespace WorldEditor.ViewModels
             Animation.Frames = Items.Select(frameVM => frameVM.Frame).ToList();
         }
 
-        protected override void RefreshItems()
+        protected override void ReloadItems()
         {
             if (Animation != null)
             {

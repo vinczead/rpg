@@ -16,7 +16,6 @@ namespace WorldEditor.ViewModels
     public class BreedViewModel : ViewModelBase
     {
         public Thing Thing { get; private set; }
-
         public RelayCommand<Window> SaveBreed { get; set; }
         public RelayCommand<TextEditor> GoToError { get; set; }
 

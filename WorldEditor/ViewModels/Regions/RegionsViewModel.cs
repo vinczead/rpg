@@ -11,33 +11,34 @@ namespace WorldEditor.ViewModels
 {
     public class RegionsViewModel : CollectionViewModel<RegionViewModel>
     {
-        protected override void RefreshItems()
+        private MainViewModel mainViewModel;
+        public MainViewModel MainViewModel { get => mainViewModel; set => Set(ref mainViewModel, value); }
+        public RegionsViewModel(MainViewModel mainViewModel) : base()
         {
-            var regions = World.Instance.Regions.Values.Select(region => new RegionViewModel(region));
+            MainViewModel = mainViewModel;
+            ReloadItems();
+        }
+
+        protected override void ReloadItems()
+        {
+            var regions = World.Instance.Regions.Values.Select(region => new RegionViewModel(region, this));
             Items = new ObservableCollection<RegionViewModel>(regions);
+            RaisePropertyChanged("Items");
         }
         protected override void ExecuteAddItem()
         {
-            var regionViewModel = new RegionViewModel(null);
-            var window = new RegionEditWindow()
+            new RegionEditWindow()
             {
-                DataContext = regionViewModel
-            };
-
-            if(window.ShowDialog() == true)
-            {
-                Items.Add(regionViewModel);
-            }
+                DataContext = new RegionViewModel(null, this)
+            }.ShowDialog();
         }
 
         protected override void ExecuteEditItem()
         {
             new RegionEditWindow()
             {
-                DataContext = new RegionViewModel(SelectedItem.Region)
+                DataContext = new RegionViewModel(SelectedItem.Region, this)
             }.ShowDialog();
-            RefreshItems();
-            RaisePropertyChanged("Items");
         }
 
         protected override void ExecuteRemoveItem()

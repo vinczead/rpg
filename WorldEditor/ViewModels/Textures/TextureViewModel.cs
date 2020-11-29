@@ -5,6 +5,7 @@ using Microsoft.Win32;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Windows;
 using System.Windows.Media.Imaging;
@@ -15,9 +16,11 @@ namespace WorldEditor.ViewModels
     public class TextureViewModel : ViewModelBase
     {
         public Texture Texture { get; private set; }
+        public TexturesViewModel Textures { get; set; }
 
-        public TextureViewModel(Texture texture)
+        public TextureViewModel(Texture texture, TexturesViewModel texturesViewModel)
         {
+            Textures = texturesViewModel;
             if (texture != null)
             {
                 Texture = texture;
@@ -96,6 +99,7 @@ namespace WorldEditor.ViewModels
                         ByteArrayValue = ByteArrayValue
                     };
                     World.Instance.Textures.Add(Id, textureToAdd);
+                    Textures.Items.Add(this);
                     Texture = textureToAdd;
                     window.DialogResult = true;
                 }
@@ -104,9 +108,19 @@ namespace WorldEditor.ViewModels
                     if (Texture.Id != Id && World.Instance.Textures.ContainsKey(Id))
                         throw new ArgumentException();
                     World.Instance.Textures.Remove(Texture.Id);
+                    var originalViewModel = Textures.Items.First(item => item.Id == Texture.Id);
+
                     Texture.Id = Id;
+                    originalViewModel.Id = Id;
+
                     Texture.FileName = FileName;
+                    originalViewModel.FileName = FileName;
+
                     Texture.ByteArrayValue = ByteArrayValue;
+                    originalViewModel.ByteArrayValue = ByteArrayValue;
+
+                    //todo: raisePropertyChanged Textures.Items ?
+
                     World.Instance.Textures.Add(Id, Texture);
                 }
                 window.Close();

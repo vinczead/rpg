@@ -3,24 +3,35 @@ using Common.Script.Utility;
 using Common.Script.Visitors;
 using GalaSoft.MvvmLight;
 using GalaSoft.MvvmLight.Command;
-using GalaSoft.MvvmLight.Messaging;
 using Microsoft.Win32;
-using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Windows;
-using WorldEditor.Utility;
 using WorldEditor.Views;
 
 namespace WorldEditor.ViewModels
 {
-    public class MainViewModel : CollectionViewModel<RegionEditorViewModel>
+    public class MainViewModel : ViewModelBase
     {
-        public SidebarViewModel Sidebar { get; set; }
+        private SidebarViewModel sidebar;
+        public SidebarViewModel Sidebar { get => sidebar; set => Set(ref sidebar, value); }
+
+        private TexturesViewModel textures;
+        public TexturesViewModel Textures { get => textures; set => Set(ref textures, value); }
+
+        private SpriteModelsViewModel spriteModels;
+        public SpriteModelsViewModel SpriteModels { get => spriteModels; set => Set(ref spriteModels, value); }
+
+        private BreedsViewModel breeds;
+        public BreedsViewModel Breeds { get => breeds; set => Set(ref breeds, value); }
+
+        private TilesViewModel tiles;
+        public TilesViewModel Tiles { get => tiles; set => Set(ref tiles, value); }
+
+        private RegionsViewModel regions;
+        public RegionsViewModel Regions { get => regions; set => Set(ref regions, value); }        
 
         private bool isProjectOpen;
         public bool IsProjectOpen
@@ -32,8 +43,25 @@ namespace WorldEditor.ViewModels
                 RaisePropertyChanged(() => Title);
                 SaveProject.RaiseCanExecuteChanged();
                 CloseProject.RaiseCanExecuteChanged();
-                Sidebar.SetTool.RaiseCanExecuteChanged();
+                Sidebar?.SetTool.RaiseCanExecuteChanged();
                 OpenContents.RaiseCanExecuteChanged();
+                if(value == true)
+                {
+                    Sidebar = new SidebarViewModel(this);
+                    Textures = new TexturesViewModel(this);
+                    SpriteModels = new SpriteModelsViewModel(this);
+                    Breeds = new BreedsViewModel(this);
+                    Tiles = new TilesViewModel(this);
+                    Regions = new RegionsViewModel(this);
+                } else
+                {
+                    Sidebar = null;
+                    Textures = null;
+                    SpriteModels = null;
+                    Breeds = null;
+                    Tiles = null;
+                    Regions = null;
+                }
             }
         }
 
@@ -93,7 +121,6 @@ namespace WorldEditor.ViewModels
                     return;
                 }
                 IsProjectOpen = true;
-                RefreshItems();
             }
         }
 
@@ -135,15 +162,16 @@ namespace WorldEditor.ViewModels
                 using var file = File.Create(saveFileDialog.FileName);
                 World.Instance.FileName = saveFileDialog.FileName;
                 file.Close();
-                RefreshItems();
                 IsProjectOpen = true;
             }
         }
 
         private void ExecuteOpenContentsWindowCommand()
         {
-            new ContentsWindow().ShowDialog();
-            RefreshItems();
+            new ContentsWindow()
+            {
+                DataContext = this
+            }.ShowDialog();
         }
 
         private void ExecuteOpenGithubPage()
@@ -160,32 +188,5 @@ namespace WorldEditor.ViewModels
         {
             MessageBox.Show("Created for Master's Thesis at Budapest Univeristy of Technology and Economics.\nCreated by Ádám Vincze\n2020", "About World Editor");
         }
-
-        private int selectedIndex;
-
-        public int SelectedIndex
-        {
-            get => selectedIndex;
-            set => Set(ref selectedIndex, value);
-        }
-
-
-        protected override void RefreshItems()
-        {
-            var regions = World.Instance.Regions.Select(region => new RegionEditorViewModel(this, region.Value)).ToList();
-            Items = new ObservableCollection<RegionEditorViewModel>(regions);
-            var oldSelectedIndex = SelectedIndex;
-            RaisePropertyChanged("Items");
-            SelectedIndex = oldSelectedIndex >= Items.Count ? Items.Count - 1 : oldSelectedIndex;
-            Sidebar?.RefreshItems();
-        }
-
-
-
-        protected override void ExecuteAddItem() {}
-
-        protected override void ExecuteEditItem() {}
-
-        protected override void ExecuteRemoveItem() {}
     }
 }

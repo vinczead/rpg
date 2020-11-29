@@ -13,52 +13,34 @@ namespace WorldEditor.ViewModels
 {
     public class TilesViewModel : CollectionViewModel<TileViewModel>
     {
-        public ObservableCollection<SpriteModelViewModel> SpriteModels { get; set; }
-        public ObservableCollection<TextureViewModel> Textures { get; set; }
+        public MainViewModel MainViewModel { get; set; }
 
-        protected override void RefreshItems()
+        public TilesViewModel(MainViewModel mainViewModel) : base()
         {
-            if(Textures == null)
-            {
-                var textures = World.Instance.Textures.Values.Select(texture => new TextureViewModel(texture)).ToList();
-
-                Textures = new ObservableCollection<TextureViewModel>(textures);
-            }
-
-            if(SpriteModels == null)
-            {
-                var spriteModels = World.Instance.Models.Select(spriteModel => new SpriteModelViewModel(spriteModel.Value, Textures)).ToList();
-
-                SpriteModels = new ObservableCollection<SpriteModelViewModel>(spriteModels);
-            }
-
-            var tiles = World.Instance.Tiles.Select(tile => new TileViewModel(tile.Value, SpriteModels)).ToList();
+            MainViewModel = mainViewModel;
+            ReloadItems();
+        }
+        protected override void ReloadItems()
+        {
+            var tiles = World.Instance.Tiles.Select(tile => new TileViewModel(tile.Value, this)).ToList();
 
             Items = new ObservableCollection<TileViewModel>(tiles);
         }
 
         protected override void ExecuteAddItem()
         {
-            var tileViewModel = new TileViewModel(null, SpriteModels);
-            var window = new TileTypeEditWindow()
+            new TileTypeEditWindow()
             {
-                DataContext = tileViewModel
-            };
-
-            if(window.ShowDialog() == true)
-            {
-                Items.Add(tileViewModel);
-            }
+                DataContext = new TileViewModel(null, this)
+            }.ShowDialog();
         }
 
         protected override void ExecuteEditItem()
         {
             new TileTypeEditWindow()
             {
-                DataContext = new TileViewModel(SelectedItem.Tile, SpriteModels)
+                DataContext = new TileViewModel(SelectedItem.Tile, this)
             }.ShowDialog();
-            RefreshItems();
-            RaisePropertyChanged("Items");
         }
 
         protected override void ExecuteRemoveItem()

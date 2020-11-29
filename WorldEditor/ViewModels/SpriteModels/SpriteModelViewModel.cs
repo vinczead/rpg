@@ -13,19 +13,19 @@ namespace WorldEditor.ViewModels
     public class SpriteModelViewModel : CollectionViewModel<AnimationViewModel>
     {
         public SpriteModel SpriteModel { get; private set; }
-        public ObservableCollection<TextureViewModel> Textures { get; set; }
+        public SpriteModelsViewModel SpriteModels { get; set; }
 
         public RelayCommand<Window> SaveSpriteModel { get; set; }
 
-        public SpriteModelViewModel(SpriteModel spriteModel, ObservableCollection<TextureViewModel> textures) : base()
+        public SpriteModelViewModel(SpriteModel spriteModel, SpriteModelsViewModel spriteModelsViewModel) : base()
         {
-            Textures = textures;
+            SpriteModels = spriteModelsViewModel;
             if (spriteModel != null)
             {
                 SpriteModel = spriteModel;
                 Id = spriteModel.Id;
-                SpriteSheet = textures.FirstOrDefault(texture => texture.Id == spriteModel.SpriteSheet.Id);
-                RefreshItems();
+                SpriteSheet = SpriteModels.MainViewModel.Textures.Items.FirstOrDefault(texture => texture.Id == spriteModel.SpriteSheet.Id);
+                ReloadItems();
             }
             else
             {
@@ -33,6 +33,7 @@ namespace WorldEditor.ViewModels
             }
 
             SaveSpriteModel = new RelayCommand<Window>(ExecuteSaveSpriteModelCommand);
+            ReloadItems();
         }
 
         public void ExecuteSaveSpriteModelCommand(Window window)
@@ -53,23 +54,33 @@ namespace WorldEditor.ViewModels
                         SpriteSheet = SpriteSheet.Texture,
                         Animations = Items.Select(animation => animation.Animation).ToList()
                     };
-                    World.Instance.Models.Add(id, modelToAdd);
                     SpriteModel = modelToAdd;
-                    window.DialogResult = true;
+
+                    World.Instance.Models.Add(id, modelToAdd);
+                    SpriteModels.Items.Add(this);
                 }
                 else
                 {
                     if (SpriteModel.Id != Id && World.Instance.Models.ContainsKey(Id))
                         throw new ArgumentException();
                     World.Instance.Models.Remove(SpriteModel.Id);
+                    var originalViewModel = SpriteModels.Items.First(item => item.Id == SpriteModel.Id);
+
                     SpriteModel.Id = Id;
+                    originalViewModel.Id = Id;
+
                     SpriteModel.SpriteSheet = SpriteSheet.Texture;
+                    originalViewModel.SpriteSheet = SpriteSheet;
+
+                    originalViewModel.Items = Items;
                     foreach (var animationVM in Items)
                     {
                         animationVM.Save();
                     }
                     SpriteModel.Animations = Items.Select(animation => animation.Animation).ToList();
+
                     World.Instance.Models.Add(id, SpriteModel);
+                    //todo: raisePropertyChanged SpriteModels.Items ?
                 }
                 window.Close();
             }
@@ -79,7 +90,7 @@ namespace WorldEditor.ViewModels
             }
         }
 
-        protected override void RefreshItems()
+        protected override void ReloadItems()
         {
             if (SpriteModel != null)
             {
@@ -107,6 +118,16 @@ namespace WorldEditor.ViewModels
             {
                 Items.Remove(SelectedItem);
                 SelectedItem = null;
+            }
+        }
+
+        public override ObservableCollection<AnimationViewModel> Items
+        {
+            get => base.Items;
+            set
+            {
+                base.Items = value;
+                RaisePropertyChanged("AnimationsString");
             }
         }
 

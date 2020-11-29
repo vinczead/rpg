@@ -13,50 +13,38 @@ namespace WorldEditor.ViewModels
 {
     public class SpriteModelsViewModel : CollectionViewModel<SpriteModelViewModel>
     {
-        public ObservableCollection<TextureViewModel> Textures { get; set; }
+        public MainViewModel MainViewModel { get; set; }
 
-        protected override void RefreshItems()
+        public SpriteModelsViewModel(MainViewModel mainViewModel) : base()
         {
-            if(Textures == null)
-            {
-                CreateTextures();
-            }
+            MainViewModel = mainViewModel;
+            ReloadItems();
+        }
+
+        protected override void ReloadItems()
+        {
             var spriteModels = World.Instance
                 .Models
-                .Select(spriteModel => new SpriteModelViewModel(spriteModel.Value, Textures))
+                .Select(spriteModel => new SpriteModelViewModel(spriteModel.Value, this))
                 .ToList();
 
             Items = new ObservableCollection<SpriteModelViewModel>(spriteModels);
         }
-        void CreateTextures()
-        {
-            var textures = World.Instance.Textures.Values.Select(texture => new TextureViewModel(texture)).ToList();
-
-            Textures = new ObservableCollection<TextureViewModel>(textures);
-        }
 
         protected override void ExecuteAddItem()
         {
-            var spriteModelViewModel = new SpriteModelViewModel(null, Textures);
-            var window = new SpriteModelEditWindow()
+            new SpriteModelEditWindow()
             {
-                DataContext = spriteModelViewModel
-            };
-
-            if (window.ShowDialog() == true)
-            {
-                Items.Add(spriteModelViewModel);
-            }
+                DataContext = new SpriteModelViewModel(null, this)
+            }.ShowDialog();
         }
 
         protected override void ExecuteEditItem()
         {
             new SpriteModelEditWindow()
             {
-                DataContext = new SpriteModelViewModel(SelectedItem.SpriteModel, Textures)
+                DataContext = new SpriteModelViewModel(SelectedItem.SpriteModel, this)
             }.ShowDialog();
-            RefreshItems();
-            RaisePropertyChanged("Items");
         }
 
         protected override void ExecuteRemoveItem()

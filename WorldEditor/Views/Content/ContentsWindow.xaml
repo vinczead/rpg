@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:WorldEditor.ViewModels"
         xmlns:utility="clr-namespace:WorldEditor.Utility"
         mc:Ignorable="d"
-        Title="Edit Contents" Height="450" Width="650" WindowStartupLocation="CenterScreen">
+        Title="Edit Contents" MinHeight="450" MinWidth="650" WindowStartupLocation="CenterScreen">
     <Window.Resources>
         <ObjectDataProvider MethodName="GetValues"
                         ObjectType="{x:Type sys:Enum}"
@@ -19,9 +19,6 @@
         </ObjectDataProvider>
         <utility:ContentTypeToVisibilityConverter x:Key="ContentTypeToVisibilityConverter"/>
     </Window.Resources>
-    <Window.DataContext>
-        <vm:ContentsViewModel/>
-    </Window.DataContext>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="200"/>
@@ -31,52 +28,52 @@
             Grid.Column="0"
             ItemsSource="{Binding Source={StaticResource ContentTypeValues}}"
             SelectionMode="Single"
-            SelectedItem="{Binding SelectedContentType}">
+            x:Name="ContentTypesListBox">
         </ListBox>
 
         <Grid Grid.Column="1"
-            Visibility="{Binding
-                    Mode=OneWay,
-                    Path=SelectedContentType,
-                    Converter={StaticResource ContentTypeToVisibilityConverter},
-                    ConverterParameter={x:Static utility:ContentType.Texture}}">
-            <local:TexturesGrid />
+            Visibility="{Binding SelectedItem,
+            ElementName=ContentTypesListBox,
+            Mode=OneWay,
+            Converter={StaticResource ContentTypeToVisibilityConverter},
+            ConverterParameter={x:Static utility:ContentType.Texture}}">
+            <local:TexturesGrid DataContext="{Binding Textures}"/>
         </Grid>
 
         <Grid Grid.Column="1"
-            Visibility="{Binding
-                    Mode=OneWay,
-                    Path=SelectedContentType,
-                    Converter={StaticResource ContentTypeToVisibilityConverter},
-                    ConverterParameter={x:Static utility:ContentType.SpriteModel}}">
-            <local:SpriteModelsGrid />
+            Visibility="{Binding SelectedItem,
+            ElementName=ContentTypesListBox,
+            Mode=OneWay,
+            Converter={StaticResource ContentTypeToVisibilityConverter},
+            ConverterParameter={x:Static utility:ContentType.SpriteModel}}">
+            <local:SpriteModelsGrid DataContext="{Binding SpriteModels}"/>
         </Grid>
 
         <Grid Grid.Column="1"
-            Visibility="{Binding
-                    Mode=OneWay,
-                    Path=SelectedContentType,
-                    Converter={StaticResource ContentTypeToVisibilityConverter},
-                    ConverterParameter={x:Static utility:ContentType.Tile}}">
-            <local:TileTypesGrid />
+            Visibility="{Binding SelectedItem,
+            ElementName=ContentTypesListBox,
+            Mode=OneWay,
+            Converter={StaticResource ContentTypeToVisibilityConverter},
+            ConverterParameter={x:Static utility:ContentType.Tile}}">
+            <local:TileTypesGrid DataContext="{Binding Tiles}"/>
         </Grid>
 
         <Grid Grid.Column="1"
-            Visibility="{Binding
-                    Mode=OneWay,
-                    Path=SelectedContentType,
-                    Converter={StaticResource ContentTypeToVisibilityConverter},
-                    ConverterParameter={x:Static utility:ContentType.Breed}}">
-            <local:BreedsGrid />
+            Visibility="{Binding SelectedItem,
+            ElementName=ContentTypesListBox,
+            Mode=OneWay,
+            Converter={StaticResource ContentTypeToVisibilityConverter},
+            ConverterParameter={x:Static utility:ContentType.Breed}}">
+            <local:BreedsGrid DataContext="{Binding Breeds}"/>
         </Grid>
-        
+
         <Grid Grid.Column="1"
-            Visibility="{Binding
-                    Mode=OneWay,
-                    Path=SelectedContentType,
-                    Converter={StaticResource ContentTypeToVisibilityConverter},
-                    ConverterParameter={x:Static utility:ContentType.Region}}">
-            <local:RegionsGrid />
+            Visibility="{Binding SelectedItem,
+            ElementName=ContentTypesListBox,
+            Mode=OneWay,
+            Converter={StaticResource ContentTypeToVisibilityConverter},
+            ConverterParameter={x:Static utility:ContentType.Region}}">
+            <local:RegionsGrid DataContext="{Binding Regions}"/>
         </Grid>
     </Grid>
 </Window>

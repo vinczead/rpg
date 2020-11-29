@@ -7,24 +7,25 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Windows;
+using WorldEditor.Utility;
 
 namespace WorldEditor.ViewModels
 {
     public class TileViewModel : ViewModelBase
     {
         public Tile Tile { get; private set; }
-        public ObservableCollection<SpriteModelViewModel> SpriteModels { get; set; }
+        public TilesViewModel Tiles { get; set; }
 
         public RelayCommand<Window> SaveTileType { get; set; }
 
-        public TileViewModel(Tile tile, ObservableCollection<SpriteModelViewModel> spriteModels)
+        public TileViewModel(Tile tile, TilesViewModel tilesViewModel)
         {
-            SpriteModels = spriteModels;
+            Tiles = tilesViewModel;
             if (tile != null)
             {
                 Tile = tile;
                 Id = tile.Id;
-                SpriteModel = SpriteModels.FirstOrDefault(spriteModel => spriteModel.Id == tile.Model.Id);
+                SpriteModel = Tiles.MainViewModel.SpriteModels.Items.FirstOrDefault(spriteModel => spriteModel.Id == tile.Model.Id);
                 IsWalkable = tile.IsWalkable;
             }
 
@@ -47,6 +48,7 @@ namespace WorldEditor.ViewModels
                     };
                     World.Instance.Tiles.Add(Id, tileToAdd);
                     Tile = tileToAdd;
+                    Tiles.Items.Add(this);
                     window.DialogResult = true;
                 }
                 else
@@ -54,9 +56,19 @@ namespace WorldEditor.ViewModels
                     if (Tile.Id != Id && World.Instance.Tiles.ContainsKey(Id))
                         throw new ArgumentException();
                     World.Instance.Tiles.Remove(Tile.Id);
+                    var originalViewModel = Tiles.Items.First(item => item.Id == Tile.Id);
+
                     Tile.Id = Id;
+                    originalViewModel.Id = Id;
+
                     Tile.IsWalkable = IsWalkable;
+                    originalViewModel.IsWalkable = IsWalkable;
+
                     Tile.Model = SpriteModel.SpriteModel;
+                    originalViewModel.SpriteModel = SpriteModel;
+
+                    //todo: raisePropertyChanged Tiles.Items ?
+
                     World.Instance.Tiles.Add(id, Tile);
                 }
                 window.Close();

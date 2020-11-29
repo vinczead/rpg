@@ -6,9 +6,6 @@
              xmlns:vm="clr-namespace:WorldEditor.ViewModels"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <UserControl.DataContext>
-        <vm:SpriteModelsViewModel/>
-    </UserControl.DataContext>
     <UserControl.Resources>
         <DataTemplate x:Key="PreviewTemplate">
             <Image MaxWidth="200" MaxHeight="20">

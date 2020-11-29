@@ -13,7 +13,8 @@ namespace WorldEditor.ViewModels
 {
     public abstract class CollectionViewModel<T>: ViewModelBase where T: ViewModelBase
     {
-        public ObservableCollection<T> Items { get; set; }
+        private ObservableCollection<T> items;
+        public virtual ObservableCollection<T> Items { get => items; set => Set(ref items, value); }
 
         private T selectedItem;
         public T SelectedItem {
@@ -38,11 +39,9 @@ namespace WorldEditor.ViewModels
             AddItem = new RelayCommand(ExecuteAddItem);
             EditItem = new RelayCommand(ExecuteEditItem, () => IsItemSelected);
             RemoveItem = new RelayCommand(ExecuteRemoveItem, () => IsItemSelected);
-
-            RefreshItems();
         }
 
-        protected abstract void RefreshItems();
+        protected abstract void ReloadItems();
 
         protected abstract void ExecuteAddItem();
 
