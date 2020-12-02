@@ -11,6 +11,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WorldEditor", "WorldEditor\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Common", "Common\Common.csproj", "{B3E125D5-0143-4C44-B093-44AF29509F8C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RpgEngine", "RpgEngine\RpgEngine.csproj", "{5AD6C645-0FCA-4E33-90B5-03242273033B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -50,6 +52,14 @@ Global
 		{B3E125D5-0143-4C44-B093-44AF29509F8C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{B3E125D5-0143-4C44-B093-44AF29509F8C}.Release|x86.ActiveCfg = Release|Any CPU
 		{B3E125D5-0143-4C44-B093-44AF29509F8C}.Release|x86.Build.0 = Release|Any CPU
+		{5AD6C645-0FCA-4E33-90B5-03242273033B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5AD6C645-0FCA-4E33-90B5-03242273033B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5AD6C645-0FCA-4E33-90B5-03242273033B}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{5AD6C645-0FCA-4E33-90B5-03242273033B}.Debug|x86.Build.0 = Debug|Any CPU
+		{5AD6C645-0FCA-4E33-90B5-03242273033B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5AD6C645-0FCA-4E33-90B5-03242273033B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5AD6C645-0FCA-4E33-90B5-03242273033B}.Release|x86.ActiveCfg = Release|Any CPU
+		{5AD6C645-0FCA-4E33-90B5-03242273033B}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
