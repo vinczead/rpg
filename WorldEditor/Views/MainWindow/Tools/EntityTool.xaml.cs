@@ -16,9 +16,9 @@ namespace WorldEditor.Views
     /// <summary>
     /// Interaction logic for ObjectTool.xaml
     /// </summary>
-    public partial class ObjectTool : UserControl
+    public partial class EntityTool : UserControl
     {
-        public ObjectTool()
+        public EntityTool()
         {
             InitializeComponent();
         }

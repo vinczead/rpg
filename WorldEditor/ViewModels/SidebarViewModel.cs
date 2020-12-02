@@ -21,7 +21,7 @@ namespace WorldEditor.ViewModels
         public SidebarViewModel(MainViewModel mainViewModel)
         {
             MainViewModel = mainViewModel;
-            SelectedTool = ToolType.ObjectTool;
+            SelectedTool = ToolType.EntityTool;
 
             SetTool = new RelayCommand<ToolType>(tool => SelectedTool = tool, tool => MainViewModel.IsProjectOpen);
             BrushSize = 1;

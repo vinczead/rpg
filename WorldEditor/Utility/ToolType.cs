@@ -7,7 +7,7 @@ namespace WorldEditor.Utility
     public enum ToolType
     {
         SelectionTool,
-        ObjectTool,
+        EntityTool,
         EraserTool,
         TileTool
     }

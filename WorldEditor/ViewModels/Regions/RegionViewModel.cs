@@ -73,7 +73,7 @@ namespace WorldEditor.ViewModels
             {
                 case Utility.ToolType.SelectionTool:
                     break;
-                case Utility.ToolType.ObjectTool:
+                case Utility.ToolType.EntityTool:
                     break;
                 case Utility.ToolType.EraserTool:
                     break;

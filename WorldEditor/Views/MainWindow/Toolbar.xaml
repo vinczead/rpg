@@ -17,48 +17,16 @@
         <Button Command="{Binding SaveProject}">
             <Image Source="/Resources/Icons/Save_16x.png"/>
         </Button>
-        <!--
         <Separator/>
-        <Button>
-            <Image Source="/Resources/Icons/Undo_16x.png"/>
-        </Button>
-        <Button>
-            <Image Source="/Resources/Icons/Redo_16x.png"/>
-        </Button>
-        <Separator/>
-        <Button>
-            <Image Source="/Resources/Icons/Cut_16x.png"/>
-        </Button>
-        <Button>
-            <Image Source="/Resources/Icons/Copy_16x.png"/>
-        </Button>
-        <Button>
-            <Image Source="/Resources/Icons/Paste_16x.png"/>
-        </Button>
-        -->
-        <Separator/>
-        <!--<Button
-            ToolTip="Selection Tool"
-            Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.SelectionTool}">
-            <Image Source="/Resources/Icons/Select_16x.png"/>
-        </Button>
-        -->
         <Button
             ToolTip="Tile Tool"
             Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.TileTool}">
             <Image Source="/Resources/Icons/Grid_16x.png"/>
         </Button>
         <Button
-            ToolTip="Object Tool"
-            Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.ObjectTool}">
+            ToolTip="Entity Tool"
+            Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.EntityTool}">
             <Image Source="/Resources/Icons/Object_16x.png"/>
         </Button>
-        <!--
-        <Button
-            ToolTip="Eraser Tool"
-            Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.EraserTool}">
-            <Image Source="/Resources/Icons/Eraser_16x.png"/>
-        </Button>
-        -->
     </ToolBar>
 </UserControl>
