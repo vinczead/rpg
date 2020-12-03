@@ -60,12 +60,12 @@ namespace RpgEngine.Screens
 
         private void NewGameMenuSelected(object sender, EventArgs e)
         {
-            
+            LoadingScreen.Load(ScreenManager, new Screen[] { new GameplayScreen("Content/World/World.vgs") });
         }
 
         private void LoadGameMenuSelected(object sender, EventArgs e)
         {
-
+            
         }
 
         protected override void OnCancel()

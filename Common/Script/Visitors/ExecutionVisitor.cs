@@ -118,6 +118,8 @@ namespace Common.Script.Visitors
         {
             Instance.scope = new Scope(World.Instance.ToScope(), runBlockId);
 
+            var instanceType = TypeSystem.Instance[currentInstance.GetType().Name];
+            Instance.scope["Self"] = new Symbol("Self", instanceType, currentInstance.Id);
             if (parameters != null)
                 foreach (var p in parameters)
                     Instance.scope[p.Name] = p;
@@ -396,6 +398,10 @@ namespace Common.Script.Visitors
         public override object VisitParamExpression([NotNull] ParamExpressionContext context)
         {
             var symbol = GetSymbolFromScope(context, context.param.Text);
+            if (symbol.Type == TypeSystem.Instance["Number"] ||
+                symbol.Type == TypeSystem.Instance["Boolean"] ||
+                symbol.Type == TypeSystem.Instance["String"])
+                return symbol.RealValue;
             return World.Instance.GetById(symbol?.Value);
         }
 
@@ -415,7 +421,7 @@ namespace Common.Script.Visitors
 
             if (pathValue is Symbol)
             {
-                return pathValue;
+                return (pathValue as Symbol).RealValue;
             }
 
             return null;
@@ -509,10 +515,10 @@ namespace Common.Script.Visitors
 
             var @operator = context.additiveOperator();
 
-            if (leftType.InheritsFrom(TypeSystem.Instance["String"]) && @operator.PLUS() != null)
-                return string.Concat(left, right);
+            /*if (leftType.InheritsFrom(TypeSystem.Instance["String"]) && @operator.PLUS() != null)
+                return string.Concat(left, right);*/
 
-            if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
+            //if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
             {
                 if (@operator.PLUS() != null)
                     return (double)Convert.ChangeType(left, typeof(double)) + (double)Convert.ChangeType(right, typeof(double));

@@ -49,7 +49,18 @@ namespace WorldEditor.ViewModels
 
         protected override void ExecuteAddItem()
         {
-            Items.Add(new FrameViewModel(null));
+            Frame frameToAdd = null;
+            if(Items.Count > 0)
+            {
+                var lastFrame = Items[Items.Count - 1];
+                frameToAdd = new Frame()
+                {
+                    TimeSpan = TimeSpan.FromMilliseconds(lastFrame.Duration),
+                    Source = new Microsoft.Xna.Framework.Rectangle(lastFrame.X + lastFrame.Width, lastFrame.Y, lastFrame.Width, lastFrame.Height)
+                };
+            }
+
+            Items.Add(new FrameViewModel(frameToAdd));
         }
 
         protected override void ExecuteEditItem()

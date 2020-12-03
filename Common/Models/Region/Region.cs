@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common.Utility;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
@@ -24,18 +25,23 @@ namespace Common.Models
         public int TileHeight { get; set; }
         public Tile[][] Tiles { get; set; }
 
+        public TimeSpan AnimationTime { get; set; }
+
         public void Update(GameTime gameTime)
         {
+            AnimationTime += gameTime.ElapsedGameTime;
             foreach (var thing in instances)
                 thing.Update(gameTime);
 
-            foreach (var thing in instancesToDelete) {
+            foreach (var thing in instancesToDelete)
+            {
                 instances.Remove(thing);
                 thing.Region = null;
             }
 
             foreach (var thing in instancesToAdd)
                 instances.Add(thing);
+            instances.Sort(new InstanceCoordinateComparer());
 
             instancesToDelete.Clear();
             instancesToAdd.Clear();
@@ -43,7 +49,20 @@ namespace Common.Models
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            for (int y = 0; y < Height; y++)
+            {
+                for (int x = 0; x < Width; x++)
+                {
+                    var tilePosition = new Vector2(x * TileWidth, y * TileHeight);
+                    var spriteModel = Tiles[y][x].Model;
 
+                    spriteBatch.Draw(spriteModel.SpriteSheet.Value, tilePosition, spriteModel["Idle"].FrameAt(AnimationTime).Source, Color.White);
+                }
+            }
+            foreach (var instance in instances)
+            {
+                instance.Draw(spriteBatch);
+            }
         }
 
         public void AddInstance(ThingInstance instance)
@@ -56,5 +75,5 @@ namespace Common.Models
         {
             instancesToDelete.Add(instance);
         }
-     }
+    }
 }

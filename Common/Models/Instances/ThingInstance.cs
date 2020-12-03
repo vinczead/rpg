@@ -30,10 +30,12 @@ namespace Common.Models
 
         public virtual void Draw(SpriteBatch spriteBatch)
         {
+            var currentFrame = Breed.Model[StateString].FrameAt(AnimationTime).Source;
             var spriteSheet = Breed.Model.SpriteSheet;
-            var drawPosition = Position - new Vector2(spriteSheet.Value.Width / 2, spriteSheet.Value.Height);
+            var drawPosition = Position - new Vector2(currentFrame.Width / 2, currentFrame.Height);
+            var intDrawPosition = new Vector2((int)drawPosition.X, (int)drawPosition.Y);
 
-            spriteBatch.Draw(Breed.Model.SpriteSheet.Value, drawPosition, Breed.Model[StateString].FrameAt(AnimationTime).Source, Color.White);
+            spriteBatch.Draw(spriteSheet.Value, intDrawPosition, currentFrame, Color.White);
         }
     }
 }

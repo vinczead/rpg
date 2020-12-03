@@ -50,7 +50,7 @@ namespace RpgEngine.Screens
 
             spriteBatch.Begin();
 
-            GuiHelper.DrawCenteredText(spriteBatch, CommonAssets.StandardFont, "Loading...", new Vector2(Constants.CanvasWidth, Constants.CanvasHeight), CommonAssets.StandardTextColor);
+            GuiHelper.DrawCenteredText(spriteBatch, CommonAssets.StandardFont, "Loading...", new Vector2(Constants.CanvasWidth/2, Constants.CanvasHeight/2), CommonAssets.StandardTextColor);
 
             spriteBatch.End();
 

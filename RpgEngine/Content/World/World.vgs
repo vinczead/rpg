@@ -1,0 +1,190 @@
+texture T_TILES from "textures/TILES.png"
+texture T_MAN from "textures/man.png"
+texture T_RING from "textures/RING.png"
+texture T_TREE from "textures\tree.png"
+
+model M_GRASS from T_TILES
+    animation Idle looping
+        frame 0, 0, 32, 32, 1000
+    end
+end
+
+model M_WATER from T_TILES
+    animation Idle looping
+        frame 0, 64, 32, 32, 150
+        frame 32, 64, 32, 32, 150
+        frame 64, 64, 32, 32, 150
+        frame 96, 64, 32, 32, 150
+        frame 128, 64, 32, 32, 150
+        frame 160, 64, 32, 32, 150
+        frame 192, 64, 32, 32, 150
+        frame 224, 64, 32, 32, 150
+        frame 256, 64, 32, 32, 150
+        frame 288, 64, 32, 32, 150
+        frame 320, 64, 32, 32, 150
+        frame 288, 64, 32, 32, 150
+        frame 256, 64, 32, 32, 150
+        frame 224, 64, 32, 32, 150
+        frame 192, 64, 32, 32, 150
+        frame 160, 64, 32, 32, 150
+        frame 128, 64, 32, 32, 150
+        frame 96, 64, 32, 32, 150
+        frame 64, 64, 32, 32, 150
+        frame 32, 64, 32, 32, 150
+    end
+end
+
+model M_RING from T_RING
+    animation Idle looping
+        frame 0, 0, 16, 16, 1000
+    end
+end
+
+model M_MAN from T_MAN
+    animation Idle_Left looping
+        frame 0, 0, 32, 32, 500
+    end
+    animation Move_Left looping
+        frame 0, 0, 32, 32, 500
+        frame 32, 0, 32, 32, 500
+        frame 64, 0, 32, 32, 500
+        frame 96, 0, 32, 32, 500
+    end
+    animation Move_Right looping
+        frame 128, 0, 32, 32, 500
+        frame 160, 0, 32, 32, 500
+        frame 192, 0, 32, 32, 500
+        frame 224, 0, 32, 32, 500
+    end
+    animation Idle_Right looping
+        frame 128, 0, 32, 32, 500
+    end
+    animation Idle_Down looping
+        frame 256, 0, 32, 32, 500
+    end
+    animation Move_Down looping
+        frame 256, 0, 32, 32, 500
+        frame 288, 0, 32, 32, 500
+        frame 320, 0, 32, 32, 500
+        frame 352, 0, 32, 32, 500
+    end
+    animation Idle_Up looping
+        frame 384, 0, 32, 32, 500
+    end
+    animation Move_Up looping
+        frame 384, 0, 32, 32, 500
+        frame 416, 0, 32, 32, 500
+        frame 448, 0, 32, 32, 500
+        frame 480, 0, 32, 32, 500
+    end
+end
+
+model M_TREE from T_TREE
+    animation Idle looping
+        frame 0, 0, 80, 128, 1000
+    end
+end
+
+tile GRASS from M_GRASS walkable
+tile WATER from M_WATER
+
+breed TOWNGUARD from Character
+    set Self.Name to "Town Guard"
+    set Self.Model to $M_MAN
+    set Self.MaxHealth to 0
+    set Self.MaxMana to 0
+    set Self.Strength to 0
+    set Self.Dexterity to 0
+    set Self.Speed to 0
+    set Self.Intelligence to 0
+    set Self.Protection to 0
+
+    variables
+    end
+
+    run when Damaged
+        ShowMessage("It's all over lawbreaker! Your spree is at an end.")
+    end
+
+end
+
+breed PLAYER from Character
+    set Self.Name to "Me"
+    set Self.Model to $M_MAN
+    set Self.MaxHealth to 0
+    set Self.MaxMana to 0
+    set Self.Strength to 0
+    set Self.Dexterity to 0
+    set Self.Speed to 25
+    set Self.Intelligence to 0
+    set Self.Protection to 0
+
+    variables
+    end
+
+end
+
+breed RING_OF_COUNTING2 from Item
+    set Self.Name to "Ring of Counting"
+    set Self.Model to $M_RING
+    set Self.Value to 100
+    set Self.Description to "This ring will count how many times it has been picked up."
+
+    variables
+        count is Number withvalue 5
+        time is Number withvalue 0
+        thin is ThingInstance 
+        str is String withvalue "Hello"
+
+    end
+
+    run when Updated
+        set Self.time to Self.time + ElapsedTime
+    end
+    run when PickedUp
+        set Self.count to Self.count + 1
+        ShowMessage("Picked up this many times: " + Self.count)
+    end
+
+end
+
+breed TREE from Thing
+    set Self.Name to ""
+    set Self.Model to $M_TREE
+
+    variables
+    end
+
+end
+
+region ISLAND 15, 15
+    tile size 32, 32
+    tiles
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER,  $WATER]
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER,  $WATER]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $WATER]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $WATER]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $WATER]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $WATER]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $WATER]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $WATER]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $WATER]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $WATER]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $WATER]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $WATER]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $WATER]
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER,  $WATER]
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER,  $WATER]
+
+    end
+
+    instance PLAYERINSTANCE of PLAYER at 150, 150
+    instance of TREE at 170, 130
+    instance of TREE at 130, 130
+    instance of TREE at 396, 323
+    instance of TREE at 368, 373
+    instance of RING_OF_COUNTING2 at 138, 330
+
+end
+
+player PLAYERINSTANCE

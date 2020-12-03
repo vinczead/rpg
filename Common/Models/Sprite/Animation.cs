@@ -16,22 +16,20 @@ namespace Common.Models
             if (Frames == null || Frames.Count == 0)
                 return Frame.Empty;
 
-            TimeSpan currentTime = Frames[0].TimeSpan;
-            int i = 1;
-            while (currentTime < animationTime)
+            TimeSpan timeSum = TimeSpan.Zero;
+            int i = 0;
+            do
             {
-                currentTime += Frames[i].TimeSpan;
-                i++;
-                if (i == Frames.Count)
-                {
-                    if (IsLooping)
-                        i = 0;
-                    else
-                        break;
-                }
-            }
+                timeSum += Frames[i].TimeSpan;
 
-            return Frames[i - 1];
+                i++;
+                if (i == Frames.Count && IsLooping)
+                {
+                    i = 0;
+                }
+            } while (timeSum < animationTime && (i == Frames.Count - 1 || IsLooping));
+
+            return Frames[i];
         }
     }
 }
