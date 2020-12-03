@@ -123,6 +123,11 @@ namespace RpgEngine.Utility
                     Keys = new List<Keys>() { Keys.Tab }
                 },
 
+                [Action.DropItem] = new ActionKeyMap()
+                {
+                    Keys = new List<Keys>() { Keys.Q }
+                },
+
                 [Action.CharacterInfo] = new ActionKeyMap()
                 {
                     Keys = new List<Keys>() { Keys.C }
@@ -150,6 +155,7 @@ namespace RpgEngine.Utility
             Back,
             AttackMode,
             Inventory,
+            DropItem,
             CharacterInfo,
             Notes,
             Console

@@ -23,7 +23,7 @@ namespace Common.Models
 
         protected Rectangle CurrentFrame { get => Breed.Model[StateString].FrameAt(AnimationTime).Source; }
         protected Vector2 DrawPosition { get => new Vector2((int)(Position.X - CurrentFrame.Width / 2), (int)(Position.Y - CurrentFrame.Height)); }
-        protected Rectangle BoundingBox { get => new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, CurrentFrame.Width, CurrentFrame.Height); }
+        protected Rectangle BoundingBox { get => new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)Breed.Model.FrameSize.X, (int)Breed.Model.FrameSize.Y); }
         protected Rectangle BlockingBox
         {
             get => new Rectangle(
@@ -64,9 +64,9 @@ namespace Common.Models
             spriteBatch.Draw(Breed.Model.SpriteSheet.Value, DrawPosition, CurrentFrame, Color.White);
 
             if (EngineVariables.ShowEntityBoundingBox)
-                spriteBatch.Draw(Assets.Box, BoundingBox, new Color(255, 255, 255));
+                spriteBatch.Draw(Assets.TransparentBox, BoundingBox, new Color(255, 255, 255));
             if (EngineVariables.ShowEntityCollisionBox)
-                spriteBatch.Draw(Assets.Box, BlockingBox, new Color(255, 0, 0));
+                spriteBatch.Draw(Assets.TransparentBox, BlockingBox, new Color(255, 0, 0));
         }
 
         private List<Tile> GetTiles()
@@ -88,6 +88,18 @@ namespace Common.Models
             tiles.Add(Region.GetTileForPosition(BlockingBox.X + BlockingBox.Width, BlockingBox.Y + BlockingBox.Height));
 
             return tiles;
+        }
+        public ThingInstance ClosestInstance
+        {
+            get
+            {
+                var reachLength = Breed.Model.FrameSize.Length() / 2;
+                var closestInstance = Region.instances
+                    .Where(instance => instance != this && instance.GetType() != typeof(ThingInstance) && (Position - instance.Position).Length() < reachLength)
+                    .OrderBy(instance => (Position - instance.Position).Length())
+                    .FirstOrDefault();
+                return closestInstance;
+            }
         }
     }
 }

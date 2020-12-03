@@ -15,6 +15,7 @@ namespace Common.Script.Utility
                 "Creature" => new Creature(),
                 "Character" => new Character(),
                 "Item" => new Item(),
+                "Consumable" => new Consumable(),
                 _ => throw new ArgumentException("No Base can be created with the specified name.", "name"),
             };
         }

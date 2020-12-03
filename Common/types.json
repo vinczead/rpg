@@ -121,7 +121,7 @@
   {
     "name": "Character",
     "parents": [ "Creature" ],
-    "parentOfNull":  true,
+    "parentOfNull": true,
     "properties": [],
     "events": [
       {
@@ -160,6 +160,22 @@
     ]
   },
   {
+    "name": "Consumable",
+    "parents": [ "Item" ],
+    "properties": [],
+    "events": [
+      {
+        "name": "Consumed",
+        "parameters": [
+          {
+            "name": "Character",
+            "type": "CharacterInstance"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "ThingInstance",
     "properties": [
       {
@@ -187,11 +203,25 @@
     ]
   },
   {
+    "name": "ConsumableInstance",
+    "parents": [ "ItemInstance" ],
+    "properties": [
+      {
+        "name": "Breed",
+        "type": "Consumable"
+      }
+    ]
+  },
+  {
     "name": "CreatureInstance",
     "parents": [ "ThingInstance" ],
     "properties": [
       {
         "name": "CurrentHealth",
+        "type": "Number"
+      },
+      {
+        "name": "CurrentMana",
         "type": "Number"
       },
       {

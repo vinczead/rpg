@@ -7,13 +7,16 @@ using Microsoft.Xna.Framework.Input;
 using RpgEngine.Utility;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace RpgEngine.Screens
 {
-    public class GameplayScreen : Screen
+    class GameplayScreen : Screen
     {
         string worldScriptFileName;
+
+        private TimeSpan messageTimer = TimeSpan.Zero;
         public GameplayScreen(string worldScriptFileName)
         {
             this.worldScriptFileName = worldScriptFileName;
@@ -26,13 +29,63 @@ namespace RpgEngine.Screens
             var playerY = (int)player.Position.Y;
             var playerFrame = player.Breed.Model[player.StateString].FrameAt(player.AnimationTime);
             var playerTranslationMatrix = Matrix.CreateTranslation(Constants.CanvasWidth / 2 - playerX, Constants.CanvasHeight / 2 - playerY + playerFrame.Source.Height / 2, 0);
-            ScreenManager.SpriteBatch.Begin(SpriteSortMode.Deferred, null, null, null, null, null, playerTranslationMatrix);
+
+            var sb = ScreenManager.SpriteBatch;
+            sb.End();
+
+            //World should be drawn translated
+            sb.Begin(SpriteSortMode.Deferred, null, null, null, null, null, playerTranslationMatrix);
             World.Instance.Draw(ScreenManager.SpriteBatch);
-            ScreenManager.SpriteBatch.End();
+
+            var playerClosestInstance = World.Instance.Player.ClosestInstance;
+            if (playerClosestInstance != null)
+            {
+                var underItem = new Vector2(playerClosestInstance.Position.X, playerClosestInstance.Position.Y + 5);
+                GuiHelper.DrawCenteredText(sb, Assets.StandardFont, playerClosestInstance.Breed.Name, underItem, Assets.HighlightedTextColor);
+            }
+            sb.End();
+
+            sb.Begin();
+            DrawHud(sb);
+        }
+
+        private void DrawHud(SpriteBatch sb)
+        {
+            for (int i = 0; i < EngineVariables.Messages.Count; i++)
+            {
+                var message = EngineVariables.Messages.ElementAt(i);
+                sb.DrawString(Assets.StandardFont, message, new Vector2(5, 5 + i * 15), Assets.StandardTextColor);
+            }
+
+            var player = World.Instance.Player;
+            var maxHealth = (player.Breed as Character).MaxHealth;
+            var currentHealth = (int)(100.0 * player.CurrentHealth / maxHealth);
+
+            var maxHealthBarRectangle = new Rectangle(5, Constants.CanvasHeight - 15, 100, 10);
+            sb.Draw(Assets.TransparentBox, maxHealthBarRectangle, Color.Red);
+
+            var healthBarRectangle = new Rectangle(5, Constants.CanvasHeight - 15, currentHealth, 10);
+            sb.Draw(Assets.SolidBox, healthBarRectangle, Color.Red);
+
+            var maxMana = (player.Breed as Character).MaxMana;
+            var currentMana = (int)(100.0 * player.CurrentMana / maxMana);
+
+            var maxManaBarRectangle = new Rectangle(Constants.CanvasWidth - 105, Constants.CanvasHeight - 15, 100, 10);
+            sb.Draw(Assets.TransparentBox, maxManaBarRectangle, Color.Blue);
+
+            var manaBarRectangle = new Rectangle(Constants.CanvasWidth - 105, Constants.CanvasHeight - 15, currentMana, 10);
+            sb.Draw(Assets.SolidBox, manaBarRectangle, Color.Blue);
         }
 
         public override void Update(GameTime gameTime)
         {
+            if (messageTimer.TotalMilliseconds > 3000)
+            {
+                EngineVariables.Messages.Dequeue();
+                messageTimer = TimeSpan.Zero;
+            }
+            if (EngineVariables.Messages.Count > 0)
+                messageTimer += gameTime.ElapsedGameTime;
             World.Instance.Update(gameTime);
         }
 
@@ -43,26 +96,44 @@ namespace RpgEngine.Screens
             var newDirection = player.Direction;
             var newState = State.Idle;
 
-            if (InputHandler.IsActionPressed(InputHandler.Action.Left))
+            if (InputHandler.WasActionJustReleased(InputHandler.Action.Inventory))
             {
-                newDirection = Direction.Left;
-                newState = State.Move;
+                ScreenManager.AddScreen(new InventoryScreen());
             }
-            if (InputHandler.IsActionPressed(InputHandler.Action.Right))
+            else
             {
-                newDirection = Direction.Right;
-                newState = State.Move;
-            }
+                if (InputHandler.IsActionPressed(InputHandler.Action.Left))
+                {
+                    newDirection = Direction.Left;
+                    newState = State.Move;
+                }
+                if (InputHandler.IsActionPressed(InputHandler.Action.Right))
+                {
+                    newDirection = Direction.Right;
+                    newState = State.Move;
+                }
 
-            if (InputHandler.IsActionPressed(InputHandler.Action.Up))
-            {
-                newDirection = Direction.Up;
-                newState = State.Move;
-            }
-            if (InputHandler.IsActionPressed(InputHandler.Action.Down))
-            {
-                newDirection = Direction.Down;
-                newState = State.Move;
+                if (InputHandler.IsActionPressed(InputHandler.Action.Up))
+                {
+                    newDirection = Direction.Up;
+                    newState = State.Move;
+                }
+                if (InputHandler.IsActionPressed(InputHandler.Action.Down))
+                {
+                    newDirection = Direction.Down;
+                    newState = State.Move;
+                }
+
+                if (InputHandler.WasActionJustReleased(InputHandler.Action.Action))
+                {
+                    if (player.ClosestInstance != null)
+                    {
+                        if (player.ClosestInstance is ItemInstance)
+                        {
+                            player.PickUpItem(player.ClosestInstance as ItemInstance);
+                        }
+                    }
+                }
             }
 
             if (player.State != newState || player.Direction != newDirection)
@@ -89,7 +160,8 @@ namespace RpgEngine.Screens
             if (worldScriptFileName != null)
             {
                 World.Instance.Game = ScreenManager.Game;
-                ExecutionVisitor.BuildWorldFromFile(worldScriptFileName, out var _); //todo: push errors to console ?
+                ExecutionVisitor.BuildWorldFromFile(worldScriptFileName, out var messages);
+                EngineVariables.ConsoleContents.AddRange(messages.Select(message => message.ToString()));
             }
             ScreenManager.Game.ResetElapsedTime();
             base.LoadContent();

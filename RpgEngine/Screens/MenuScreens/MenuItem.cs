@@ -16,6 +16,7 @@ namespace RpgEngine.Screens
         public string Description { get; set; }
         public Vector2 Position { get; set; }
         public SpriteFont Font { get; set; }
+        public object Data { get; set; }
 
         public event EventHandler Selected;
 

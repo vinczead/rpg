@@ -69,6 +69,7 @@ namespace RpgEngine.Screens
 
         public override void Draw(GameTime gameTime)
         {
+            SpriteBatch.Begin();
             int i = screens.Count -1;
             while (i > 0 && screens[i].IsOverlay)
                 i--;
@@ -77,7 +78,7 @@ namespace RpgEngine.Screens
             {
                 screens[i].Draw(gameTime);
             }
-
+            SpriteBatch.End();
         }
 
         public override void Update(GameTime gameTime)

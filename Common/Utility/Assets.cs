@@ -13,7 +13,9 @@ namespace Common.Utility
         public static Color StandardTextColor { get; set; } = new Color(255, 255, 255);
         public static Color HighlightedTextColor { get; set; } = new Color(255, 255, 0);
         public static Texture2D PopupBackground { get; set; }
-        public static Texture2D Box { get; set; }
+        public static Texture2D InventoryBackground { get; set; }
+        public static Texture2D TransparentBox { get; set; }
+        public static Texture2D SolidBox { get; set; }
 
         public static void LoadGameContent(ContentManager contentManager)
         {
@@ -21,7 +23,9 @@ namespace Common.Utility
                 throw new ArgumentNullException("contentManager");
             StandardFont = contentManager.Load<SpriteFont>("Fonts/StandardFont");
             PopupBackground = contentManager.Load<Texture2D>("GUI/PopupBackground");
-            Box = contentManager.Load<Texture2D>("GUI/BOX");
+            InventoryBackground = contentManager.Load<Texture2D>("GUI/InventoryBackground");
+            TransparentBox = contentManager.Load<Texture2D>("GUI/TransparentBox");
+            SolidBox = contentManager.Load<Texture2D>("GUI/SolidBox");
         }
     }
 }

@@ -11,7 +11,6 @@ namespace Common.Models
 {
     public class World
     {
-        
         private static readonly object padlock = new object();
         private static World instance = null;
         public static World Instance

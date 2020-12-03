@@ -287,24 +287,27 @@ namespace Common.Script.Visitors
 
         public override object VisitInstanceDefinition([NotNull] InstanceDefinitionContext context)
         {
-            var baseRef = context.baseRef.Text;
-            var instanceRef = context.instanceRef?.Text;
+            var breedId = context.baseRef.Text;
+            var instanceId = context.instanceRef?.Text;
             var x = float.Parse(context.x.Text);
             var y = float.Parse(context.y.Text);
 
-            var baseSymbol = GetSymbolFromScope(context, baseRef);
+            var baseSymbol = GetSymbolFromScope(context, breedId);
             var instanceType = TypeSystem.Instance[baseSymbol.Type + "Instance"]; //todo: this could be nicer - maybe read instanceType from json?
 
-            if (instanceRef != null)
+            if (instanceId != null)
             {
-                AddSymbolToScope(context, new Symbol(instanceRef, instanceType, instanceRef));
-                scope = new Scope(scope, $"Instance {instanceRef} of {baseRef}");
+                AddSymbolToScope(context, new Symbol(instanceId, instanceType, instanceId));
+                scope = new Scope(scope, $"Instance {instanceId} of {breedId}");
             }
-            currentInstance = World.Instance.Spawn(baseRef, currentRegion.Id, instanceRef);
-            if (instanceRef == null)
+
+            var breed = World.Instance.Breeds[breedId];
+            currentInstance = breed.Spawn(instanceId);
+            World.Instance.Instances.Add(currentInstance.Id, currentInstance);
+            if (instanceId == null)
             {
-                AddSymbolToScope(context, new Symbol(currentInstance.Id, instanceType, instanceRef));
-                scope = new Scope(scope, $"Anomymous Instance of {baseRef}");
+                AddSymbolToScope(context, new Symbol(currentInstance.Id, instanceType, instanceId));
+                scope = new Scope(scope, $"Anomymous Instance of {breedId}");
             }
 
             currentInstance.Region = currentRegion;
@@ -534,8 +537,8 @@ namespace Common.Script.Visitors
 
             var @operator = context.additiveOperator();
 
-            /*if (leftType.InheritsFrom(TypeSystem.Instance["String"]) && @operator.PLUS() != null)
-                return string.Concat(left, right);*/
+            if (leftType == TypeSystem.Instance["String"] && @operator.PLUS() != null)
+                return string.Concat(left, right);
 
             //if (leftType == rightType && leftType.InheritsFrom(TypeSystem.Instance["Number"]))
             {
@@ -596,7 +599,7 @@ namespace Common.Script.Visitors
             if (op.LT() != null)
                 return (double)Convert.ChangeType(left, typeof(double)) < (double)Convert.ChangeType(right, typeof(double));
             if (op.GT() != null)
-                return (double)left > (double)right;
+                return (double)Convert.ChangeType(left, typeof(double)) > (double)Convert.ChangeType(right, typeof(double));
             if (op.LTE() != null)
                 return (double)left <= (double)right;
             if (op.GTE() != null)

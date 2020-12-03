@@ -49,11 +49,7 @@ namespace RpgEngine.Screens
         {
             var spriteBatch = ScreenManager.SpriteBatch;
 
-            spriteBatch.Begin();
-
             GuiHelper.DrawCenteredText(spriteBatch, Assets.StandardFont, "Loading...", new Vector2(Constants.CanvasWidth/2, Constants.CanvasHeight/2), Assets.StandardTextColor);
-
-            spriteBatch.End();
 
             firstFrameWasDrawn = true;
         }

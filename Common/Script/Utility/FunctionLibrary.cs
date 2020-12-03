@@ -1,4 +1,5 @@
 ﻿using Common.Models;
+using Common.Utility;
 using Microsoft.Xna.Framework;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,20 @@ namespace Common.Script.Utility
 
                 region.Tiles[y][x] = tile;
 
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool ShowMessage(object[] parameters)
+        {
+            try
+            {
+                var message = parameters[0].ToString();
+                EngineVariables.Messages.Enqueue(message);
                 return true;
             }
             catch

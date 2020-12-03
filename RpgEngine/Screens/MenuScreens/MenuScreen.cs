@@ -12,30 +12,24 @@ namespace RpgEngine.Screens
     {
         protected List<MenuItem> MenuItems { get; private set; } = new List<MenuItem>();
 
-        protected int SelectedItem { get; set; } = 0;
+        protected int SelectedIndex { get; set; } = 0;
 
         protected MenuItem SelectedMenuItem
         {
             get
             {
-                if (SelectedItem >= MenuItems.Count)
+                if (SelectedIndex >= MenuItems.Count)
                     return null;
-                return MenuItems[SelectedItem];
+                return MenuItems[SelectedIndex];
             }
         }
 
         public override void Draw(GameTime gameTime)
         {
-            var spriteBatch = ScreenManager.SpriteBatch;
-
-            spriteBatch.Begin();
-
             foreach (var item in MenuItems)
             {
                 item.Draw(gameTime, this, item == SelectedMenuItem);
             }
-
-            spriteBatch.End();
         }
 
         public override void Update(GameTime gameTime)
@@ -52,21 +46,22 @@ namespace RpgEngine.Screens
         {
             if (InputHandler.WasActionJustReleased(InputHandler.Action.Up))
             {
-                SelectedItem--;
-                if (SelectedItem < 0)
-                    SelectedItem = MenuItems.Count - 1;
+                SelectedIndex--;
+                if (SelectedIndex < 0)
+                    SelectedIndex = 0;
             }
 
             if (InputHandler.WasActionJustReleased(InputHandler.Action.Down))
             {
-                SelectedItem++;
-                if (SelectedItem >= MenuItems.Count)
-                    SelectedItem = 0;
+                SelectedIndex++;
+                if (SelectedIndex >= MenuItems.Count)
+                    SelectedIndex = MenuItems.Count - 1;
             }
 
             if (InputHandler.WasActionJustReleased(InputHandler.Action.Action))
             {
-                SelectedMenuItem.OnSelectEntry();
+                if (SelectedMenuItem != null)
+                    SelectedMenuItem.OnSelectEntry();
             }
 
             if (InputHandler.WasActionJustReleased(InputHandler.Action.Back))
