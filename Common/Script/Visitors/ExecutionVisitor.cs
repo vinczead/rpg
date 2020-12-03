@@ -116,6 +116,10 @@ namespace Common.Script.Visitors
 
         public static List<Error> ExecuteRunBlock(ThingInstance currentInstance, string runBlockId, List<Symbol> parameters = null)
         {
+            var currentRunBlock = currentInstance.Breed.RunBlocks.TryGetValue(runBlockId, out var runBlock);
+            if (!currentRunBlock)
+                return Instance.errors;
+
             Instance.scope = new Scope(World.Instance.ToScope(), runBlockId);
 
             var instanceType = TypeSystem.Instance[currentInstance.GetType().Name];
@@ -124,8 +128,7 @@ namespace Common.Script.Visitors
                 foreach (var p in parameters)
                     Instance.scope[p.Name] = p;
 
-            if (currentInstance.Breed.RunBlocks.TryGetValue(runBlockId, out var runBlock))
-                Instance.Visit(runBlock);
+            Instance.Visit(runBlock);
             return Instance.errors;
         }
 
@@ -157,6 +160,24 @@ namespace Common.Script.Visitors
             return retVal;
         }
 
+        public override object VisitFrameSizeBlock([NotNull] FrameSizeBlockContext context)
+        {
+            var width = int.Parse(context.width.Text);
+            var height = int.Parse(context.height.Text);
+            currentModel.FrameSize = new Vector2(width, height);
+            return null;
+        }
+
+        public override object VisitCollisionBoxBlock([NotNull] CollisionBoxBlockContext context)
+        {
+            var x = int.Parse(context.x.Text);
+            var y = int.Parse(context.y.Text);
+            var width = int.Parse(context.width.Text);
+            var height = int.Parse(context.height.Text);
+            currentModel.CollisionBox = new Rectangle(x, y, width, height);
+            return null;
+        }
+
         public override object VisitAnimationDefinition([NotNull] AnimationDefinitionContext context)
         {
             var animationId = context.animationId.Text;
@@ -180,12 +201,10 @@ namespace Common.Script.Visitors
         {
             var x = int.Parse(context.x.Text);
             var y = int.Parse(context.y.Text);
-            var width = int.Parse(context.width.Text);
-            var height = int.Parse(context.height.Text);
             var duration = int.Parse(context.duration.Text);
             var frame = new Frame()
             {
-                Source = new Rectangle(x, y, width, height),
+                Source = new Rectangle(x, y, (int)currentModel.FrameSize.X, (int)currentModel.FrameSize.Y),
                 TimeSpan = TimeSpan.FromMilliseconds(duration)
             };
             currentAnimation.Frames.Add(frame);

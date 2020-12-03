@@ -10,14 +10,12 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
-            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition />
-            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition Width="15px"/>
             <ColumnDefinition />
             <ColumnDefinition Width="Auto"/>
         </Grid.ColumnDefinitions>
@@ -32,17 +30,11 @@
         <TextBox Grid.Row="0" Grid.Column="3" Margin="0,0,0,10" Text="{Binding Y}"/>
         <Label Grid.Row="0" Grid.Column="4" Margin="5,0,0,0">px</Label>
 
-        <Label Grid.Row="1">Frame Dimensions:</Label>
-        <TextBox Grid.Row="1" Grid.Column="1" Margin="0,0,0,10" Text="{Binding Width}"/>
-        <Label Grid.Row="1" Grid.Column="2" Margin="5,0,0,0">×</Label>
-        <TextBox Grid.Row="1" Grid.Column="3" Margin="0,0,0,10" Text="{Binding Height}"/>
-        <Label Grid.Row="1" Grid.Column="4" Margin="5,0,0,0">px</Label>
+        <Label Grid.Row="1">Frame Duration:</Label>
+        <TextBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,0,0,10" Text="{Binding Duration}"/>
+        <Label Grid.Row="1" Grid.Column="4" Margin="5,0,0,0">ms</Label>
 
-        <Label Grid.Row="2">Frame Duration:</Label>
-        <TextBox Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3" Margin="0,0,0,10" Text="{Binding Duration}"/>
-        <Label Grid.Row="2" Grid.Column="4" Margin="5,0,0,0">ms</Label>
-
-        <Label Grid.Row="3">Preview:</Label>
-        <Image Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="3"/>
+        <Label Grid.Row="2">Preview:</Label>
+        <Image Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="3"/>
     </Grid>
 </UserControl>

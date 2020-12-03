@@ -9,10 +9,16 @@
     <Grid Grid.Column="1" Margin="10">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
-            <ColumnDefinition Width="2*"/>
-            <ColumnDefinition Width="3*"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="Auto"/>
+            <ColumnDefinition />
+            <ColumnDefinition Width="30px"/>
+            <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="*"/>
@@ -26,17 +32,37 @@
         </Grid.Resources>
 
         <Label>Id:</Label>
-        <TextBox Grid.Column="1" Margin="0,0,0,10" Text="{Binding Id}" />
+        <TextBox Grid.Column="1" Grid.ColumnSpan="4" Margin="0,0,0,10" Text="{Binding Id}" />
 
         <Label Grid.Row="1">Sprite Sheet:</Label>
-        <ComboBox Grid.Row="1" Grid.Column="1" Margin="0,0,0,10"
+        <ComboBox Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="4" 
+                  Margin="0,0,0,10"
                   ItemsSource="{Binding SpriteModels.MainViewModel.Textures.Items}"
                   SelectedValue="{Binding SpriteSheet}"
                   x:Name="texturesList"
                   DisplayMemberPath="Id"/>
-        <Label Grid.Row="2">Animations:</Label>
+
+        <Label Grid.Row="2">Frames Dimensions:</Label>
+        <TextBox Grid.Row="2" Grid.Column="1" Margin="0,0,0,10" Text="{Binding FrameWidth}"/>
+        <Label Grid.Row="2" Grid.Column="2" Margin="5,0,0,0">×</Label>
+        <TextBox Grid.Row="2" Grid.Column="3" Margin="0,0,0,10" Text="{Binding FrameHeight}"/>
+        <Label Grid.Row="2" Grid.Column="4" Margin="5,0,0,0" HorizontalAlignment="Left">px</Label>
+
+        <Label Grid.Row="3">Collision Box Position</Label>
+        <TextBox Grid.Row="3" Grid.Column="1" Margin="0,0,0,10" Text="{Binding CollisionBoxX}"/>
+        <TextBox Grid.Row="3" Grid.Column="3" Margin="0,0,0,10" Text="{Binding CollisionBoxY}"/>
+        <Label Grid.Row="3" Grid.Column="4" Margin="5,0,0,0" HorizontalAlignment="Left">px</Label>
+
+        <Label Grid.Row="4">Collision Box Dimensions:</Label>
+        <TextBox Grid.Row="4" Grid.Column="1" Margin="0,0,0,10" Text="{Binding CollisionBoxWidth}"/>
+        <Label Grid.Row="4" Grid.Column="2" Margin="5,0,0,0">×</Label>
+        <TextBox Grid.Row="4" Grid.Column="3" Margin="0,0,0,10" Text="{Binding CollisionBoxHeight}"/>
+        <Label Grid.Row="4" Grid.Column="4" Margin="5,0,0,0" HorizontalAlignment="Left">px</Label>
+
+        <Label Grid.Row="5">Animations:</Label>
         <ListBox Grid.Column="1"
-                 Grid.Row="2"
+                 Grid.ColumnSpan="4"
+                 Grid.Row="5"
                  ItemsSource="{Binding Items}"
                  SelectedItem="{Binding SelectedItem}"
                  DisplayMemberPath="Id"
@@ -47,8 +73,8 @@
                 </ContextMenu>
             </ListBox.ContextMenu>
         </ListBox>
-        <Button Grid.Row="3" Grid.Column="1" Command="{Binding AddItem}">Add Animation</Button>
-        <local:AnimationForm Grid.Column="2" Grid.RowSpan="4"
+        <Button Grid.Row="6" Grid.Column="1" Grid.ColumnSpan="4" Command="{Binding AddItem}">Add Animation</Button>
+        <local:AnimationForm Grid.Column="5" Grid.RowSpan="6"
                              Margin="10,0,0,0"
                              Visibility="{Binding IsItemSelected, Converter={StaticResource BoolToVisibility}, FallbackValue=Hidden}"/>
     </Grid>

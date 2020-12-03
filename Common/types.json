@@ -44,6 +44,22 @@
       {
         "name": "Model",
         "type": "SpriteModel"
+      },
+      {
+        "name": "BlockingBoxX",
+        "type": "Number"
+      },
+      {
+        "name": "BlockingBoxY",
+        "type": "Number"
+      },
+      {
+        "name": "BlockingBoxW",
+        "type": "Number"
+      },
+      {
+        "name": "BlockingBoxH",
+        "type": "Number"
       }
     ],
     "events": [

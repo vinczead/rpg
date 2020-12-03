@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common.Utility;
+using Microsoft.Xna.Framework;
 using RpgEngine.Utility;
 using System;
 using System.Collections.Generic;
@@ -20,9 +21,9 @@ namespace RpgEngine.Screens
             var noMenu = new MenuItem("No")
             {
                 Description = "",
-                Font = CommonAssets.StandardFont
+                Font = Assets.StandardFont
             };
-            var noMenuPosX = (int)(Constants.CanvasWidth / 2 - CommonAssets.StandardFont.MeasureString(noMenu.Text).X / 2);
+            var noMenuPosX = (int)(Constants.CanvasWidth / 2 - Assets.StandardFont.MeasureString(noMenu.Text).X / 2);
             noMenu.Position = new Vector2(noMenuPosX, 100);
             if (noHandler != null)
                 noMenu.Selected += noHandler;
@@ -32,9 +33,9 @@ namespace RpgEngine.Screens
             var yesMenu = new MenuItem("Yes")
             {
                 Description = "",
-                Font = CommonAssets.StandardFont,
+                Font = Assets.StandardFont,
             };
-            var yesMenuPosX = (int)(Constants.CanvasWidth / 2 - CommonAssets.StandardFont.MeasureString(yesMenu.Text).X / 2);
+            var yesMenuPosX = (int)(Constants.CanvasWidth / 2 - Assets.StandardFont.MeasureString(yesMenu.Text).X / 2);
             yesMenu.Position = new Vector2(yesMenuPosX, 115);
             if (yesHandler != null)
                 yesMenu.Selected += yesHandler;
@@ -46,8 +47,8 @@ namespace RpgEngine.Screens
             var sb = ScreenManager.SpriteBatch;
 
             sb.Begin();
-            GuiHelper.DrawCenteredTexture(sb, CommonAssets.PopupBackground, new Vector2(Constants.CanvasWidth / 2, Constants.CanvasHeight / 2), Color.White);
-            GuiHelper.DrawCenteredText(sb, CommonAssets.StandardFont, message, new Vector2(Constants.CanvasWidth / 2, 85), CommonAssets.StandardTextColor);
+            GuiHelper.DrawCenteredTexture(sb, Assets.PopupBackground, new Vector2(Constants.CanvasWidth / 2, Constants.CanvasHeight / 2), Color.White);
+            GuiHelper.DrawCenteredText(sb, Assets.StandardFont, message, new Vector2(Constants.CanvasWidth / 2, 85), Assets.StandardTextColor);
             sb.End();
 
             base.Draw(gameTime);

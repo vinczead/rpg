@@ -12,9 +12,11 @@ namespace WorldEditor.ViewModels
     public class AnimationViewModel : CollectionViewModel<FrameViewModel>
     {
         public Animation Animation { get; private set; }
+        public SpriteModelViewModel SpriteModel { get; set; }
 
-        public AnimationViewModel(Animation animation) : base()
+        public AnimationViewModel(Animation animation, SpriteModelViewModel spriteModelViewModel) : base()
         {
+            SpriteModel = spriteModelViewModel;
             if(animation != null)
             {
                 Animation = animation;
@@ -42,7 +44,7 @@ namespace WorldEditor.ViewModels
         {
             if (Animation != null)
             {
-                var frames = Animation.Frames.Select(frame => new FrameViewModel(frame)).ToList();
+                var frames = Animation.Frames.Select(frame => new FrameViewModel(frame, this)).ToList();
                 Items = new ObservableCollection<FrameViewModel>(frames);
             }
         }
@@ -60,7 +62,7 @@ namespace WorldEditor.ViewModels
                 };
             }
 
-            Items.Add(new FrameViewModel(frameToAdd));
+            Items.Add(new FrameViewModel(frameToAdd, this));
         }
 
         protected override void ExecuteEditItem()

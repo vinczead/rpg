@@ -39,10 +39,14 @@ namespace Common.Models
                         break;
                 }
 
-                deltaX = deltaX * elapsedSecs;
-                deltaY = deltaY * elapsedSecs;
+                deltaX *= elapsedSecs;
+                deltaY *= elapsedSecs;
 
-                Position += new Vector2(deltaX, deltaY);
+                MovementDelta = new Vector2(deltaX, deltaY);
+            }
+            else
+            {
+                MovementDelta = Vector2.Zero;
             }
         }
     }

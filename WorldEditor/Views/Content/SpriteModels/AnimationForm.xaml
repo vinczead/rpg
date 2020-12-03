@@ -37,8 +37,8 @@
 
         <Label Grid.Row="2">Frames:</Label>
         <ListBox Grid.Column="1" Grid.Row="2" Grid.ColumnSpan="3"
-                 AlternationCount="1000"
-                 MinHeight="100" Margin="0,0,0,10"
+                 AlternationCount="100000"
+                 Height="100" Margin="0,0,0,10"
                  ItemsSource="{Binding Items}"
                  SelectedItem="{Binding SelectedItem}">
             <ListBox.ContextMenu>

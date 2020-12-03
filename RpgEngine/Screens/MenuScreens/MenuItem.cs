@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common.Utility;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using RpgEngine.Utility;
 using System;
@@ -35,7 +36,7 @@ namespace RpgEngine.Screens
 
         public virtual void Draw(GameTime gameTime, MenuScreen screen, bool isSelected)
         {
-            var color = isSelected ? CommonAssets.HighlightedTextColor : CommonAssets.StandardTextColor;
+            var color = isSelected ? Assets.HighlightedTextColor : Assets.StandardTextColor;
 
             var spriteBatch = screen.ScreenManager.SpriteBatch;
 

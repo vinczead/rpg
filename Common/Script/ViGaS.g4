@@ -5,9 +5,11 @@ breedScript: baseDefinition EOF;
 
 textureDefinition: TEXTURE textureId=ID FROM fileName=STRING;
 
-modelDefinition: MODEL modelId=ID FROM textureId=ID animationDefinition+ END;
+modelDefinition: MODEL modelId=ID FROM textureId=ID frameSizeBlock collisionBoxBlock? animationDefinition+ END;
+frameSizeBlock: FRAME SIZE width=NUMBER ',' height=NUMBER;
+collisionBoxBlock: COLLISION x=NUMBER ',' y=NUMBER ',' width=NUMBER ',' height=NUMBER;
 animationDefinition: ANIMATION animationId=ID LOOPING? frameDefinition+ END;
-frameDefinition: FRAME AT? x=NUMBER ',' y=NUMBER (',' | SIZE) width=NUMBER ',' height=NUMBER (',' | FOR) duration=NUMBER MS?;
+frameDefinition: FRAME AT? x=NUMBER ',' y=NUMBER (',' | FOR) duration=NUMBER MS?;
 
 tileDefinition: TILE tileId=ID FROM modelId=ID WALKABLE?;
 
@@ -105,6 +107,7 @@ AT: 'at';
 FOR: 'for';
 MS: 'ms';
 SIZE: 'size';
+COLLISION: 'collision';
 WALKABLE: 'walkable';
 BASE: 'breed';
 REGION: 'region';

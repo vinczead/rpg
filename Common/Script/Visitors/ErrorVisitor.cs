@@ -84,13 +84,12 @@ namespace Common.Script.Visitors
             return base.VisitAnimationDefinition(context);
         }
 
-        public override object VisitFrameDefinition([NotNull] FrameDefinitionContext context)
+        public override object VisitCollisionBoxBlock([NotNull] CollisionBoxBlockContext context)
         {
             var x = context.x.Text;
             var y = context.y.Text;
             var width = context.width.Text;
             var height = context.height.Text;
-            var duration = context.duration.Text;
 
             if (int.TryParse(x, out int xValue))
             {
@@ -114,6 +113,34 @@ namespace Common.Script.Visitors
 
             if (int.TryParse(width, out int widthValue))
             {
+                if (widthValue < 0)
+                    errors.Add(new Error(context.width, $"Invalid value: width must be at least 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.width, $"Type mismatch: width must be an integer."));
+            }
+
+            if (int.TryParse(height, out int heightValue))
+            {
+                if (heightValue < 0)
+                    errors.Add(new Error(context.width, $"Invalid value: height must be at least 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.width, $"Type mismatch: height must be an integer."));
+            }
+
+            return base.VisitCollisionBoxBlock(context);
+        }
+
+        public override object VisitFrameSizeBlock([NotNull] FrameSizeBlockContext context)
+        {
+            var width = context.width.Text;
+            var height = context.height.Text;
+
+            if (int.TryParse(width, out int widthValue))
+            {
                 if (widthValue <= 0)
                     errors.Add(new Error(context.width, $"Invalid value: width must greater than 0."));
             }
@@ -130,6 +157,35 @@ namespace Common.Script.Visitors
             else
             {
                 errors.Add(new Error(context.width, $"Type mismatch: height must be an integer."));
+            }
+
+            return base.VisitFrameSizeBlock(context);
+        }
+
+        public override object VisitFrameDefinition([NotNull] FrameDefinitionContext context)
+        {
+            var x = context.x.Text;
+            var y = context.y.Text;
+            var duration = context.duration.Text;
+
+            if (int.TryParse(x, out int xValue))
+            {
+                if (xValue < 0)
+                    errors.Add(new Error(context.x, $"Invalid value: X position must be at least 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.x, $"Type mismatch: X position must be an integer."));
+            }
+
+            if (int.TryParse(y, out int yValue))
+            {
+                if (yValue < 0)
+                    errors.Add(new Error(context.y, $"Invalid value: Y position must be at least 0."));
+            }
+            else
+            {
+                errors.Add(new Error(context.y, $"Type mismatch: Y position must be an integer."));
             }
 
             if (int.TryParse(duration, out int durationValue))

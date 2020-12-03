@@ -10,15 +10,15 @@ namespace WorldEditor.ViewModels
     public class FrameViewModel : ViewModelBase
     {
         public Frame Frame { get; set; }
-        public FrameViewModel(Frame frame)
+        public AnimationViewModel Animation { get; set; }
+        public FrameViewModel(Frame frame, AnimationViewModel animationViewModel)
         {
+            Animation = animationViewModel;
             if(frame != null)
             {
                 Frame = frame;
                 X = Frame.Source.X;
                 Y = Frame.Source.Y;
-                Width = Frame.Source.Width;
-                Height = Frame.Source.Height;
                 Duration = Frame.TimeSpan.TotalMilliseconds;
             }
         }
@@ -45,18 +45,14 @@ namespace WorldEditor.ViewModels
             set => Set(ref y, value);
         }
 
-        private int width;
         public int Width
         {
-            get => width;
-            set => Set(ref width, value);
+            get => (int)Animation.SpriteModel.FrameWidth;
         }
 
-        private int height;
         public int Height
         {
-            get => height;
-            set => Set(ref height, value);
+            get => (int)Animation.SpriteModel.FrameHeight;
         }
 
         private double duration;

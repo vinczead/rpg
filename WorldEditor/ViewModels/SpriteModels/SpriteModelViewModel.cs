@@ -24,6 +24,16 @@ namespace WorldEditor.ViewModels
             {
                 SpriteModel = spriteModel;
                 Id = spriteModel.Id;
+
+                FrameWidth = spriteModel.FrameSize.X;
+                FrameHeight = spriteModel.FrameSize.Y;
+
+                CollisionBoxX = spriteModel.CollisionBox.X;
+                CollisionBoxY = spriteModel.CollisionBox.Y;
+
+                CollisionBoxWidth = spriteModel.CollisionBox.Width;
+                CollisionBoxHeight = spriteModel.CollisionBox.Height;
+
                 SpriteSheet = SpriteModels.MainViewModel.Textures.Items.FirstOrDefault(texture => texture.Id == spriteModel.SpriteSheet.Id);
                 ReloadItems();
             }
@@ -52,6 +62,8 @@ namespace WorldEditor.ViewModels
                     {
                         Id = Id,
                         SpriteSheet = SpriteSheet.Texture,
+                        FrameSize = new Microsoft.Xna.Framework.Vector2(FrameWidth, FrameHeight),
+                        CollisionBox = new Microsoft.Xna.Framework.Rectangle(CollisionBoxX, CollisionBoxY, CollisionBoxWidth, CollisionBoxHeight),
                         Animations = Items.Select(animation => animation.Animation).ToList()
                     };
                     SpriteModel = modelToAdd;
@@ -68,6 +80,16 @@ namespace WorldEditor.ViewModels
 
                     SpriteModel.Id = Id;
                     originalViewModel.Id = Id;
+
+                    SpriteModel.FrameSize = new Microsoft.Xna.Framework.Vector2(FrameWidth, FrameHeight);
+                    originalViewModel.FrameHeight = FrameHeight;
+                    originalViewModel.FrameWidth = FrameWidth;
+
+                    SpriteModel.CollisionBox = new Microsoft.Xna.Framework.Rectangle(CollisionBoxX, CollisionBoxY, CollisionBoxWidth, CollisionBoxHeight);
+                    originalViewModel.CollisionBoxHeight = CollisionBoxHeight;
+                    originalViewModel.CollisionBoxWidth = CollisionBoxWidth;
+                    originalViewModel.CollisionBoxX = CollisionBoxX;
+                    originalViewModel.CollisionBoxY = CollisionBoxY;
 
                     SpriteModel.SpriteSheet = SpriteSheet.Texture;
                     originalViewModel.SpriteSheet = SpriteSheet;
@@ -110,7 +132,7 @@ namespace WorldEditor.ViewModels
         {
             if (SpriteModel != null)
             {
-                var animations = SpriteModel.Animations.Select(animation => new AnimationViewModel(animation)).ToList();
+                var animations = SpriteModel.Animations.Select(animation => new AnimationViewModel(animation, this)).ToList();
                 Items = new ObservableCollection<AnimationViewModel>(animations);
             }
         }
@@ -121,7 +143,7 @@ namespace WorldEditor.ViewModels
             {
                 Id = "ANIMATION_" + Items.Count
             };
-            Items.Add(new AnimationViewModel(animation));
+            Items.Add(new AnimationViewModel(animation, this));
         }
 
         protected override void ExecuteEditItem()
@@ -152,6 +174,48 @@ namespace WorldEditor.ViewModels
         {
             get => id;
             set => Set(ref id, value);
+        }
+
+        private float frameWidth;
+        public float FrameWidth
+        {
+            get => frameWidth;
+            set => Set(ref frameWidth, value);
+        }
+
+        private float frameHeight;
+        public float FrameHeight
+        {
+            get => frameHeight;
+            set => Set(ref frameHeight, value);
+        }
+
+        private int collisionBoxWidth;
+        public int CollisionBoxWidth
+        {
+            get => collisionBoxWidth;
+            set => Set(ref collisionBoxWidth, value);
+        }
+
+        private int collisionBoxHeight;
+        public int CollisionBoxHeight
+        {
+            get => collisionBoxHeight;
+            set => Set(ref collisionBoxHeight, value);
+        }
+
+        private int collisionBoxX;
+        public int CollisionBoxX
+        {
+            get => collisionBoxX;
+            set => Set(ref collisionBoxX, value);
+        }
+
+        private int collisionBoxY;
+        public int CollisionBoxY
+        {
+            get => collisionBoxY;
+            set => Set(ref collisionBoxY, value);
         }
 
         private TextureViewModel spriteSheet;

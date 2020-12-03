@@ -208,7 +208,7 @@ namespace Common.Models
 
         public Scope ToScope()
         {
-            //todo: optimalizalni, ezt eleg lenne egyszer letrehozni
+            //todo: optimalizalni, ezt eleg lenne egyszer letrehozni    MUST!
             var scope = new Scope(null, "Game Model");
             foreach (var b in Breeds)
             {

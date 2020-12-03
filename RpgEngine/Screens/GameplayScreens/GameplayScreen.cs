@@ -1,7 +1,9 @@
 ﻿using Common.Models;
 using Common.Script.Visitors;
+using Common.Utility;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 using RpgEngine.Utility;
 using System;
 using System.Collections.Generic;
@@ -70,6 +72,15 @@ namespace RpgEngine.Screens
                 player.AnimationTime = TimeSpan.Zero;
             }
 
+            if (InputHandler.WasKeyJustReleased(Keys.F9))
+            {
+                EngineVariables.ShowEntityBoundingBox = !EngineVariables.ShowEntityBoundingBox;
+            }
+
+            if (InputHandler.WasKeyJustReleased(Keys.F10))
+            {
+                EngineVariables.ShowEntityCollisionBox = !EngineVariables.ShowEntityCollisionBox;
+            }
 
         }
 

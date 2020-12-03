@@ -53,6 +53,8 @@ namespace Common.Models
             {
                 for (int x = 0; x < Width; x++)
                 {
+                    if (Tiles[y][x] == null)
+                        continue;
                     var tilePosition = new Vector2(x * TileWidth, y * TileHeight);
                     var spriteModel = Tiles[y][x].Model;
 
@@ -74,6 +76,22 @@ namespace Common.Models
         public void RemoveInstance(ThingInstance instance)
         {
             instancesToDelete.Add(instance);
+        }
+
+        public Tile GetTileForPosition(Vector2 position)
+        {
+            var yPosition = (int)(position.Y / TileHeight);
+            var xPosition = (int)(position.X / TileWidth);
+            return Tiles[yPosition][xPosition];
+        }
+
+        public Tile GetTileForPosition(int x, int y)
+        {
+            var yPosition = y / TileHeight;
+            var xPosition = x / TileWidth;
+            if (yPosition >= Height || yPosition < 0 || xPosition >= Width || xPosition < 0)
+                return null;
+            return Tiles[yPosition][xPosition];
         }
     }
 }

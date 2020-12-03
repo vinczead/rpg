@@ -99,17 +99,25 @@ namespace Common.Script.Visitors
                 return TypeSystem.Instance["ErrorType"];
             }
 
-            var firstType = Visit(context.expression()[0]);
+            var itemType = TypeSystem.Instance["NullType"];
+            foreach (var expr in context.expression())
+            {
+                var type = Visit(expr);
+                if (type != TypeSystem.Instance["NullType"]) {
+                    itemType = type;
+                    break;
+                }
+            }
 
             foreach (var expr in context.expression())
             {
-                if (!Visit(expr).InheritsFrom(firstType))
+                if (!Visit(expr).InheritsFrom(itemType))
                 {
                     errors.Add(new Error(expr, $"Invalid array expression: arrays can only contain elements of the same type."));
                     return TypeSystem.Instance["ErrorType"];
                 }
             }
-            return TypeSystem.Instance[$"{firstType}Array"];
+            return TypeSystem.Instance[$"{itemType}Array"];
         }
 
         public override Utility.Type VisitBoolExpression([NotNull] ViGaSParser.BoolExpressionContext context)

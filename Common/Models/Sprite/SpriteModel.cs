@@ -13,6 +13,8 @@ namespace Common.Models
     {
         public string Id { get; set; }
         public Texture SpriteSheet { get; set; }
+        public Vector2 FrameSize { get; set; }
+        public Rectangle CollisionBox { get; set; }
         public List<Animation> Animations { get; set; } = new List<Animation>();
 
         public Animation this[string state]

@@ -227,12 +227,18 @@ namespace WorldEditor.ViewModels
                         TileHeight = TileHeight,
                         Tiles = new Tile[Height][]
                     };
+                    Tiles = new ObservableCollection<ObservableCollection<TileInstanceViewModel>>();
                     for (int i = 0; i < Height; i++)
                     {
                         regionToAdd.Tiles[i] = new Tile[Width];
+                        Tiles.Add(new ObservableCollection<TileInstanceViewModel>());
+                        for (int j = 0; j < Width; j++)
+                        {
+                            Tiles[i].Add(new TileInstanceViewModel(null, this, j, i));
+                        }
                     }
                     Region = regionToAdd;
-                    Tiles = new ObservableCollection<ObservableCollection<TileInstanceViewModel>>();
+                    
                     Instances = new ObservableCollection<InstanceViewModel>();
 
                     World.Instance.Regions.Add(id, regionToAdd);

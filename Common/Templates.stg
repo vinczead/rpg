@@ -13,6 +13,8 @@ texture <t.id> from "<t.fileName>"<\n>
 
 model(m) ::= <<
 model <m.id> from <m.spriteSheet.id>
+    frame size <m.frameSize.X>, <m.frameSize.Y> 
+    collision <m.collisionBox.X>, <m.collisionBox.Y>, <m.collisionBox.Width>, <m.collisionBox.Height>
     <m.animations:animation()><\\>
 end<\n><\n>
 >>
@@ -24,7 +26,7 @@ end<\n>
 >>
 
 frame(f) ::= <<
-frame <f.source.X>, <f.source.Y>, <f.source.Width>, <f.source.Height>, <f.timeSpan.totalMilliseconds><\n>
+frame <f.source.X>, <f.source.Y>, <f.timeSpan.totalMilliseconds><\n>
 >>
 
 tile(t) ::= <<

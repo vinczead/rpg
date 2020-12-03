@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common.Utility;
+using Microsoft.Xna.Framework;
 using RpgEngine.Utility;
 using System;
 using System.Collections.Generic;
@@ -50,7 +51,7 @@ namespace RpgEngine.Screens
 
             spriteBatch.Begin();
 
-            GuiHelper.DrawCenteredText(spriteBatch, CommonAssets.StandardFont, "Loading...", new Vector2(Constants.CanvasWidth/2, Constants.CanvasHeight/2), CommonAssets.StandardTextColor);
+            GuiHelper.DrawCenteredText(spriteBatch, Assets.StandardFont, "Loading...", new Vector2(Constants.CanvasWidth/2, Constants.CanvasHeight/2), Assets.StandardTextColor);
 
             spriteBatch.End();
 
