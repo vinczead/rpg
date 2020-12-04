@@ -15,19 +15,26 @@ namespace RpgEngine.Screens
         public string Text { get; set; }
         public string Description { get; set; }
         public Vector2 Position { get; set; }
-        public SpriteFont Font { get; set; }
+        public SpriteFont Font { get; set; } = Assets.StandardFont;
         public object Data { get; set; }
 
-        public event EventHandler Selected;
+        public event EventHandler<MenuItemSelectedEventArgs> Selected;
 
         protected internal virtual void OnSelectEntry()
         {
-            Selected?.Invoke(this, EventArgs.Empty);
+            Selected?.Invoke(this, new MenuItemSelectedEventArgs(this));
         }
 
         public MenuItem(string text)
         {
             Text = text;
+        }
+
+        public MenuItem(string text, string description, EventHandler<MenuItemSelectedEventArgs> selected)
+        {
+            Text = text;
+            Description = description;
+            Selected += selected;
         }
 
         public virtual void Update(GameTime gameTime, MenuScreen screen, bool isSelected)

@@ -13,45 +13,15 @@ namespace RpgEngine.Screens
     {
         public MainMenuScreen() : base()
         {
-            var newGameMenu = new MenuItem("New Game")
+            MenuItems = new List<MenuItem>()
             {
-                Description = "Start a new game",
-                Font = Assets.StandardFont,
+                new MenuItem("New Game", "", NewGameMenuSelected),
+                new MenuItem("Load Game", "", LoadGameMenuSelected),
+                new MenuItem("Credits", "", CreditsMenuSelected),
+                new MenuItem("Exit Game", "", OnCancel)
             };
-            var newGameMenuPosX = (int)(Constants.CanvasWidth / 2 - Assets.StandardFont.MeasureString(newGameMenu.Text).X / 2);
-            newGameMenu.Position = new Vector2(newGameMenuPosX, 85);
-            newGameMenu.Selected += NewGameMenuSelected;
-            MenuItems.Add(newGameMenu);
+            SetupDefaultMenuItemPositions();
 
-            var loadGameMenu = new MenuItem("Load Game")
-            {
-                Description = "Start a new game",
-                Font = Assets.StandardFont
-            };
-            var loadGameMenuPosX = (int)(Constants.CanvasWidth / 2 - Assets.StandardFont.MeasureString(loadGameMenu.Text).X / 2);
-            loadGameMenu.Position = new Vector2(loadGameMenuPosX, 100);
-            loadGameMenu.Selected += LoadGameMenuSelected;
-            MenuItems.Add(loadGameMenu);
-
-            var creditsMenu = new MenuItem("Credits")
-            {
-                Description = "Start a new game",
-                Font = Assets.StandardFont
-            };
-            var creditsMenuPosX = (int)(Constants.CanvasWidth / 2 - Assets.StandardFont.MeasureString(creditsMenu.Text).X / 2);
-            creditsMenu.Position = new Vector2(creditsMenuPosX, 115);
-            creditsMenu.Selected += CreditsMenuSelected;
-            MenuItems.Add(creditsMenu);
-
-            var exitGameMenu = new MenuItem("Exit Game")
-            {
-                Description = "Quit the game",
-                Font = Assets.StandardFont
-            };
-            var exitGameMenuPosX = (int)(Constants.CanvasWidth / 2 - Assets.StandardFont.MeasureString(exitGameMenu.Text).X / 2);
-            exitGameMenu.Position = new Vector2(exitGameMenuPosX, 130);
-            exitGameMenu.Selected += OnCancel;
-            MenuItems.Add(exitGameMenu);
         }
 
         private void CreditsMenuSelected(object sender, EventArgs e)

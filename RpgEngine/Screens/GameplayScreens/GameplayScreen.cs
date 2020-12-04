@@ -96,6 +96,11 @@ namespace RpgEngine.Screens
             var newDirection = player.Direction;
             var newState = State.Idle;
 
+            if (InputHandler.WasActionJustReleased(InputHandler.Action.Back))
+            {
+                ScreenManager.AddScreen(new PauseMenuScreen());
+            }
+
             if (InputHandler.WasActionJustReleased(InputHandler.Action.Inventory))
             {
                 ScreenManager.AddScreen(new InventoryScreen());
@@ -157,7 +162,6 @@ namespace RpgEngine.Screens
             {
                 EngineVariables.ShowEntityCollisionBox = !EngineVariables.ShowEntityCollisionBox;
             }
-
         }
 
         public override void LoadContent()

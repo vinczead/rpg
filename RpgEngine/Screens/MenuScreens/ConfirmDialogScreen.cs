@@ -13,7 +13,7 @@ namespace RpgEngine.Screens
     {
         private string message;
 
-        public ConfirmDialogScreen(string message, EventHandler yesHandler = null, EventHandler noHandler = null)
+        public ConfirmDialogScreen(string message, EventHandler<MenuItemSelectedEventArgs> yesHandler = null, EventHandler<MenuItemSelectedEventArgs> noHandler = null)
         {
             IsOverlay = true;
             this.message = message;

@@ -13,6 +13,7 @@ namespace RpgEngine.Screens
     {
         private int firstItemIndex = 0;
         private const int MAX_DISPLAYED_ITEMS = 4;
+        private Vector2 inventorySize = new Vector2(250, 150);
         public InventoryScreen()
         {
             IsOverlay = true;
@@ -43,7 +44,8 @@ namespace RpgEngine.Screens
                     menuItem.Position = new Vector2(
                         Constants.CanvasWidth / 2 - Assets.InventoryBackground.Width / 2 + 5,
                         Constants.CanvasHeight / 2 - Assets.InventoryBackground.Height / 2 + 30 + relativePosition * 15);
-                } else
+                }
+                else
                 {
                     menuItem.Position = new Vector2(-100, -100);
                 }
@@ -53,7 +55,7 @@ namespace RpgEngine.Screens
         private void ItemSelected(object sender, EventArgs e)
         {
             var itemInstance = (sender as MenuItem).Data as ItemInstance;
-            if(itemInstance is ConsumableInstance)
+            if (itemInstance is ConsumableInstance)
             {
                 (itemInstance as ConsumableInstance).Consume(World.Instance.Player);
                 MenuItems.Remove(sender as MenuItem);
@@ -64,35 +66,35 @@ namespace RpgEngine.Screens
         {
             var sb = ScreenManager.SpriteBatch;
 
-            GuiHelper.DrawCenteredTexture(sb, Assets.InventoryBackground, Constants.Canvas / 2, Color.White);
-            var titlePosition = new Vector2(Constants.CanvasWidth / 2, Constants.CanvasHeight / 2 - Assets.InventoryBackground.Height / 2 + 10);
+            GuiHelper.DrawCenteredTextureStretched(sb, Assets.TransparentBox, Constants.Canvas / 2, inventorySize, Assets.SemiTransparentBlack);
+            var titlePosition = new Vector2(Constants.CanvasWidth / 2, Constants.CanvasHeight / 2 - inventorySize.Y / 2 + 10);
             GuiHelper.DrawCenteredText(sb, Assets.StandardFont, "Inventory", titlePosition, Assets.StandardTextColor);
 
-            if(firstItemIndex != 0)
+            if (firstItemIndex != 0)
             {
                 var upArrowPosition = new Vector2(
-                        Constants.CanvasWidth / 2 - Assets.InventoryBackground.Width / 2 + 5,
-                        Constants.CanvasHeight / 2 - Assets.InventoryBackground.Height / 2 + 15);
+                        Constants.CanvasWidth / 2 - inventorySize.X / 2 + 5,
+                        Constants.CanvasHeight / 2 - inventorySize.Y / 2 + 15);
                 sb.DrawString(Assets.StandardFont, @"/\", upArrowPosition, Assets.StandardTextColor);
             }
 
             if (firstItemIndex + MAX_DISPLAYED_ITEMS < MenuItems.Count)
             {
                 var upArrowPosition = new Vector2(
-                        Constants.CanvasWidth / 2 - Assets.InventoryBackground.Width / 2 + 5,
-                        Constants.CanvasHeight / 2 - Assets.InventoryBackground.Height / 2 + 30 + (MAX_DISPLAYED_ITEMS) * 15);
+                        Constants.CanvasWidth / 2 - inventorySize.X / 2 + 5,
+                        Constants.CanvasHeight / 2 - inventorySize.Y / 2 + 30 + (MAX_DISPLAYED_ITEMS) * 15);
                 sb.DrawString(Assets.StandardFont, @"\/", upArrowPosition, Assets.StandardTextColor);
             }
 
             var descriptionPosition = new Vector2(
                 Constants.CanvasWidth / 2,
-                Constants.CanvasHeight / 2 + Assets.InventoryBackground.Height / 2 - 30);
-            GuiHelper.DrawCenteredText(sb, Assets.StandardFont, SelectedMenuItem?.Description ?? "", descriptionPosition, Assets.HighlightedTextColor);
+                Constants.CanvasHeight / 2 + inventorySize.Y / 2 - 30);
+            GuiHelper.DrawCenteredText(sb, Assets.StandardFont, SelectedItem?.Description ?? "", descriptionPosition, Assets.HighlightedTextColor);
 
             var helpTextPosition = new Vector2(
-                Constants.CanvasWidth / 2 - Assets.InventoryBackground.Width / 2 + 5,
-                Constants.CanvasHeight / 2 + Assets.InventoryBackground.Height / 2 - 18);
-            sb.DrawString(Assets.StandardFont, "[Tab] Close [Space] Use [Q] Drop", helpTextPosition, Assets.StandardTextColor);
+                Constants.CanvasWidth / 2,
+                Constants.CanvasHeight / 2 + inventorySize.Y / 2 - 13);
+            GuiHelper.DrawCenteredText(sb, Assets.StandardFont, "[Tab] Close [Space] Use [Q] Drop", helpTextPosition, Assets.StandardTextColor);
             base.Draw(gameTime);
         }
 
@@ -105,9 +107,12 @@ namespace RpgEngine.Screens
 
             if (InputHandler.WasActionJustReleased(InputHandler.Action.DropItem))
             {
-                var itemInstance = SelectedMenuItem.Data as ItemInstance;
-                World.Instance.Player.DropItem(itemInstance);
-                MenuItems.Remove(SelectedMenuItem);
+                if (SelectedItem != null)
+                {
+                    var itemInstance = SelectedItem.Data as ItemInstance;
+                    World.Instance.Player.DropItem(itemInstance);
+                    MenuItems.Remove(SelectedItem);
+                }
             }
 
             base.HandleInput();

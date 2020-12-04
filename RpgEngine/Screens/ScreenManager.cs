@@ -67,8 +67,21 @@ namespace RpgEngine.Screens
             screensToUpdate.Remove(screen);
         }
 
+        public void PopScreen()
+        {
+            var lastScreen = Screens[Screens.Length - 1];
+            if (isInitialized)
+                lastScreen.UnloadContent();
+
+            screens.Remove(lastScreen);
+            screensToUpdate.Remove(lastScreen);
+        }
+
         public override void Draw(GameTime gameTime)
         {
+            if (Screens.Length == 0)
+                return;
+
             SpriteBatch.Begin();
             int i = screens.Count -1;
             while (i > 0 && screens[i].IsOverlay)

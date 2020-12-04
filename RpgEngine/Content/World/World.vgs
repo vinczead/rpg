@@ -140,13 +140,13 @@ model M_DOOR from T_ITEMS
 end
 
 model M_BUTTON from T_ITEMS
-    frame size 32, 32 
-    collision 4, 19, 26, 9
+    frame size 23, 22 
+    collision 0, 13, 23, 9
     animation Inactive looping
         frame 0, 96, 1000
     end
     animation Active looping
-        frame 32, 96, 1000
+        frame 23, 96, 1000
     end
 end
 

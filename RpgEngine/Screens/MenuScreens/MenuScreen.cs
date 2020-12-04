@@ -1,4 +1,5 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Common.Utility;
+using Microsoft.Xna.Framework;
 using RpgEngine.Utility;
 using System;
 using System.Collections.Generic;
@@ -10,15 +11,15 @@ namespace RpgEngine.Screens
 {
     abstract class MenuScreen : Screen
     {
-        protected List<MenuItem> MenuItems { get; private set; } = new List<MenuItem>();
+        protected List<MenuItem> MenuItems { get; set; } = new List<MenuItem>();
 
         protected int SelectedIndex { get; set; } = 0;
 
-        protected MenuItem SelectedMenuItem
+        protected MenuItem SelectedItem
         {
             get
             {
-                if (SelectedIndex >= MenuItems.Count)
+                if (SelectedIndex >= MenuItems.Count || SelectedIndex < 0)
                     return null;
                 return MenuItems[SelectedIndex];
             }
@@ -28,7 +29,7 @@ namespace RpgEngine.Screens
         {
             foreach (var item in MenuItems)
             {
-                item.Draw(gameTime, this, item == SelectedMenuItem);
+                item.Draw(gameTime, this, item == SelectedItem);
             }
         }
 
@@ -38,7 +39,7 @@ namespace RpgEngine.Screens
 
             foreach (var item in MenuItems)
             {
-                item.Update(gameTime, this, item == SelectedMenuItem);
+                item.Update(gameTime, this, item == SelectedItem);
             }
         }
 
@@ -55,13 +56,13 @@ namespace RpgEngine.Screens
             {
                 SelectedIndex++;
                 if (SelectedIndex >= MenuItems.Count)
-                    SelectedIndex = MenuItems.Count - 1;
+                    SelectedIndex = Math.Max(MenuItems.Count - 1, 0);
             }
 
             if (InputHandler.WasActionJustReleased(InputHandler.Action.Action))
             {
-                if (SelectedMenuItem != null)
-                    SelectedMenuItem.OnSelectEntry();
+                if (SelectedItem != null)
+                    SelectedItem.OnSelectEntry();
             }
 
             if (InputHandler.WasActionJustReleased(InputHandler.Action.Back))
@@ -78,6 +79,26 @@ namespace RpgEngine.Screens
         protected void OnCancel(object sender, EventArgs e)
         {
             OnCancel();
+        }
+        
+        protected void SetupDefaultMenuItemPositions()
+        {
+            var centerScreenX = Constants.CanvasWidth / 2;
+            var centerScreenY = Constants.CanvasHeight / 2;
+            var maxHeight = MenuItems.Max(item => Assets.StandardFont.MeasureString(item.Text).Y);
+            var firstItemY = centerScreenY - (MenuItems.Count / 2) * maxHeight;
+            if (MenuItems.Count % 2 == 1)
+                firstItemY -= maxHeight / 2;
+
+            for (int i = 0; i < MenuItems.Count; i++)
+            {
+                var item = MenuItems[i];
+                var textSize = Assets.StandardFont.MeasureString(item.Text);
+
+                var x = (int)(centerScreenX -  textSize.X / 2);
+                var y = (int)(firstItemY + i * maxHeight);
+                item.Position = new Vector2(x, y);
+            }
         }
     }
 }
