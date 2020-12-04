@@ -42,8 +42,8 @@ namespace RpgEngine.Screens
                 {
                     var relativePosition = i - firstItemIndex;
                     menuItem.Position = new Vector2(
-                        Constants.CanvasWidth / 2 - Assets.InventoryBackground.Width / 2 + 5,
-                        Constants.CanvasHeight / 2 - Assets.InventoryBackground.Height / 2 + 30 + relativePosition * 15);
+                        Constants.CanvasWidth / 2 - inventorySize.X / 2 + 5,
+                        Constants.CanvasHeight / 2 - inventorySize.Y / 2 + 30 + relativePosition * 15);
                 }
                 else
                 {
