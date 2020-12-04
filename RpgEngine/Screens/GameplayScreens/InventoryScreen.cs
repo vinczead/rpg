@@ -23,7 +23,6 @@ namespace RpgEngine.Screens
                 var item = World.Instance.Player.Items[i];
                 var menuItem = new MenuItem(item.Breed.Name)
                 {
-                    Font = Assets.StandardFont,
                     Data = item,
                     Description = (item.Breed as Item).Description
                 };
@@ -66,7 +65,7 @@ namespace RpgEngine.Screens
         {
             var sb = ScreenManager.SpriteBatch;
 
-            GuiHelper.DrawCenteredTextureStretched(sb, Assets.TransparentBox, Constants.Canvas / 2, inventorySize, Assets.SemiTransparentBlack);
+            GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, Constants.Canvas / 2, inventorySize, Assets.SemiTransparentBlack);
             var titlePosition = new Vector2(Constants.CanvasWidth / 2, Constants.CanvasHeight / 2 - inventorySize.Y / 2 + 10);
             GuiHelper.DrawCenteredText(sb, Assets.StandardFont, "Inventory", titlePosition, Assets.StandardTextColor);
 

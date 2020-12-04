@@ -33,6 +33,7 @@ namespace Common.Models
             {
                 instance.Variables.Add(variable.Name, new Symbol(variable));
             }
+            World.Instance.Instances.Add(instance.Id, instance);
 
             return instance;
         }

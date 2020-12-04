@@ -10,5 +10,6 @@ namespace Common.Utility
         public static bool ShowEntityCollisionBox;
         public static List<string> ConsoleContents = new List<string>();
         public static Queue<string> Messages = new Queue<string>();
+        public static Queue<string> SpeechTexts = new Queue<string>();
     }
 }

@@ -81,5 +81,96 @@ namespace Common.Script.Utility
             }
         }
 
+        public static bool AddItem(object[] parameters)
+        {
+            var character = parameters[0] as CharacterInstance;
+            var itemBreed = parameters[1] as Item;
+
+            var itemInstance = itemBreed.Spawn() as ItemInstance;
+            character.Items.Add(itemInstance);
+
+            return true;
+        }
+
+        public static bool AddTopic(object[] parameters)
+        {
+            try
+            {
+                var character = parameters[0] as CharacterInstance;
+                var topicId = parameters[1].ToString();
+                var topicText = parameters[2].ToString();
+                character.Topics.Add(topicId, topicText);
+
+                return true;
+            } catch
+            {
+                return false;
+            }
+        }
+
+        public static bool RemoveTopic(object[] parameters)
+        {
+            try
+            {
+                var character = parameters[0] as CharacterInstance;
+                var topicId = parameters[1].ToString();
+                character.Topics.Remove(topicId);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool AddBreedTopic(object[] parameters)
+        {
+            try
+            {
+                var character = parameters[0] as Character;
+                var topicId = parameters[1].ToString();
+                var topicText = parameters[2].ToString();
+                character.Topics.Add(topicId, topicText);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool AddBreedItem(object[] parameters)
+        {
+            try
+            {
+                var character = parameters[0] as Character;
+                var item = parameters[1] as Item;
+                character.Items.Add(item);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool AddSpeechText(object[] parameters)
+        {
+            try
+            {
+                var text = parameters[0] as string;
+                EngineVariables.SpeechTexts.Enqueue(text);
+
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }

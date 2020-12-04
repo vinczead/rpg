@@ -32,7 +32,7 @@ namespace Common.Models
                 AnimationTime = TimeSpan.Zero;
             }
         }
-
+        
         public override string StateString => $"{State}_{Direction}";
 
         public override void Update(GameTime gameTime)

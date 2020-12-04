@@ -148,7 +148,7 @@ DOT: '.';
 
 NULL: 'Null' | 'null';
 BOOLEAN: 'True' | 'true' | 'False' | 'false';
-STRING: '"' (~[\r\n])* '"';
+STRING: '"' (~[\r\n\"])* '"';
 NUMBER: [0-9]+ ('.' [0-9]+)?;
 
 REFERENCE: '$' ID;

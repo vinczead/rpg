@@ -36,7 +36,7 @@ namespace RpgEngine.Screens
         {
             var sb = ScreenManager.SpriteBatch;
 
-            GuiHelper.DrawCenteredTextureStretched(sb, Assets.TransparentBox, Constants.Canvas / 2, menuSize, Assets.SemiTransparentBlack);
+            GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, Constants.Canvas / 2, menuSize, Assets.SemiTransparentBlack);
 
             base.Draw(gameTime);
         }

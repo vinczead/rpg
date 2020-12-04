@@ -111,5 +111,94 @@
       }
     ],
     "returnType": "Boolean"
+  },
+  {
+    "name": "AddBreedTopic",
+    "parameters": [
+      {
+        "name": "Character",
+        "type": "Character"
+      },
+      {
+        "name": "TopicId",
+        "type": "String"
+      },
+      {
+        "name": "TopicText",
+        "type": "String"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+  {
+    "name": "AddTopic",
+    "parameters": [
+      {
+        "name": "CharacterInstance",
+        "type": "CharacterInstance"
+      },
+      {
+        "name": "TopicId",
+        "type": "String"
+      },
+      {
+        "name": "TopicText",
+        "type": "String"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+  {
+    "name": "AddSoeechText",
+    "parameters": [
+      {
+        "name": "Text",
+        "type": "String"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+  {
+    "name": "RemoveTopic",
+    "parameters": [
+      {
+        "name": "CharacterInstance",
+        "type": "CharacterInstance"
+      },
+      {
+        "name": "TopicId",
+        "type": "String"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+  {
+    "name": "AddBreedItem",
+    "parameters": [
+      {
+        "name": "Character",
+        "type": "Character"
+      },
+      {
+        "name": "Item",
+        "type": "Item"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+
+  {
+    "name": "AddItem",
+    "parameters": [
+      {
+        "name": "CharacterInstance",
+        "type": "CharacterInstance"
+      },
+      {
+        "name": "Item",
+        "type": "Item"
+      }
+    ],
+    "returnType": "Boolean"
   }
 ]

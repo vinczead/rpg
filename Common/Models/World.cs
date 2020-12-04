@@ -67,24 +67,23 @@ namespace Common.Models
             Player.Region.Draw(spriteBatch);
         }
 
-        public ThingInstance Spawn(string baseId, string regionId, Vector2 position, string instanceId = null)
+        public ThingInstance Spawn(string breedId, string regionId, Vector2 position, string instanceId = null)
         {
-            var instance = Spawn(baseId, regionId, instanceId);
+            var instance = Spawn(breedId, regionId, instanceId);
 
             instance.Position = position;
 
             return instance;
         }
 
-        public ThingInstance Spawn(string baseId, string regionId, string instanceId = null)
+        public ThingInstance Spawn(string breedId, string regionId, string instanceId = null)
         {
-            if (Breeds.TryGetValue(baseId, out var breed))
+            if (Breeds.TryGetValue(breedId, out var breed))
             {
                 if (Regions.TryGetValue(regionId, out var region))
                 {
                     var instance = breed.Spawn(instanceId);
                     region.AddInstance(instance);
-                    Instances.Add(instance.Id, instance);
                     return instance;
                 }
                 else
@@ -94,7 +93,7 @@ namespace Common.Models
             }
             else
             {
-                throw new ArgumentException($"Invalid base id: {baseId}", "baseId");
+                throw new ArgumentException($"Invalid base id: {breedId}", "baseId");
             }
 
 

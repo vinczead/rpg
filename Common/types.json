@@ -131,6 +131,19 @@
       {
         "name": "ItemRemoved",
         "parameters": []
+      },
+      {
+        "name": "TalkedTo",
+        "parameters": [
+          {
+            "name": "Character",
+            "type": "CharacterInstance"
+          },
+          {
+            "name": "Topic",
+            "type": "String"
+          }
+        ]
       }
     ]
   },

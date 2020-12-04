@@ -142,6 +142,11 @@ namespace RpgEngine.Screens
                         {
                             (player.ClosestInstance as ActivatorInstance).Activate(World.Instance.Player);
                         }
+
+                        if (player.ClosestInstance is CharacterInstance)
+                        {
+                            ScreenManager.AddScreen(new ConversationScreen(player.ClosestInstance as CharacterInstance));
+                        }
                     }
                 }
             }

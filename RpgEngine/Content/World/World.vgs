@@ -172,6 +172,8 @@ breed TOWNGUARD from Character
     set Self.Speed to 0
     set Self.Intelligence to 0
     set Self.Protection to 0
+    AddBreedTopic(Self, "TG_HELLO", "Hello, how are you?")
+    AddBreedTopic(Self, "TG_WHAT_IS_THIS_PLACE", "What is this place?")
 
     variables
     end
@@ -179,21 +181,21 @@ breed TOWNGUARD from Character
     run when Damaged
         ShowMessage("It's all over lawbreaker! Your spree is at an end.")
     end
-
-end
-
-breed PLAYER from Character
-    set Self.Name to "Me"
-    set Self.Model to $M_MAN
-    set Self.MaxHealth to 100
-    set Self.MaxMana to 50
-    set Self.Strength to 0
-    set Self.Dexterity to 0
-    set Self.Speed to 120
-    set Self.Intelligence to 0
-    set Self.Protection to 0
-
-    variables
+    
+    run when TalkedTo    
+        if Topic = "TG_HELLO" then
+            AddSpeechText("Me: Hello, how are you?")
+            AddSpeechText("Guard: Thanks, I'm fine.")
+            AddSpeechText("Guard: Here, take this potion, you might need it.")
+            ShowMessage("You received a Health Potion.")
+            AddItem(Character, $POTION_OF_HEALTH)
+            AddSpeechText("Me: Thank you!")
+            RemoveTopic(Self, "TG_HELLO")
+        end
+        
+        if Topic = "TG_WHAT_IS_THIS_PLACE" then
+            ShowMessage("Not implemented.")
+        end
     end
 
 end
@@ -314,6 +316,24 @@ breed DOOR_OPENER_BUTTON from Activator
         else
             ShowMessage("The door is now closed...")
         end
+    end
+
+end
+
+breed PLAYER from Character
+    set Self.Name to "Me"
+    set Self.Model to $M_MAN
+    set Self.MaxHealth to 100
+    set Self.MaxMana to 50
+    set Self.Strength to 0
+    set Self.Dexterity to 0
+    set Self.Speed to 120
+    set Self.Intelligence to 0
+    set Self.Protection to 0
+    AddBreedItem(Self, $POTION_OF_HEALTH)
+    AddBreedItem(Self, $POTION_OF_MANA)
+
+    variables
     end
 
 end

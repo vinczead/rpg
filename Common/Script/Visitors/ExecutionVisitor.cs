@@ -303,7 +303,6 @@ namespace Common.Script.Visitors
 
             var breed = World.Instance.Breeds[breedId];
             currentInstance = breed.Spawn(instanceId);
-            World.Instance.Instances.Add(currentInstance.Id, currentInstance);
             if (instanceId == null)
             {
                 AddSymbolToScope(context, new Symbol(currentInstance.Id, instanceType, instanceId));
