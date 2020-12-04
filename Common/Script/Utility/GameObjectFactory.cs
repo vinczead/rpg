@@ -16,7 +16,8 @@ namespace Common.Script.Utility
                 "Character" => new Character(),
                 "Item" => new Item(),
                 "Consumable" => new Consumable(),
-                _ => throw new ArgumentException("No Base can be created with the specified name.", "name"),
+                "Activator" => new Models.Activator(),
+                _ => throw new ArgumentException("No Breed can be created with the specified name.", "name"),
             };
         }
     }

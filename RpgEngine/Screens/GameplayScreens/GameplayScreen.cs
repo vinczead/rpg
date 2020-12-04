@@ -132,6 +132,11 @@ namespace RpgEngine.Screens
                         {
                             player.PickUpItem(player.ClosestInstance as ItemInstance);
                         }
+
+                        if (player.ClosestInstance is ActivatorInstance)
+                        {
+                            (player.ClosestInstance as ActivatorInstance).Activate(World.Instance.Player);
+                        }
                     }
                 }
             }

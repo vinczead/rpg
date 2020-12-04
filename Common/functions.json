@@ -15,6 +15,28 @@
     "returnType": "Number"
   },
   {
+    "name": "MoveToRegion",
+    "parameters": [
+      {
+        "name": "ThingInstance",
+        "type": "ThingInstance"
+      },
+      {
+        "name": "Region",
+        "type": "Region"
+      },
+      {
+        "name": "X",
+        "type": "Number"
+      },
+      {
+        "name": "Y",
+        "type": "Number"
+      }
+    ],
+    "returnType": "Boolean"
+  },
+  {
     "name": "SetPos",
     "parameters": [
       {

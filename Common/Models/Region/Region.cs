@@ -36,7 +36,9 @@ namespace Common.Models
             foreach (var thing in instancesToDelete)
             {
                 instances.Remove(thing);
-                thing.Region = null;
+                if(thing.Region == this) {
+                    thing.Region = null;
+                }
             }
 
             foreach (var thing in instancesToAdd)
@@ -87,10 +89,10 @@ namespace Common.Models
 
         public Tile GetTileForPosition(int x, int y)
         {
+            if (y >= Height * TileHeight || y < 0 || x >= Width * TileWidth || x < 0)
+                return null;
             var yPosition = y / TileHeight;
             var xPosition = x / TileWidth;
-            if (yPosition >= Height || yPosition < 0 || xPosition >= Width || xPosition < 0)
-                return null;
             return Tiles[yPosition][xPosition];
         }
     }

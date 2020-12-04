@@ -24,7 +24,7 @@ namespace Common.Models
 
         public virtual ThingInstance Spawn(string instanceId = null)
         {
-            ThingInstance instance = Activator.CreateInstance(InstanceType) as ThingInstance;
+            ThingInstance instance = System.Activator.CreateInstance(InstanceType) as ThingInstance;
 
             instance.Breed = this;
             instance.Id = instanceId ?? Guid.NewGuid().ToString();

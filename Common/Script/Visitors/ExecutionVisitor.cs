@@ -457,8 +457,10 @@ namespace Common.Script.Visitors
 
             if (context.param != null)
                 currentSymbol = GetSymbolFromScope(context.param, context.param.Text);
-            if (context.@ref != null)
-                currentSymbol = GetSymbolFromScope(context.@ref, context.@ref.Text);
+            if (context.@ref != null) {
+                var entityId = context.@ref.Text[1..];
+                currentSymbol = GetSymbolFromScope(context.@ref, entityId);
+            }
 
             if (currentSymbol == null)
                 return null;
@@ -588,10 +590,10 @@ namespace Common.Script.Visitors
                 throw new InvalidOperationException($"Cannot execute operation '{op.GetText()}' on ${left} and ${right}");
 
             if (op.EQ() != null)
-                return left == right;
+                return left.Equals(right);
 
             if (op.NEQ() != null)
-                return left != right;
+                return !left.Equals(right);
 
             if (leftType != TypeSystem.Instance["Number"])
                 throw new InvalidOperationException($"Cannot execute operation '{op.GetText()}' on ${left} and ${right}");

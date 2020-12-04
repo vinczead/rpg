@@ -37,6 +37,7 @@ typeMap ::= [
     "Common.Models.Thing": "Thing",
     "Common.Models.Creature": "Creature",
     "Common.Models.Character": "Character",
+    "Common.Models.Activator": "Activator",
     "Common.Models.Item": "Item",
     "Common.Models.Consumable": "Consumable"
 ]

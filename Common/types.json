@@ -137,7 +137,6 @@
   {
     "name": "Item",
     "parents": [ "Thing" ],
-    "parentOfNull": true,
     "properties": [
       {
         "name": "Value",
@@ -160,8 +159,26 @@
     ]
   },
   {
+    "name": "Activator",
+    "parents": [ "Thing" ],
+    "parentOfNull": true,
+    "properties": [],
+    "events": [
+      {
+        "name": "Activated",
+        "parameters": [
+          {
+            "name": "Character",
+            "type": "CharacterInstance"
+          }
+        ]
+      }
+    ]
+  },
+  {
     "name": "Consumable",
     "parents": [ "Item" ],
+    "parentOfNull": true,
     "properties": [],
     "events": [
       {
@@ -178,6 +195,10 @@
   {
     "name": "ThingInstance",
     "properties": [
+      {
+        "name": "Region",
+        "type": "Region"
+      },
       {
         "name": "X",
         "type": "Number"
@@ -237,6 +258,20 @@
       {
         "name": "Breed",
         "type": "Character"
+      }
+    ]
+  },
+  {
+    "name": "ActivatorInstance",
+    "parents": [ "ThingInstance" ],
+    "properties": [
+      {
+        "name": "Breed",
+        "type": "Activator"
+      },
+      {
+        "name": "Activated",
+        "type": "Boolean"
       }
     ]
   }

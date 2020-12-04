@@ -4,6 +4,7 @@ texture T_RING from "textures/RING.png"
 texture T_TREE from "textures\tree.png"
 texture T_POTION__RED from "textures\POTION_RED.png"
 texture T_POTION_BLUE from "textures\POTION_BLUE.png"
+texture T_ITEMS from "textures\ITEMS.png"
 
 model M_GRASS from T_TILES
     frame size 32, 32 
@@ -97,15 +98,15 @@ model M_TREE from T_TREE
     end
 end
 
-model M_POTION_RED from T_POTION__RED
+model M_POTION_RED from T_ITEMS
     frame size 32, 32 
     collision 7, 24, 19, 5
     animation Idle looping
-        frame 0, 0, 1000
+        frame 32, 0, 1000
     end
 end
 
-model M_POTION_BLUE from T_POTION_BLUE
+model M_POTION_BLUE from T_ITEMS
     frame size 32, 32 
     collision 0, 0, 0, 0
     animation Idle looping
@@ -113,8 +114,53 @@ model M_POTION_BLUE from T_POTION_BLUE
     end
 end
 
+model M_TORCH from T_ITEMS
+    frame size 32, 32 
+    collision 0, 0, 0, 0
+    animation Inactive looping
+        frame 0, 32, 1000
+    end
+    animation Active looping
+        frame 32, 32, 125
+        frame 64, 32, 125
+        frame 96, 32, 125
+        frame 128, 32, 125
+    end
+end
+
+model M_DOOR from T_ITEMS
+    frame size 32, 32 
+    collision 0, 0, 32, 32
+    animation Inactive looping
+        frame 0, 64, 1000
+    end
+    animation Active looping
+        frame 32, 64, 1000
+    end
+end
+
+model M_BUTTON from T_ITEMS
+    frame size 32, 32 
+    collision 4, 19, 26, 9
+    animation Inactive looping
+        frame 0, 96, 1000
+    end
+    animation Active looping
+        frame 32, 96, 1000
+    end
+end
+
+model M_WALL from T_TILES
+    frame size 32, 32 
+    collision 0, 0, 0, 0
+    animation Idle looping
+        frame 64, 0, 1000
+    end
+end
+
 tile GRASS from M_GRASS walkable
 tile WATER from M_WATER
+tile WALL from M_WALL
 
 breed TOWNGUARD from Character
     set Self.Name to "Town Guard"
@@ -177,11 +223,6 @@ breed TREE from Thing
     variables
     end
 
-    run when Updated
-        //set Self.time to Random()
-        //set Self.time to Self.time + ElapsedTime
-    end
-
 end
 
 breed POTION_OF_HEALTH from Consumable
@@ -220,34 +261,81 @@ breed POTION_OF_MANA from Consumable
 
 end
 
-region ISLAND 25, 25
+breed REMOTE_OPENED_DOOR from Activator
+    set Self.Name to "Door"
+    set Self.Model to $M_DOOR
+
+    variables
+    end
+
+    run when Activated
+        if Self.Activated = true then
+            if $PLAYERINSTANCE.Region = $SECOND then
+                MoveToRegion($PLAYERINSTANCE, $ISLAND, 624, 70)
+            else
+                MoveToRegion($PLAYERINSTANCE, $SECOND, 32, 280)
+            end
+        else
+            ShowMessage("This door is opened remotely.")
+        end
+    end
+
+end
+
+breed TORCH from Activator
+    set Self.Name to "Torch"
+    set Self.Model to $M_TORCH
+
+    variables
+    end
+
+    run when Activated
+    	set Self.Activated to not Self.Activated
+    end
+
+end
+
+breed DOOR_OPENER_BUTTON from Activator
+    set Self.Name to "Button"
+    set Self.Model to $M_BUTTON
+
+    variables
+    end
+
+    run when Activated
+    	set Self.Activated to not Self.Activated
+        if Self.Region = $ISLAND then
+    	    set $REGION_SWITCH_DOOR.Activated to not $REGION_SWITCH_DOOR.Activated
+        else
+            set $REGION_SWITCH_DOOR2.Activated to not $REGION_SWITCH_DOOR2.Activated
+        end
+        if Self.Activated = True then
+    	    ShowMessage("Somewhere a door has opened...")
+        else
+            ShowMessage("The door is now closed...")
+        end
+    end
+
+end
+
+region ISLAND 23, 15
     tile size 32, 32
     tiles
-            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, null,  null]
-            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, null,  null]
-            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, null,  null]
-            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
-            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
-            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
-            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
-            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
-            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
-            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
-            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
-            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
-            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
-            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  null]
-            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  null]
-            [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  null]
-            [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,  null]
-            [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,  null]
-            [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,  null]
-            [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,  null]
-            [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,  null]
-            [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,  null]
-            [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,  null]
-            [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,  null]
-            [null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null, null,  null]
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WALL, $WALL, $WALL, $WALL, $WALL, $WALL, $WALL, $WALL,  $WALL]
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WALL, $WALL, $WALL, $WALL, $WALL, $GRASS, $WALL, $WALL,  $WALL]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
 
     end
 
@@ -271,6 +359,30 @@ region ISLAND 25, 25
     instance of POTION_OF_MANA at 240, 312
     instance of POTION_OF_MANA at 260, 267
     instance of POTION_OF_MANA at 272, 341
+    instance REGION_SWITCH_DOOR of REMOTE_OPENED_DOOR at 624, 64
+    instance of DOOR_OPENER_BUTTON at 600, 140
+    instance of TORCH at 592, 55
+
+end
+
+region SECOND 10, 10
+    tile size 32, 32
+    tiles
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+
+    end
+
+    instance REGION_SWITCH_DOOR2 of REMOTE_OPENED_DOOR at 48, 320
+    instance of DOOR_OPENER_BUTTON at 100, 200
 
 end
 

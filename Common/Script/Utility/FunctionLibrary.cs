@@ -22,13 +22,29 @@ namespace Common.Script.Utility
             return parameters[0].ToString().Length;
         }
 
+        public static bool MoveToRegion(object[] parameters)
+        {
+            var instance = parameters[0] as ThingInstance;
+            var region = parameters[1] as Region;
+            var x = Convert.ToSingle(parameters[2]);
+            var y = Convert.ToSingle(parameters[3]);
+
+            instance.Region.instances.Remove(instance);
+            region.instances.Add(instance);
+            instance.Region = region;
+
+            instance.Position = new Vector2(x, y);
+
+            return true;
+        }
+
         public static bool SetPos(object[] parameters)
         {
-            var baseObject = parameters[0] as ThingInstance;
+            var instance = parameters[0] as ThingInstance;
             var x = Convert.ToSingle(parameters[1]);
             var y = Convert.ToSingle(parameters[2]);
 
-            baseObject.Position = new Vector2(x, y);
+            instance.Position = new Vector2(x, y);
 
             return true;
         }
