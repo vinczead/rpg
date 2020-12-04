@@ -8,7 +8,15 @@ namespace Common.Models
 {
     public class ActivatorInstance : ThingInstance
     {
-        public bool Activated { get; set; }
+        private bool activated;
+        public bool Activated
+        {
+            get => activated; set
+            {
+                activated = value;
+                AnimationTime = TimeSpan.Zero;
+            }
+        }
         public override string StateString => Activated ? "Active" : "Inactive";
 
         public void Activate(CharacterInstance character)

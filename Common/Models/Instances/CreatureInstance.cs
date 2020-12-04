@@ -13,8 +13,26 @@ namespace Common.Models
         public int CurrentMana { get; set; }
         public virtual int Damage => (Breed as Creature).Strength;
 
-        public State State { get; set; }
-        public Direction Direction { get; set; } = Direction.Up;
+        private State state;
+        public State State
+        {
+            get => state;
+            set
+            {
+                state = value;
+                AnimationTime = TimeSpan.Zero;
+            }
+        }
+        private Direction direction = Direction.Up;
+        public Direction Direction
+        {
+            get => direction; set
+            {
+                direction = value;
+                AnimationTime = TimeSpan.Zero;
+            }
+        }
+
         public override string StateString => $"{State}_{Direction}";
 
         public override void Update(GameTime gameTime)

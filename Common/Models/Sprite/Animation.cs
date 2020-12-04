@@ -18,7 +18,8 @@ namespace Common.Models
 
             TimeSpan timeSum = TimeSpan.Zero;
             int i = 0;
-            do
+
+            while (timeSum < animationTime && (i != Frames.Count - 1 || IsLooping))
             {
                 timeSum += Frames[i].TimeSpan;
 
@@ -27,7 +28,8 @@ namespace Common.Models
                 {
                     i = 0;
                 }
-            } while (timeSum < animationTime && (i == Frames.Count - 1 || IsLooping));
+
+            }
 
             return Frames[i];
         }
