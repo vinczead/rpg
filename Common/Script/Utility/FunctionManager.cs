@@ -53,9 +53,9 @@ namespace Common.Script.Utility
                     });
                 }
             }
-            catch
+            catch (Exception e)
             {
-                throw new FormatException("The format of function.json is invalid.");
+                throw new FormatException("The format of function.json is invalid", e);
             }
         }
 

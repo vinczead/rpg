@@ -79,26 +79,6 @@
     "returnType": "Number"
   },
   {
-    "name": "AddItem",
-    "parameters": [
-      {
-        "name": "ItemToAdd",
-        "type": "Item"
-      }
-    ],
-    "returnType": "Boolean"
-  },
-  {
-    "name": "RemoveItem",
-    "parameters": [
-      {
-        "name": "ItemToRemove",
-        "type": "Item"
-      }
-    ],
-    "returnType": "Boolean"
-  },
-  {
     "name": "SetTiles",
     "parameters": [
       {
@@ -149,7 +129,7 @@
     "returnType": "Boolean"
   },
   {
-    "name": "AddSoeechText",
+    "name": "AddSpeechText",
     "parameters": [
       {
         "name": "Text",
@@ -186,7 +166,6 @@
     ],
     "returnType": "Boolean"
   },
-
   {
     "name": "AddItem",
     "parameters": [
