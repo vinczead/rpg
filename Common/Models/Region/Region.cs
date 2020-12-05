@@ -29,7 +29,7 @@ namespace Common.Models
 
         public void Update(GameTime gameTime)
         {
-            AnimationTime += gameTime.ElapsedGameTime;
+            AnimationTime = gameTime.TotalGameTime;
             foreach (var thing in instances)
                 thing.Update(gameTime);
 
@@ -59,8 +59,14 @@ namespace Common.Models
                         continue;
                     var tilePosition = new Vector2(x * TileWidth, y * TileHeight);
                     var spriteModel = Tiles[y][x].Model;
+                    var currentFrame = spriteModel["Idle"].FrameAt(AnimationTime);
 
-                    spriteBatch.Draw(spriteModel.SpriteSheet.Value, tilePosition, spriteModel["Idle"].FrameAt(AnimationTime).Source, Color.White);
+                    spriteBatch.Draw(spriteModel.SpriteSheet.Value, tilePosition, currentFrame.Source, Color.White);
+                    if(EngineVariables.ShowEntityCollisionBox && !Tiles[y][x].IsWalkable)
+                    {
+                        var tileBoundingBox = new Rectangle((int)tilePosition.X, (int)tilePosition.Y, TileWidth, TileHeight);
+                        spriteBatch.Draw(Assets.TransparentBox, tileBoundingBox , Color.Red);
+                    }
                 }
             }
             foreach (var instance in instances)

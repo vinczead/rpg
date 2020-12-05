@@ -37,6 +37,8 @@ namespace Common.Models
         public virtual void Update(GameTime gameTime)
         {
             AnimationTime += gameTime.ElapsedGameTime;
+            if (AnimationTime.TotalMilliseconds > CurrentAnimation.RoundDuration * 10)
+                AnimationTime -= TimeSpan.FromMilliseconds(CurrentAnimation.RoundDuration) * 10;    //todo: this may be done nicer
 
             if (MovementDelta.Length() > 0)
             {
@@ -65,9 +67,9 @@ namespace Common.Models
             spriteBatch.Draw(Breed.Model.SpriteSheet.Value, DrawPosition, CurrentFrame, Color.White);
 
             if (EngineVariables.ShowEntityBoundingBox)
-                spriteBatch.Draw(Assets.TransparentBox, BoundingBox, new Color(255, 255, 255));
+                spriteBatch.Draw(Assets.TransparentBox, BoundingBox, Color.White);
             if (EngineVariables.ShowEntityCollisionBox)
-                spriteBatch.Draw(Assets.TransparentBox, BlockingBox, new Color(255, 0, 0));
+                spriteBatch.Draw(Assets.TransparentBox, BlockingBox, Color.Red);
         }
 
         private List<Tile> GetTiles()

@@ -2,8 +2,6 @@ texture T_TILES from "textures/TILES.png"
 texture T_MAN from "textures/man.png"
 texture T_RING from "textures/RING.png"
 texture T_TREE from "textures\tree.png"
-texture T_POTION__RED from "textures\POTION_RED.png"
-texture T_POTION_BLUE from "textures\POTION_BLUE.png"
 texture T_ITEMS from "textures\ITEMS.png"
 
 model M_GRASS from T_TILES

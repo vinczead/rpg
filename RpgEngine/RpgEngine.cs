@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using RpgEngine.Screens;
 using RpgEngine.Utility;
+using System;
 
 namespace RpgEngine
 {
@@ -54,6 +55,9 @@ namespace RpgEngine
             InputHandler.Update();
 
             base.Update(gameTime);
+
+            if (gameTime.IsRunningSlowly)
+                ResetElapsedTime();
         }
 
         protected override void Draw(GameTime gameTime)
@@ -61,7 +65,7 @@ namespace RpgEngine
             GraphicsDevice.SetRenderTarget(renderTarget);
 
             fpsCounter.Update((float)gameTime.ElapsedGameTime.TotalSeconds);
-            var fps = string.Format("FPS: {0}", fpsCounter.AverageFramesPerSecond);
+            var fps = string.Format("FPS: {0}", fpsCounter.AverageFramesPerSecond == float.PositiveInfinity ? "Inf" : fpsCounter.AverageFramesPerSecond.ToString());
             base.Draw(gameTime);
 
             GraphicsDevice.SetRenderTarget(null);
