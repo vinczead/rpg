@@ -22,5 +22,15 @@ namespace Common.Models
 
         //Natural Protection
         public int Protection { get; set; }
+
+        public override ThingInstance Spawn(string instanceId = null)
+        {
+            var instance = base.Spawn(instanceId) as CreatureInstance;
+
+            instance.CurrentHealth = MaxHealth;
+            instance.CurrentMana = MaxMana;
+
+            return instance;
+        }
     }
 }

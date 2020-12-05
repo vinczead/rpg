@@ -113,8 +113,17 @@
     ],
     "events": [
       {
-        "name": "Damaged",
-        "parameters": []
+        "name": "Attacked",
+        "parameters": [
+          {
+            "name": "Creature",
+            "type": "CreatureInstance"
+          },
+          {
+            "name": "Damage",
+            "type": "Number"
+          }
+        ]
       }
     ]
   },

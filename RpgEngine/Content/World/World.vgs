@@ -61,6 +61,19 @@ model M_MAN from T_MAN
         frame 64, 0, 500
         frame 96, 0, 500
     end
+    animation Dying_Left
+        frame 0, 0, 250
+        frame 512, 0, 250
+        frame 0, 0, 250
+        frame 512, 0, 250
+        frame 0, 0, 250
+        frame 512, 0, 250
+        frame 0, 0, 250
+        frame 544, 0, 125
+    end
+    animation Dead_Left
+        frame 512, 0, 1000
+    end
     animation Move_Right looping
         frame 128, 0, 500
         frame 160, 0, 500
@@ -69,6 +82,19 @@ model M_MAN from T_MAN
     end
     animation Idle_Right looping
         frame 128, 0, 500
+    end
+    animation Dying_Right
+        frame 128, 0, 250
+        frame 512, 0, 250
+        frame 128, 0, 250
+        frame 512, 0, 250
+        frame 128, 0, 250
+        frame 512, 0, 250
+        frame 128, 0, 250
+        frame 544, 0, 125
+    end
+    animation Dead_Right
+        frame 512, 0, 1000
     end
     animation Idle_Down looping
         frame 256, 0, 500
@@ -79,6 +105,19 @@ model M_MAN from T_MAN
         frame 320, 0, 500
         frame 352, 0, 500
     end
+    animation Dying_Down
+        frame 256, 0, 250
+        frame 512, 0, 250
+        frame 256, 0, 250
+        frame 512, 0, 250
+        frame 256, 0, 250
+        frame 512, 0, 250
+        frame 256, 0, 250
+        frame 544, 0, 125
+    end
+    animation Dead_Down
+        frame 512, 0, 1000
+    end
     animation Idle_Up looping
         frame 384, 0, 500
     end
@@ -87,6 +126,19 @@ model M_MAN from T_MAN
         frame 416, 0, 500
         frame 448, 0, 500
         frame 480, 0, 500
+    end
+    animation Dying_Up
+        frame 384, 0, 250
+        frame 512, 0, 250
+        frame 384, 0, 250
+        frame 512, 0, 250
+        frame 384, 0, 250
+        frame 512, 0, 250
+        frame 384, 0, 250
+        frame 544, 0, 125
+    end
+    animation Dead_Up
+        frame 512, 0, 1000
     end
 end
 
@@ -161,44 +213,6 @@ end
 tile GRASS from M_GRASS walkable
 tile WATER from M_WATER
 tile WALL from M_WALL
-
-breed TOWNGUARD from Character
-    set Self.Name to "Town Guard"
-    set Self.Model to $M_MAN
-    set Self.MaxHealth to 0
-    set Self.MaxMana to 0
-    set Self.Strength to 0
-    set Self.Dexterity to 0
-    set Self.Speed to 0
-    set Self.Intelligence to 0
-    set Self.Protection to 0
-    AddBreedTopic(Self, "TG_HELLO", "Hello, how are you?")
-    AddBreedTopic(Self, "TG_WHAT_IS_THIS_PLACE", "What is this place?")
-
-    variables
-    end
-
-    run when Damaged
-        ShowMessage("It's all over lawbreaker! Your spree is at an end.")
-    end
-    
-    run when TalkedTo    
-        if Topic = "TG_HELLO" then
-            AddSpeechText("Me: Hello, how are you?")
-            AddSpeechText("Guard: Thanks, I'm fine.")
-            AddSpeechText("Guard: Here, take this potion, you might need it.")
-            ShowMessage("You received a Health Potion.")
-            AddItem(Character, $POTION_OF_HEALTH)
-            AddSpeechText("Me: Thank you!")
-            RemoveTopic(Self, "TG_HELLO")
-        end
-        
-        if Topic = "TG_WHAT_IS_THIS_PLACE" then
-            ShowMessage("Not implemented.")
-        end
-    end
-
-end
 
 breed RING_OF_COUNTING from Item
     set Self.Name to "Ring of Counting"
@@ -320,16 +334,51 @@ breed DOOR_OPENER_BUTTON from Activator
 
 end
 
+breed TOWNGUARD from Character
+    set Self.Name to "Town Guard"
+    set Self.Model to $M_MAN
+    set Self.MaxHealth to 100
+    set Self.MaxMana to 10
+    set Self.Strength to 10
+    set Self.Dexterity to 10
+    set Self.Speed to 50
+    set Self.Intelligence to 10
+    set Self.Protection to 5
+    AddBreedTopic(Self, "TG_HELLO", "Hello, how are you?")
+    AddBreedTopic(Self, "TG_WHAT_IS_THIS_PLACE", "What is this place?")
+    AddBreedItem(Self, $RING_OF_COUNTING)
+
+    variables
+    end
+    
+    run when TalkedTo    
+        if Topic = "TG_HELLO" then
+            AddSpeechText("Me: Hello, how are you?")
+            AddSpeechText("Guard: Thanks, I'm fine.")
+            AddSpeechText("Guard: Here, take this potion, you might need it.")
+            ShowMessage("You received a Health Potion.")
+            AddItem(Character, $POTION_OF_HEALTH)
+            AddSpeechText("Me: Thank you!")
+            RemoveTopic(Self, "TG_HELLO")
+        end
+        
+        if Topic = "TG_WHAT_IS_THIS_PLACE" then
+            ShowMessage("Not implemented.")
+        end
+    end
+
+end
+
 breed PLAYER from Character
     set Self.Name to "Me"
     set Self.Model to $M_MAN
     set Self.MaxHealth to 100
     set Self.MaxMana to 50
-    set Self.Strength to 0
-    set Self.Dexterity to 0
+    set Self.Strength to 50
+    set Self.Dexterity to 10
     set Self.Speed to 120
-    set Self.Intelligence to 0
-    set Self.Protection to 0
+    set Self.Intelligence to 10
+    set Self.Protection to 5
     AddBreedItem(Self, $POTION_OF_HEALTH)
     AddBreedItem(Self, $POTION_OF_MANA)
 
@@ -362,6 +411,7 @@ region ISLAND 23, 15
     instance PLAYERINSTANCE of PLAYER at 150, 150
     instance of TREE at 170, 130
     instance of TOWNGUARD at 200, 200
+    instance of TOWNGUARD at 220, 210
     instance of TREE at 130, 130
     instance of TREE at 396, 323
     instance of TREE at 368, 373

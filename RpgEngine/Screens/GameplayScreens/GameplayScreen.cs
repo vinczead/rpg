@@ -40,8 +40,8 @@ namespace RpgEngine.Screens
             var playerClosestInstance = World.Instance.Player.ClosestInstance;
             if (playerClosestInstance != null)
             {
-                var underItem = new Vector2(playerClosestInstance.Position.X, playerClosestInstance.Position.Y + 5);
-                GuiHelper.DrawCenteredText(sb, Assets.StandardFont, playerClosestInstance.Breed.Name, underItem, Assets.HighlightedTextColor);
+                var underInstance = new Vector2(playerClosestInstance.Position.X, playerClosestInstance.Position.Y + 5);
+                GuiHelper.DrawCenteredText(sb, Assets.StandardFont, playerClosestInstance.Breed.Name, underInstance, Assets.HighlightedTextColor);
             }
             sb.End();
 
@@ -75,6 +75,20 @@ namespace RpgEngine.Screens
 
             var manaBarRectangle = new Rectangle(Constants.CanvasWidth - 105, Constants.CanvasHeight - 15, currentMana, 10);
             sb.Draw(Assets.SolidBox, manaBarRectangle, Color.Blue);
+
+            var playerClosestInstance = World.Instance.Player.ClosestInstance;
+            if (playerClosestInstance is CreatureInstance)
+            {
+                var closestCreature = playerClosestInstance as CreatureInstance;
+                maxHealth = (closestCreature.Breed as Creature).MaxHealth;
+                currentHealth = (int)(100.0 * closestCreature.CurrentHealth / maxHealth);
+
+                maxHealthBarRectangle = new Rectangle(Constants.CanvasWidth / 2 - 50, Constants.CanvasHeight - 15, 100, 10);
+                sb.Draw(Assets.TransparentBox, maxHealthBarRectangle, Color.Red);
+
+                healthBarRectangle = new Rectangle(Constants.CanvasWidth / 2 - 50, Constants.CanvasHeight - 15, currentHealth, 10);
+                sb.Draw(Assets.SolidBox, healthBarRectangle, Color.Red);
+            }
         }
 
         public override void Update(GameTime gameTime)
@@ -147,6 +161,13 @@ namespace RpgEngine.Screens
                         {
                             ScreenManager.AddScreen(new ConversationScreen(player.ClosestInstance as CharacterInstance));
                         }
+                    }
+                }
+                if (InputHandler.WasActionJustReleased(InputHandler.Action.Attack))
+                {
+                    if(player.ClosestInstance != null && player.ClosestInstance is CreatureInstance)
+                    {
+                        (player.ClosestInstance as CreatureInstance).AttackedBy(player);
                     }
                 }
             }

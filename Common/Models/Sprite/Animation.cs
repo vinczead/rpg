@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Common.Models
@@ -8,8 +9,9 @@ namespace Common.Models
     {
         public string Id { get; set; }
         public List<Frame> Frames { get; set; } = new List<Frame>();
-
         public bool IsLooping { get; set; }
+
+        public double RoundDuration { get => Frames.Sum(frame => frame.TimeSpan.TotalMilliseconds); } //todo: should be computed when building world
 
         public Frame FrameAt(TimeSpan animationTime)
         {

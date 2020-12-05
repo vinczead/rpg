@@ -113,9 +113,9 @@ namespace RpgEngine.Utility
                     Keys = new List<Keys>() { Keys.Escape }
                 },
 
-                [Action.AttackMode] = new ActionKeyMap()
+                [Action.Attack] = new ActionKeyMap()
                 {
-                    Keys = new List<Keys>() { Keys.F }
+                    Keys = new List<Keys>() { Keys.LeftControl }
                 },
 
                 [Action.Inventory] = new ActionKeyMap()
@@ -153,7 +153,7 @@ namespace RpgEngine.Utility
             Right,
             Action,
             Back,
-            AttackMode,
+            Attack,
             Inventory,
             DropItem,
             CharacterInfo,

@@ -21,7 +21,8 @@ namespace Common.Models
         public Region Region { get; set; }
         public Dictionary<string, Symbol> Variables { get; set; } = new Dictionary<string, Symbol>();
 
-        protected Rectangle CurrentFrame { get => Breed.Model[StateString].FrameAt(AnimationTime).Source; }
+        protected Animation CurrentAnimation { get => Breed.Model[StateString]; }
+        protected Rectangle CurrentFrame { get => CurrentAnimation.FrameAt(AnimationTime).Source; }
         protected Vector2 DrawPosition { get => new Vector2((int)(Position.X - CurrentFrame.Width / 2), (int)(Position.Y - CurrentFrame.Height)); }
         protected Rectangle BoundingBox { get => new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)Breed.Model.FrameSize.X, (int)Breed.Model.FrameSize.Y); }
         protected Rectangle BlockingBox
