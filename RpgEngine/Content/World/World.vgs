@@ -7,7 +7,7 @@ texture T_ITEMS from "textures\ITEMS.png"
 model M_GRASS from T_TILES
     frame size 32, 32 
     collision 0, 0, 0, 0
-    animation Idle looping
+    animation Idle
         frame 0, 0, 1000
     end
 end
@@ -42,7 +42,7 @@ end
 model M_RING from T_RING
     frame size 16, 16 
     collision 0, 0, 0, 0
-    animation Idle looping
+    animation Idle
         frame 0, 0, 1000
     end
 end
@@ -50,7 +50,7 @@ end
 model M_MAN from T_MAN
     frame size 32, 32 
     collision 9, 28, 14, 4
-    animation Idle_Left looping
+    animation Idle_Left
         frame 0, 0, 500
     end
     animation Move_Left looping
@@ -78,7 +78,7 @@ model M_MAN from T_MAN
         frame 192, 0, 500
         frame 224, 0, 500
     end
-    animation Idle_Right looping
+    animation Idle_Right
         frame 128, 0, 500
     end
     animation Dying_Right
@@ -94,7 +94,7 @@ model M_MAN from T_MAN
     animation Dead_Right
         frame 512, 0, 1000
     end
-    animation Idle_Down looping
+    animation Idle_Down
         frame 256, 0, 500
     end
     animation Move_Down looping
@@ -116,7 +116,7 @@ model M_MAN from T_MAN
     animation Dead_Down
         frame 512, 0, 1000
     end
-    animation Idle_Up looping
+    animation Idle_Up
         frame 384, 0, 500
     end
     animation Move_Up looping
@@ -143,7 +143,7 @@ end
 model M_TREE from T_TREE
     frame size 80, 128 
     collision 19, 102, 46, 22
-    animation Idle looping
+    animation Idle
         frame 0, 0, 1000
     end
 end
@@ -151,7 +151,7 @@ end
 model M_POTION_RED from T_ITEMS
     frame size 32, 32 
     collision 7, 24, 19, 5
-    animation Idle looping
+    animation Idle
         frame 32, 0, 1000
     end
 end
@@ -159,7 +159,7 @@ end
 model M_POTION_BLUE from T_ITEMS
     frame size 32, 32 
     collision 0, 0, 0, 0
-    animation Idle looping
+    animation Idle
         frame 0, 0, 1000
     end
 end
@@ -167,7 +167,7 @@ end
 model M_TORCH from T_ITEMS
     frame size 32, 32 
     collision 0, 0, 0, 0
-    animation Inactive looping
+    animation Inactive
         frame 0, 32, 1000
     end
     animation Active looping
@@ -212,20 +212,20 @@ tile GRASS from M_GRASS walkable
 tile WATER from M_WATER
 tile WALL from M_WALL
 
-breed RING_OF_COUNTING from Item
+breed RING_OF_COUNTING from Equipment
     set Self.Name to "Ring of Counting"
     set Self.Model to $M_RING
     set Self.Value to 100
-    set Self.Description to "Counts how many times it was picked up."
+    set Self.Description to "Counts how many times it was equipped."
 
     variables
         count is Number withvalue 0
 
     end
 
-    run when PickedUp
+    run when Equipped
         set Self.count to Self.count + 1
-        ShowMessage("Picked up this many times: " + Self.count)
+        ShowMessage("Equipped this many times: " + Self.count)
     end
 
 end
@@ -374,7 +374,7 @@ breed PLAYER from Character
     set Self.MaxMana to 50
     set Self.Strength to 50
     set Self.Dexterity to 10
-    set Self.Speed to 120
+    set Self.Speed to 90
     set Self.Intelligence to 10
     set Self.Protection to 5
     AddBreedItem(Self, $POTION_OF_HEALTH)

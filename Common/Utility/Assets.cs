@@ -13,7 +13,8 @@ namespace Common.Utility
         public static Color StandardTextColor { get; set; } = new Color(255, 255, 255);
         public static Color HighlightedTextColor { get; set; } = new Color(255, 255, 0);
         public static Color SemiTransparentWhite { get; set; } = new Color(255, 255, 255, 125);
-        public static Color SemiTransparentBlack { get; set; } = new Color(0, 0, 0, 125);
+        public static Color TranslucentBlack1 { get; set; } = new Color(0, 0, 0, 125);
+        public static Color TranslucentBlack2 { get; set; } = new Color(0, 0, 0, 200);
         public static Color SemiTransparentRed { get; set; } = new Color(255, 0, 0, 200);
 
         public static Texture2D PopupBackground { get; set; }

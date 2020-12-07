@@ -99,7 +99,7 @@ namespace RpgEngine.Screens
             screensToUpdate.Clear();
             screensToUpdate.AddRange(screens);
 
-            bool inputAlredyHandled = false;
+            bool inputWasHandled = false;
 
             while(screensToUpdate.Count > 0)
             {
@@ -108,11 +108,11 @@ namespace RpgEngine.Screens
 
                 screen.Update(gameTime);
 
-                if(!inputAlredyHandled)
+                if(!inputWasHandled)
                 {
                     screen.HandleInput();
 
-                    inputAlredyHandled = true;
+                    inputWasHandled = true;
                 }
 
                 if (screen.BlockScreenUpdatesBelow)

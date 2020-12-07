@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Input;
 using RpgEngine.Screens;
 using RpgEngine.Utility;
 using System;
+using System.Threading.Tasks;
 
 namespace RpgEngine
 {
@@ -38,8 +39,6 @@ namespace RpgEngine
             base.Initialize();
 
             screenManager.AddScreen(new MainMenuScreen());
-
-            
         }
 
         protected override void LoadContent()
@@ -55,9 +54,6 @@ namespace RpgEngine
             InputHandler.Update();
 
             base.Update(gameTime);
-
-            if (gameTime.IsRunningSlowly)
-                ResetElapsedTime();
         }
 
         protected override void Draw(GameTime gameTime)

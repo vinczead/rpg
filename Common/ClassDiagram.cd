@@ -1,0 +1,146 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Common.Models.Activator" Collapsed="true">
+    <Position X="2" Y="3" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Breeds\Activator.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.Character" Collapsed="true">
+    <Position X="3.5" Y="4" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAACAAAAAEAAAAAAAAAAAAAAAAAACAAAAA=</HashCode>
+      <FileName>Models\Breeds\Character.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.Consumable" Collapsed="true">
+    <Position X="0.5" Y="4" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Breeds\Consumable.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.Creature" Collapsed="true">
+    <Position X="3.5" Y="3" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>DAAAAACAAAAACAAAAAEAAAABAABAAAAgAAAAAAAAACA=</HashCode>
+      <FileName>Models\Breeds\Creature.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.Item" Collapsed="true">
+    <Position X="0.5" Y="3" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>CAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAA=</HashCode>
+      <FileName>Models\Breeds\Item.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.Thing" Collapsed="true">
+    <Position X="3.5" Y="2" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>CAACAAAAAAAAAAAAAAEAAAQAACAAAgAAAAwAAAAAAAA=</HashCode>
+      <FileName>Models\Breeds\Thing.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Model" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Common.Models.ActivatorInstance" Collapsed="true">
+    <Position X="7.25" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAAAQAAAAAAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Models\Instances\ActivatorInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.CharacterInstance" Collapsed="true">
+    <Position X="9.25" Y="4" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAACAAAAAAAAAAAAAAAAAAAACQAACAAAAA=</HashCode>
+      <FileName>Models\Instances\CharacterInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.ConsumableInstance" Collapsed="true">
+    <Position X="5.25" Y="4" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Instances\ConsumableInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.CreatureInstance" Collapsed="true">
+    <Position X="9.25" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAQAAACAAEAAIAAAACAAAIQAAAAEAAAEAAAABAAAICA=</HashCode>
+      <FileName>Models\Instances\CreatureInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.ItemInstance" Collapsed="true">
+    <Position X="5.25" Y="3" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAABAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Instances\ItemInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.ThingInstance" Collapsed="true">
+    <Position X="7.25" Y="2" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AISCAAAEgAAAAgAgAAAAAAQAACAAACAAAAQAIAIACCA=</HashCode>
+      <FileName>Models\Instances\ThingInstance.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Breed" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="Common.Models.Instances.EquipmentInstance" Collapsed="true">
+    <Position X="7.25" Y="4" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Instances\EquipmentInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.Breeds.Equipment" Collapsed="true">
+    <Position X="2" Y="4" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Models\Breeds\Equipment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.Region" Collapsed="true">
+    <Position X="13.25" Y="2" Width="1.5" />
+    <Members>
+      <Field Name="instances" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQCAAABBgAAAgAAAAAAAGAAAABAAAIAAAgEAQAACIA=</HashCode>
+      <FileName>Models\Region\Region.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="instances" />
+      <Property Name="Tiles" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Common.Models.Tile" Collapsed="true">
+    <Position X="12.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAIAAAA=</HashCode>
+      <FileName>Models\Region\Tile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.World" Collapsed="true">
+    <Position X="14.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAQAAIAAAAgFAAAEAACAABClAAAIgQCgAAQNAAIA=</HashCode>
+      <FileName>Models\World.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Regions" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Common.Models.SpriteModel" Collapsed="true">
+    <Position X="0.5" Y="2" Width="1.25" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAACAACAEAQAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Models\Sprite\SpriteModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

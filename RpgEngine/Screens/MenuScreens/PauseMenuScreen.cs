@@ -36,7 +36,7 @@ namespace RpgEngine.Screens
         {
             var sb = ScreenManager.SpriteBatch;
 
-            GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, Constants.Canvas / 2, menuSize, Assets.SemiTransparentBlack);
+            GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, Constants.Canvas / 2, menuSize, Assets.TranslucentBlack1);
 
             base.Draw(gameTime);
         }
@@ -62,6 +62,11 @@ namespace RpgEngine.Screens
         }
 
         private void ExitGameMenuSelected(object sender, EventArgs e)
+        {
+            ScreenManager.AddScreen(new ConfirmDialogScreen("Exit game?", ExitGameConfirmed));
+        }
+
+        private void ExitGameConfirmed(object sender, EventArgs e)
         {
             ScreenManager.RemoveScreen(this);
             ScreenManager.PopScreen();

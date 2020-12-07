@@ -18,6 +18,7 @@ namespace RpgEngine.Screens
             GuiHelper.DrawCenteredText(spriteBatch, Assets.StandardFont, "Credits", new Vector2(Constants.CanvasWidth / 2, 20), Assets.StandardTextColor);
             GuiHelper.DrawCenteredText(spriteBatch, Assets.StandardFont, "Created by Adam Vincze in 2020", new Vector2(Constants.CanvasWidth / 2, 70), Assets.StandardTextColor);
             GuiHelper.DrawCenteredText(spriteBatch, Assets.StandardFont, "Powered by MonoGame", new Vector2(Constants.CanvasWidth / 2, 120), Assets.StandardTextColor);
+            GuiHelper.DrawCenteredText(spriteBatch, Assets.StandardFont, "Font: Alkhemikal from fontenddev.com", new Vector2(Constants.CanvasWidth / 2, 140), Assets.StandardTextColor);
 
             spriteBatch.DrawString(Assets.StandardFont, "[Esc] Back", new Vector2(0, Constants.CanvasHeight - 15), Assets.StandardTextColor);
         }

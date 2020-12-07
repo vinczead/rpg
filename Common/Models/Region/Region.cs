@@ -29,7 +29,9 @@ namespace Common.Models
 
         public void Update(GameTime gameTime)
         {
-            AnimationTime = gameTime.TotalGameTime;
+            AnimationTime += gameTime.ElapsedGameTime;
+            if (gameTime.IsRunningSlowly)
+                AnimationTime = TimeSpan.Zero;
             foreach (var thing in instances)
                 thing.Update(gameTime);
 

@@ -1,0 +1,118 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="Common.Models.ThingInstance" Collapsed="true">
+    <Position X="1.75" Y="3.75" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AISCAAAEgAAAAgAgAAAAAAQAACAAACAAAAQAIAIACCA=</HashCode>
+      <FileName>Models\Instances\ThingInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.Region" Collapsed="true">
+    <Position X="3.25" Y="2.5" Width="1.5" />
+    <AssociationLine Name="Tiles" Type="Common.Models.Tile" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="4.438" Y="3.062" />
+        <Point X="4.438" Y="3.437" />
+        <Point X="5.531" Y="3.437" />
+        <Point X="5.531" Y="3.75" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.034" Y="0.442" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="instances" Type="Common.Models.ThingInstance" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="3.5" Y="3.062" />
+        <Point X="3.5" Y="3.437" />
+        <Point X="2.5" Y="3.437" />
+        <Point X="2.5" Y="3.75" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.644" Y="0.405" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAQCAAABBgAAAgAAAAAAAGAAAABAAAIAAAgEAQAACIA=</HashCode>
+      <FileName>Models\Region\Region.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="instances" />
+      <Property Name="Tiles" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Common.Models.Tile" Collapsed="true">
+    <Position X="4.75" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAIAAAA=</HashCode>
+      <FileName>Models\Region\Tile.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.World" Collapsed="true">
+    <Position X="7.25" Y="2.5" Width="1.5" />
+    <Members>
+      <Property Name="Instances" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAQAAQAAIAAAAgFAAAEAACAABClAAAIgQCgAAQNAAIA=</HashCode>
+      <FileName>Models\World.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Player" />
+      <Property Name="Instances" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Regions" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Common.Models.Animation">
+    <Position X="4.25" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAIAAAAQAIAAAAAAAAAAAAAAACE=</HashCode>
+      <FileName>Models\Sprite\Animation.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="Frames" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Common.Models.Frame">
+    <Position X="1.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAgAAAAAAAAIAAAAAAAAAAAAAAAQAAAAAAAA=</HashCode>
+      <FileName>Models\Sprite\Frame.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.SpriteModel">
+    <Position X="7" Y="6" Width="1.5" />
+    <AssociationLine Name="SpriteSheet" Type="Common.Models.Texture" FixedToPoint="true">
+      <Path>
+        <Point X="8.5" Y="6.875" />
+        <Point X="9.75" Y="6.875" />
+      </Path>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAACAACAEAQAAAAAAAAAAAAAAAAAQA=</HashCode>
+      <FileName>Models\Sprite\SpriteModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="SpriteSheet" />
+    </ShowAsAssociation>
+    <ShowAsCollectionAssociation>
+      <Property Name="Animations" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="Common.Models.Texture">
+    <Position X="9.75" Y="6" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAgAABAAAA=</HashCode>
+      <FileName>Models\Sprite\Texture.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="Common.Models.CharacterInstance" Collapsed="true">
+    <Position X="7.25" Y="3.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAACAAAAAAAAAAAAAAAAAAAACQAACAAAAA=</HashCode>
+      <FileName>Models\Instances\CharacterInstance.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

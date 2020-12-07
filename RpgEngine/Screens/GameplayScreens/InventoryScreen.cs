@@ -65,7 +65,7 @@ namespace RpgEngine.Screens
         {
             var sb = ScreenManager.SpriteBatch;
 
-            GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, Constants.Canvas / 2, inventorySize, Assets.SemiTransparentBlack);
+            GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, Constants.Canvas / 2, inventorySize, Assets.TranslucentBlack1);
             var titlePosition = new Vector2(Constants.CanvasWidth / 2, Constants.CanvasHeight / 2 - inventorySize.Y / 2 + 10);
             GuiHelper.DrawCenteredText(sb, Assets.StandardFont, "Inventory", titlePosition, Assets.StandardTextColor);
 

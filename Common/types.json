@@ -172,11 +172,46 @@
     "events": [
       {
         "name": "PickedUp",
-        "parameters": []
+        "parameters": [
+          {
+            "name": "Character",
+            "type": "CharacterInstance"
+          }
+        ]
       },
       {
         "name": "Dropped",
-        "parameters": []
+        "parameters": [
+          {
+            "name": "Character",
+            "type": "CharacterInstance"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "name": "Equipment",
+    "parents": [ "Item" ],
+    "properties": [],
+    "events": [
+      {
+        "name": "Equipped",
+        "parameters": [
+          {
+            "name": "Character",
+            "type": "CharacterInstance"
+          }
+        ]
+      },
+      {
+        "name": "Unequipped",
+        "parameters": [
+          {
+            "name": "Character",
+            "type": "CharacterInstance"
+          }
+        ]
       }
     ]
   },
@@ -252,6 +287,16 @@
       {
         "name": "Breed",
         "type": "Consumable"
+      }
+    ]
+  },
+  {
+    "name": "EquipmentInstance",
+    "parents": [ "ItemInstance" ],
+    "properties": [
+      {
+        "name": "Breed",
+        "type": "Equipment"
       }
     ]
   },

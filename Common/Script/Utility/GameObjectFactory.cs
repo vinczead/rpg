@@ -16,6 +16,7 @@ namespace Common.Script.Utility
                 "Character" => new Character(),
                 "Item" => new Item(),
                 "Consumable" => new Consumable(),
+                "Equipment" => new Equipment(),
                 "Activator" => new Models.Activator(),
                 _ => throw new ArgumentException("No Breed can be created with the specified name.", "name"),
             };

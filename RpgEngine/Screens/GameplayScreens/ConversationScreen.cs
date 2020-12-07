@@ -70,11 +70,11 @@ namespace RpgEngine.Screens
 
             if (EngineVariables.SpeechTexts.Count == 0)
             {
-                GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, topicSelectorPosition, screenSize, Assets.SemiTransparentBlack);
+                GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, topicSelectorPosition, screenSize, Assets.TranslucentBlack1);
                 base.Draw(gameTime);
             } else
             {
-                GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, speechTextPosition, screenSize, Assets.SemiTransparentBlack);
+                GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, speechTextPosition, screenSize, Assets.TranslucentBlack1);
                 GuiHelper.DrawCenteredText(sb, Assets.StandardFont, EngineVariables.SpeechTexts.Peek(), speechTextPosition, Assets.StandardTextColor);
             }
         }

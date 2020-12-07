@@ -1,0 +1,143 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="RpgEngine.Screens.ConfirmDialogScreen" Collapsed="true">
+    <Position X="6.75" Y="3.5" Width="1.5" />
+    <InheritanceLine Type="RpgEngine.Screens.MenuScreen" FixedToPoint="true">
+      <Path>
+        <Point X="12.75" Y="2.941" />
+        <Point X="12.75" Y="3.2" />
+        <Point X="7.5" Y="3.2" />
+        <Point X="7.5" Y="3.5" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Screens\MenuScreens\ConfirmDialogScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RpgEngine.Screens.ConversationScreen" Collapsed="true">
+    <Position X="10.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAYAQgCAAEAAAgAAAAAAEEAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Screens\GameplayScreens\ConversationScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RpgEngine.Screens.CreditsScreen" Collapsed="true">
+    <Position X="6.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Screens\MenuScreens\CreditsScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RpgEngine.Screens.GameplayScreen" Collapsed="true">
+    <Position X="8.5" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAIACAAAAAAwAAAAAAAAAAAAAAAAAAAAAAAAAgAAQ=</HashCode>
+      <FileName>Screens\GameplayScreens\GameplayScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RpgEngine.Screens.InventoryScreen" Collapsed="true">
+    <Position X="8.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAAAAAAgAICAAAAAAAAAQAAACAAAAAAAAAAAQ=</HashCode>
+      <FileName>Screens\GameplayScreens\InventoryScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RpgEngine.Screens.LoadingScreen" Collapsed="true">
+    <Position X="10.25" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAgAAAAAAAAgAAQAAAAAEAAAAAAAAAAAAAAAAAAAQ=</HashCode>
+      <FileName>Screens\MenuScreens\LoadingScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RpgEngine.Screens.MainMenuScreen" Collapsed="true">
+    <Position X="12" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAACAAAAAAAAAAAAAIAAAEAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Screens\MenuScreens\MainMenuScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RpgEngine.Screens.MenuItem" Collapsed="true">
+    <Position X="13.75" Y="2.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAAAAAAAAgAgAgAAAAAAAAAAAAABAAAAAACAQCAAI=</HashCode>
+      <FileName>Screens\MenuScreens\MenuItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RpgEngine.Screens.MenuScreen" Collapsed="true">
+    <Position X="12" Y="2.25" Width="1.5" />
+    <AssociationLine Name="MenuItems" Type="RpgEngine.Screens.MenuItem" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="13.188" Y="2.25" />
+        <Point X="13.188" Y="1.969" />
+        <Point X="14.562" Y="1.969" />
+        <Point X="14.562" Y="2.25" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.185" Y="0.277" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAQAACCAAAAAAhAAAAAAAAAAIAAAAAAAAJAAAAAAAAA=</HashCode>
+      <FileName>Screens\MenuScreens\MenuScreen.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Property Name="MenuItems" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="RpgEngine.Screens.PauseMenuScreen" Collapsed="true">
+    <Position X="13.75" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>QAQAAABAAAAAAiAAAAAIAAAEAAAAAAAAAAAAIAAAAAA=</HashCode>
+      <FileName>Screens\MenuScreens\PauseMenuScreen.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RpgEngine.Screens.Screen" Collapsed="true">
+    <Position X="7.5" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>gAQBEACAAABAAgAAAAAAAAAAAAAAAAAAAAAQAAAAAAQ=</HashCode>
+      <FileName>Screens\Screen.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="ScreenManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="RpgEngine.Screens.ScreenManager" Collapsed="true">
+    <Position X="10" Y="1" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AgQAEAAAAAAAAwAAAAAAAAAAAAAAiAAERIAAAAAACAQ=</HashCode>
+      <FileName>Screens\ScreenManager.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsCollectionAssociation>
+      <Field Name="screens" />
+    </ShowAsCollectionAssociation>
+  </Class>
+  <Class Name="RpgEngine.Utility.GuiHelper" Collapsed="true">
+    <Position X="8.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAQAAAAAAAAAAAAAAAAAE=</HashCode>
+      <FileName>Utility\GuiHelper.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RpgEngine.Utility.InputHandler" Collapsed="true">
+    <Position X="12" Y="4.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <TypeIdentifier>
+      <HashCode>AAQAIEAAAAQAAQAAAAAAAAAEAAAAAAAABCAABkAACAA=</HashCode>
+      <FileName>Utility\InputHandler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="RpgEngine.RpgEngine" Collapsed="true">
+    <Position X="13.25" Y="1" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQAQEAAAAAgAwAAAAAAAAAAAAAAAAgAAAAAAEAAAAQ=</HashCode>
+      <FileName>RpgEngine.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Field Name="screenManager" />
+    </ShowAsAssociation>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

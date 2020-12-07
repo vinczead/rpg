@@ -35,5 +35,22 @@ namespace Common.Models
 
             return Frames[i];
         }
+
+        public static Animation Empty
+        {
+            get => new Animation()
+            {
+                Id = "FallbackAnimation",
+                IsLooping = false,
+                Frames = new List<Frame>()
+                {
+                    new Frame()
+                    {
+                        TimeSpan = TimeSpan.FromSeconds(1),
+                        Source = new Microsoft.Xna.Framework.Rectangle(0, 0, 32, 32)
+                    }
+                }
+            };
+        }
     }
 }

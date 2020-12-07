@@ -27,7 +27,7 @@ namespace RpgEngine.Screens
             var player = World.Instance.Player;
             var playerX = (int)player.Position.X;
             var playerY = (int)player.Position.Y;
-            var playerFrame = player.Breed.Model[player.StateString].FrameAt(player.AnimationTime);
+            var playerFrame = player?.Breed?.Model[player.StateString]?.FrameAt(player.AnimationTime) ?? Animation.Empty.Frames.First();
             var playerTranslationMatrix = Matrix.CreateTranslation(Constants.CanvasWidth / 2 - playerX, Constants.CanvasHeight / 2 - playerY + playerFrame.Source.Height / 2, 0);
 
             var sb = ScreenManager.SpriteBatch;
@@ -40,7 +40,7 @@ namespace RpgEngine.Screens
             var playerClosestInstance = World.Instance.Player.ClosestInstance;
             if (playerClosestInstance != null)
             {
-                var underInstance = new Vector2(playerClosestInstance.Position.X, playerClosestInstance.Position.Y + 5);
+                var underInstance = new Vector2(playerClosestInstance.Position.X, playerClosestInstance.Position.Y - 5 - 32);
                 GuiHelper.DrawCenteredText(sb, Assets.StandardFont, playerClosestInstance.Breed.Name, underInstance, Assets.HighlightedTextColor);
             }
             sb.End();

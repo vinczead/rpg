@@ -21,7 +21,7 @@ namespace Common.Models
         public Region Region { get; set; }
         public Dictionary<string, Symbol> Variables { get; set; } = new Dictionary<string, Symbol>();
 
-        protected Animation CurrentAnimation { get => Breed.Model[StateString]; }
+        protected Animation CurrentAnimation { get => Breed?.Model[StateString] ?? Animation.Empty; }
         protected Rectangle CurrentFrame { get => CurrentAnimation.FrameAt(AnimationTime).Source; }
         protected Vector2 DrawPosition { get => new Vector2((int)(Position.X - CurrentFrame.Width / 2), (int)(Position.Y - CurrentFrame.Height)); }
         protected Rectangle BoundingBox { get => new Rectangle((int)DrawPosition.X, (int)DrawPosition.Y, (int)Breed.Model.FrameSize.X, (int)Breed.Model.FrameSize.Y); }
@@ -37,8 +37,10 @@ namespace Common.Models
         public virtual void Update(GameTime gameTime)
         {
             AnimationTime += gameTime.ElapsedGameTime;
-            if (AnimationTime.TotalMilliseconds > CurrentAnimation.RoundDuration * 10)
-                AnimationTime -= TimeSpan.FromMilliseconds(CurrentAnimation.RoundDuration) * 10;    //todo: this may be done nicer
+            if (gameTime.IsRunningSlowly) {
+            if (AnimationTime.TotalMilliseconds > CurrentAnimation.RoundDuration * 2)
+                AnimationTime -= TimeSpan.FromMilliseconds(CurrentAnimation.RoundDuration) * 2;
+            }
 
             if (MovementDelta.Length() > 0)
             {
