@@ -74,6 +74,11 @@ namespace Common.Models
                 spriteBatch.Draw(Assets.TransparentBox, BlockingBox, Color.Red);
         }
 
+        public virtual void Accept(Visitor visitor)
+        {
+            visitor.Visit(this);
+        }
+
         private List<Tile> GetTiles()
         {
             var tiles = new List<Tile>();

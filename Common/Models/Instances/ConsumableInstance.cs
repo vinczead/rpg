@@ -8,12 +8,9 @@ namespace Common.Models
 {
     public class ConsumableInstance : ItemInstance
     {
-        public void Consume(CharacterInstance character)
+        public override void Accept(Visitor visitor)
         {
-            character.Items.Remove(this);
-            World.Instance.Instances.Remove(Id);
-            var characterSymbol = new Symbol("Character", TypeSystem.Instance["CharacterInstance"], character.Id);
-            ExecutionVisitor.ExecuteRunBlock(this, "Consumed", new List<Symbol>() { characterSymbol });
+            visitor.Visit(this);
         }
     }
 }

@@ -21,9 +21,8 @@ namespace RpgEngine.Screens
             for (int i = 0; i < World.Instance.Player.Items.Count; i++)
             {
                 var item = World.Instance.Player.Items[i];
-                var menuItem = new MenuItem(item.Breed.Name)
+                var menuItem = new CarrierMenuItem<ItemInstance>(item.Breed.Name, item)
                 {
-                    Data = item,
                     Description = (item.Breed as Item).Description
                 };
                 menuItem.Selected += ItemSelected;
@@ -53,11 +52,21 @@ namespace RpgEngine.Screens
 
         private void ItemSelected(object sender, EventArgs e)
         {
-            var itemInstance = (sender as MenuItem).Data as ItemInstance;
-            if (itemInstance is ConsumableInstance)
+            var itemInstance = (sender as CarrierMenuItem<ItemInstance>).Data;
+
+            var consumeVisitor = new ConsumeVisitor(World.Instance.Player);
+            itemInstance.Accept(consumeVisitor);
+            if (consumeVisitor.Success)
             {
-                (itemInstance as ConsumableInstance).Consume(World.Instance.Player);
                 MenuItems.Remove(sender as MenuItem);
+                return;
+            }
+
+            var equipVisitor = new EquipVisitor(World.Instance.Player);
+            itemInstance.Accept(equipVisitor);
+            if (equipVisitor.Success)
+            {
+                return;
             }
         }
 
@@ -108,8 +117,8 @@ namespace RpgEngine.Screens
             {
                 if (SelectedItem != null)
                 {
-                    var itemInstance = SelectedItem.Data as ItemInstance;
-                    World.Instance.Player.DropItem(itemInstance);
+                    var itemInstance = (SelectedItem as CarrierMenuItem<ItemInstance>).Data;
+                    itemInstance.Accept(new DropVisitor(World.Instance.Player));
                     MenuItems.Remove(SelectedItem);
                 }
             }

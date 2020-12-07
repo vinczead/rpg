@@ -21,31 +21,14 @@ namespace Common.Models
                 for (int i = Items.Count -1; i >= 0; i--)
                 {
                     var item = Items[i];
-                    DropItem(item);
+                    item.Accept(new DropVisitor(this));
                 }
             }
             base.Update(gameTime);
         }
-
-        public void DropItem(ItemInstance item)
+        public override void Accept(Visitor visitor)
         {
-            Items.Remove(item);
-            Region.AddInstance(item);
-            item.Position = Position;   //todo: avoid collision? (items should not be collidible tho')
-            item.Dropped(this);
-        }
-
-        public void PickUpItem(ItemInstance item)
-        {
-            Region.RemoveInstance(item);
-            Items.Add(item);
-            item.PickedUp(this);
-        }
-
-        public void TalkTo(CharacterInstance character, string topic)
-        {
-            var characterSymbol = new Symbol("Character", TypeSystem.Instance["CharacterInstance"], character.Id);
-            ExecutionVisitor.ExecuteRunBlock(this, "TalkedTo", new List<Symbol>() { characterSymbol });
+            visitor.Visit(this);
         }
     }
 }

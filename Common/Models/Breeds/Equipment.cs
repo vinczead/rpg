@@ -6,5 +6,6 @@ namespace Common.Models
 {
     public class Equipment : Item
     {
+        public override Type InstanceType { get { return typeof(EquipmentInstance); } }
     }
 }

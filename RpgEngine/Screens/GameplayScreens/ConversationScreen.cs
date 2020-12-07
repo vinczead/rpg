@@ -29,9 +29,8 @@ namespace RpgEngine.Screens
 
         private void OnTopicSelected(object sender, MenuItemSelectedEventArgs eventArgs)
         {
-            var playerSymbol = new Symbol("Character", TypeSystem.Instance["CharacterInstance"], World.Instance.Player.Id);
-            var topicSymbol = new Symbol("Topic", TypeSystem.Instance["String"], eventArgs.MenuItem.Data as string);
-            ExecutionVisitor.ExecuteRunBlock(otherCharacter, "TalkedTo", new List<Symbol>() { playerSymbol, topicSymbol });
+            var topicId = (eventArgs.MenuItem as CarrierMenuItem<string>).Data;
+            otherCharacter.Accept(new ConversationVisitor(World.Instance.Player, topicId));
             RefreshMenuItems();
         }
 
@@ -40,10 +39,7 @@ namespace RpgEngine.Screens
             MenuItems = new List<MenuItem>();
             foreach (var topic in otherCharacter.Topics)
             {
-                MenuItems.Add(new MenuItem(topic.Value, "", OnTopicSelected)
-                {
-                    Data = topic.Key,
-                });
+                MenuItems.Add(new CarrierMenuItem<string>(topic.Value, "", OnTopicSelected, topic.Key));
             }
             SetupDefaultMenuItemPositions();
             foreach (var item in MenuItems)

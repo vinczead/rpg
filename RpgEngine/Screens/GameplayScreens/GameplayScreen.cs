@@ -147,15 +147,15 @@ namespace RpgEngine.Screens
                 {
                     if (player.ClosestInstance != null)
                     {
-                        if (player.ClosestInstance is ItemInstance)
-                        {
-                            player.PickUpItem(player.ClosestInstance as ItemInstance);
-                        }
+                        var pickUpVisitor = new PickUpVisitor(World.Instance.Player);
+                        player.ClosestInstance.Accept(pickUpVisitor);
+                        if (pickUpVisitor.Success)
+                            return; //maybe not?
 
-                        if (player.ClosestInstance is ActivatorInstance)
-                        {
-                            (player.ClosestInstance as ActivatorInstance).Activate(World.Instance.Player);
-                        }
+                        var activateVisitor = new ActivateVisitor(World.Instance.Player);
+                        player.ClosestInstance.Accept(activateVisitor);
+                        if (activateVisitor.Success)
+                            return;
 
                         if (player.ClosestInstance is CharacterInstance)
                         {
@@ -165,9 +165,9 @@ namespace RpgEngine.Screens
                 }
                 if (InputHandler.WasActionJustReleased(InputHandler.Action.Attack))
                 {
-                    if(player.ClosestInstance != null && player.ClosestInstance is CreatureInstance)
+                    if(player.ClosestInstance != null)
                     {
-                        (player.ClosestInstance as CreatureInstance).AttackedBy(player);
+                        player.ClosestInstance.Accept(new MeleeAttackVisitor(World.Instance.Player));
                     }
                 }
             }

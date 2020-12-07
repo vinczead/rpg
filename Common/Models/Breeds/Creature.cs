@@ -27,7 +27,7 @@ namespace Common.Models
         {
             var instance = base.Spawn(instanceId) as CreatureInstance;
 
-            instance.CurrentHealth = MaxHealth;
+            instance.CurrentHealth = MaxHealth/2;
             instance.CurrentMana = MaxMana;
 
             return instance;

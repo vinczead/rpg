@@ -96,15 +96,9 @@ namespace Common.Models
                 }
             }
         }
-
-        public void AttackedBy(CreatureInstance creatureInstance)
+        public override void Accept(Visitor visitor)
         {
-            var damageDealt = creatureInstance.Damage - (Breed as Creature).Protection;
-            CurrentHealth -= Math.Min(damageDealt, CurrentHealth);
-
-            var creatureSymbol = new Symbol("Creature", TypeSystem.Instance["CreatureInstance"], creatureInstance.Id);
-            var damageSymbol = new Symbol("Damage", TypeSystem.Instance["Number"], damageDealt.ToString());
-            ExecutionVisitor.ExecuteRunBlock(this, "Attacked", new List<Symbol>() { creatureSymbol, damageSymbol });
+            visitor.Visit(this);
         }
     }
 
