@@ -19,6 +19,7 @@
   },
   {
     "name": "Region",
+    "parentOfNull": true,
     "properties": [
       {
         "name": "Width",
@@ -159,6 +160,7 @@
   {
     "name": "Item",
     "parents": [ "Thing" ],
+    "parentOfNull": true,
     "properties": [
       {
         "name": "Value",
@@ -194,6 +196,7 @@
     "name": "Equipment",
     "parents": [ "Item" ],
     "properties": [],
+    "parentOfNull": true,
     "events": [
       {
         "name": "Equipped",
@@ -283,6 +286,7 @@
   {
     "name": "ConsumableInstance",
     "parents": [ "ItemInstance" ],
+    "parentOfNull": true,
     "properties": [
       {
         "name": "Breed",
@@ -293,6 +297,7 @@
   {
     "name": "EquipmentInstance",
     "parents": [ "ItemInstance" ],
+    "parentOfNull": true,
     "properties": [
       {
         "name": "Breed",
@@ -321,6 +326,7 @@
   {
     "name": "CharacterInstance",
     "parents": [ "CreatureInstance" ],
+    "parentOfNull": true,
     "properties": [
       {
         "name": "Breed",
@@ -331,6 +337,7 @@
   {
     "name": "ActivatorInstance",
     "parents": [ "ThingInstance" ],
+    "parentOfNull": true,
     "properties": [
       {
         "name": "Breed",
