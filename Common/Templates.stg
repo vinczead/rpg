@@ -39,7 +39,8 @@ typeMap ::= [
     "Common.Models.Character": "Character",
     "Common.Models.Activator": "Activator",
     "Common.Models.Item": "Item",
-    "Common.Models.Consumable": "Consumable"
+    "Common.Models.Consumable": "Consumable",
+    "Common.Models.Consumable": "Equipment"
 ]
 
 propMap ::= [
