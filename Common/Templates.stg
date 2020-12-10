@@ -40,7 +40,7 @@ typeMap ::= [
     "Common.Models.Activator": "Activator",
     "Common.Models.Item": "Item",
     "Common.Models.Consumable": "Consumable",
-    "Common.Models.Consumable": "Equipment"
+    "Common.Models.Equipment": "Equipment"
 ]
 
 propMap ::= [

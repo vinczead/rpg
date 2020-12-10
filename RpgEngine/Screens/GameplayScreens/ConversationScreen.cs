@@ -41,6 +41,7 @@ namespace RpgEngine.Screens
             {
                 MenuItems.Add(new CarrierMenuItem<string>(topic.Value, "", OnTopicSelected, topic.Key));
             }
+            MenuItems.Add(new MenuItem("(End Conversation)", "", OnCancel));
             SetupDefaultMenuItemPositions();
             foreach (var item in MenuItems)
             {

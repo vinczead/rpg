@@ -85,7 +85,7 @@ namespace RpgEngine.Screens
         {
             var centerScreenX = Constants.CanvasWidth / 2;
             var centerScreenY = Constants.CanvasHeight / 2;
-            var maxHeight = MenuItems.Max(item => Assets.StandardFont.MeasureString(item.Text).Y);
+            var maxHeight = MenuItems.Count > 0 ? MenuItems.Max(item => Assets.StandardFont.MeasureString(item.Text).Y) : 0;
             var firstItemY = centerScreenY - (MenuItems.Count / 2) * maxHeight;
             if (MenuItems.Count % 2 == 1)
                 firstItemY -= maxHeight / 2;

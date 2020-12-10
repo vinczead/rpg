@@ -7,7 +7,7 @@ texture T_ITEMS from "large-textures\ITEMS.png"
 model M_GRASS from T_TILES
     frame size 32, 32 
     collision 0, 0, 0, 0
-    animation Idle
+    animation Idle 
         frame 96, 0, 1000
     end
 end
@@ -42,7 +42,7 @@ end
 model M_RING from T_RING
     frame size 16, 16 
     collision 0, 0, 0, 0
-    animation Idle
+    animation Idle 
         frame 0, 0, 1000
     end
 end
@@ -50,7 +50,7 @@ end
 model M_MAN from T_MAN
     frame size 32, 32 
     collision 9, 28, 14, 4
-    animation Idle_Left
+    animation Idle_Left 
         frame 0, 0, 500
     end
     animation Move_Left looping
@@ -59,7 +59,7 @@ model M_MAN from T_MAN
         frame 64, 0, 500
         frame 96, 0, 500
     end
-    animation Dying_Left
+    animation Dying_Left 
         frame 0, 0, 250
         frame 512, 0, 250
         frame 0, 0, 250
@@ -69,7 +69,7 @@ model M_MAN from T_MAN
         frame 0, 0, 250
         frame 544, 0, 125
     end
-    animation Dead_Left
+    animation Dead_Left 
         frame 512, 0, 1000
     end
     animation Move_Right looping
@@ -78,10 +78,10 @@ model M_MAN from T_MAN
         frame 192, 0, 500
         frame 224, 0, 500
     end
-    animation Idle_Right
+    animation Idle_Right 
         frame 128, 0, 500
     end
-    animation Dying_Right
+    animation Dying_Right 
         frame 128, 0, 250
         frame 512, 0, 250
         frame 128, 0, 250
@@ -91,10 +91,10 @@ model M_MAN from T_MAN
         frame 128, 0, 250
         frame 544, 0, 125
     end
-    animation Dead_Right
+    animation Dead_Right 
         frame 512, 0, 1000
     end
-    animation Idle_Down
+    animation Idle_Down 
         frame 256, 0, 500
     end
     animation Move_Down looping
@@ -103,7 +103,7 @@ model M_MAN from T_MAN
         frame 320, 0, 500
         frame 352, 0, 500
     end
-    animation Dying_Down
+    animation Dying_Down 
         frame 256, 0, 250
         frame 512, 0, 250
         frame 256, 0, 250
@@ -113,10 +113,10 @@ model M_MAN from T_MAN
         frame 256, 0, 250
         frame 544, 0, 125
     end
-    animation Dead_Down
+    animation Dead_Down 
         frame 512, 0, 1000
     end
-    animation Idle_Up
+    animation Idle_Up 
         frame 384, 0, 500
     end
     animation Move_Up looping
@@ -125,7 +125,7 @@ model M_MAN from T_MAN
         frame 448, 0, 500
         frame 480, 0, 500
     end
-    animation Dying_Up
+    animation Dying_Up 
         frame 384, 0, 250
         frame 512, 0, 250
         frame 384, 0, 250
@@ -135,15 +135,15 @@ model M_MAN from T_MAN
         frame 384, 0, 250
         frame 544, 0, 125
     end
-    animation Dead_Up
+    animation Dead_Up 
         frame 512, 0, 1000
     end
 end
 
 model M_TREE from T_TREE
-    frame size 80, 128 
-    collision 19, 102, 46, 22
-    animation Idle
+    frame size 76, 113 
+    collision 17, 95, 46, 18
+    animation Idle 
         frame 0, 0, 1000
     end
 end
@@ -151,7 +151,7 @@ end
 model M_POTION_RED from T_ITEMS
     frame size 32, 32 
     collision 7, 24, 19, 5
-    animation Idle
+    animation Idle 
         frame 32, 0, 1000
     end
 end
@@ -159,7 +159,7 @@ end
 model M_POTION_BLUE from T_ITEMS
     frame size 32, 32 
     collision 0, 0, 0, 0
-    animation Idle
+    animation Idle 
         frame 0, 0, 1000
     end
 end
@@ -167,7 +167,7 @@ end
 model M_TORCH from T_ITEMS
     frame size 32, 32 
     collision 0, 0, 0, 0
-    animation Inactive
+    animation Inactive 
         frame 0, 32, 1000
     end
     animation Active looping
@@ -224,9 +224,9 @@ breed RING_OF_COUNTING from Equipment
     end
 
     run when Equipped
-        set Self.count to Self.count + 1
-        ShowMessage("Equipped this many times: " + Self.count)
-    end
+                        set Self.count to Self.count + 1
+                        ShowMessage("Equipped this many times: " + Self.count)
+                    end
 
 end
 
@@ -249,11 +249,11 @@ breed POTION_OF_HEALTH from Consumable
     end
 
     run when Consumed
-        set Character.CurrentHealth to Character.CurrentHealth + 25
-        if Character.CurrentHealth > Character.Breed.MaxHealth then
-            set Character.CurrentHealth to Character.Breed.MaxHealth
-        end
-    end
+                        set Character.CurrentHealth to Character.CurrentHealth + 25
+                        if Character.CurrentHealth > Character.Breed.MaxHealth then
+                            set Character.CurrentHealth to Character.Breed.MaxHealth
+                        end
+                    end
 
 end
 
@@ -267,11 +267,11 @@ breed POTION_OF_MANA from Consumable
     end
 
     run when Consumed
-        set Character.CurrentMana to Character.CurrentMana + 20
-        if Character.CurrentMana > Character.Breed.MaxMana then
-            set Character.CurrentMana to Character.Breed.MaxMana
-        end
-    end
+                        set Character.CurrentMana to Character.CurrentMana + 20
+                        if Character.CurrentMana > Character.Breed.MaxMana then
+                            set Character.CurrentMana to Character.Breed.MaxMana
+                        end
+                    end
 
 end
 
@@ -283,16 +283,16 @@ breed REMOTE_OPENED_DOOR from Activator
     end
 
     run when Activated
-        if Self.Activated = true then
-            if $PLAYERINSTANCE.Region = $SECOND then
-                MoveToRegion($PLAYERINSTANCE, $ISLAND, 624, 70)
-            else
-                MoveToRegion($PLAYERINSTANCE, $SECOND, 32, 280)
-            end
-        else
-            ShowMessage("This door is opened remotely.")
-        end
-    end
+                                    if Self.Activated = true then
+                                        if $PLAYERINSTANCE.Region = $SECOND then
+                                            MoveToRegion($PLAYERINSTANCE, $ISLAND, 624, 70)
+                                        else
+                                            MoveToRegion($PLAYERINSTANCE, $SECOND, 45, 70)
+                                        end
+                                    else
+                                        ShowMessage("This door is opened remotely.")
+                                    end
+                                end
 
 end
 
@@ -304,8 +304,8 @@ breed TORCH from Activator
     end
 
     run when Activated
-    	set Self.Activated to not Self.Activated
-    end
+                    	set Self.Activated to not Self.Activated
+                    end
 
 end
 
@@ -317,18 +317,18 @@ breed DOOR_OPENER_BUTTON from Activator
     end
 
     run when Activated
-    	set Self.Activated to not Self.Activated
-        if Self.Region = $ISLAND then
-    	    set $REGION_SWITCH_DOOR.Activated to not $REGION_SWITCH_DOOR.Activated
-        else
-            set $REGION_SWITCH_DOOR2.Activated to not $REGION_SWITCH_DOOR2.Activated
-        end
-        if Self.Activated = True then
-    	    ShowMessage("Somewhere a door has opened...")
-        else
-            ShowMessage("The door is now closed...")
-        end
-    end
+                    	set Self.Activated to not Self.Activated
+                        if Self.Region = $ISLAND then
+                    	    set $REGION_SWITCH_DOOR.Activated to not $REGION_SWITCH_DOOR.Activated
+                        else
+                            set $REGION_SWITCH_DOOR2.Activated to not $REGION_SWITCH_DOOR2.Activated
+                        end
+                        if Self.Activated = True then
+                    	    ShowMessage("Somewhere a door has opened...")
+                        else
+                            ShowMessage("The door is now closed...")
+                        end
+                    end
 
 end
 
@@ -342,28 +342,30 @@ breed TOWNGUARD from Character
     set Self.Speed to 50
     set Self.Intelligence to 10
     set Self.Protection to 5
-    AddBreedTopic(Self, "TG_HELLO", "Hello, how are you?")
-    AddBreedTopic(Self, "TG_WHAT_IS_THIS_PLACE", "What is this place?")
-    AddBreedItem(Self, $RING_OF_COUNTING)
 
     variables
     end
-    
+
+    run when Spawned
+        	AddTopic(Self, "TG_GIVE_POTION", "Do you have any advice for me?")
+        	AddTopic(Self, "TG_WHAT_IS_THIS_PLACE", "What is this place?")
+        	AddItem(Self, $RING_OF_COUNTING)
+        end
     run when TalkedTo    
-        if Topic = "TG_HELLO" then
-            AddSpeechText("Me: Hello, how are you?")
-            AddSpeechText("Guard: Thanks, I'm fine.")
-            AddSpeechText("Guard: Here, take this potion, you might need it.")
-            ShowMessage("You received a Health Potion.")
-            AddItem(Character, $POTION_OF_HEALTH)
-            AddSpeechText("Me: Thank you!")
-            RemoveTopic(Self, "TG_HELLO")
+            if Topic = "TG_GIVE_POTION" then
+                AddSpeechText("Me: Do you have any advice for me?")
+                AddSpeechText("Guard: No advice, but take this potion.")
+                AddSpeechText("Guard: You might need it.")
+                ShowMessage("You received a Health Potion.")
+                AddItem(Character, $POTION_OF_HEALTH)
+                AddSpeechText("Me: Thank you!")
+                RemoveTopic(Self, "TG_GIVE_POTION")
+            end
+            
+            if Topic = "TG_WHAT_IS_THIS_PLACE" then
+                ShowMessage("Not implemented.")
+            end
         end
-        
-        if Topic = "TG_WHAT_IS_THIS_PLACE" then
-            ShowMessage("Not implemented.")
-        end
-    end
 
 end
 
@@ -377,8 +379,6 @@ breed PLAYER from Character
     set Self.Speed to 90
     set Self.Intelligence to 10
     set Self.Protection to 5
-    AddBreedItem(Self, $POTION_OF_HEALTH)
-    AddBreedItem(Self, $POTION_OF_MANA)
 
     variables
     end
@@ -436,8 +436,8 @@ end
 region SECOND 10, 10
     tile size 32, 32
     tiles
-            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
-            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WALL, $WALL, $WALL, $WALL, $WALL, $WALL, $WALL, $WALL, $WALL,  $WALL]
+            [$WALL, $GRASS, $WALL, $WALL, $WALL, $WALL, $WALL, $WALL, $WALL,  $WALL]
             [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
             [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
             [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
@@ -449,8 +449,12 @@ region SECOND 10, 10
 
     end
 
-    instance REGION_SWITCH_DOOR2 of REMOTE_OPENED_DOOR at 48, 320
-    instance of DOOR_OPENER_BUTTON at 100, 200
+    instance REGION_SWITCH_DOOR2 of REMOTE_OPENED_DOOR at 48, 64
+    instance of DOOR_OPENER_BUTTON at 100, 100
+    instance of TORCH at 143, 55
+    instance of POTION_OF_MANA at 37, 159
+    instance of POTION_OF_HEALTH at 106, 145
+    instance of TREE at 92, 211
 
 end
 

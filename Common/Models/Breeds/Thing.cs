@@ -1,6 +1,7 @@
 ﻿using Antlr4.Runtime.Misc;
 using Antlr4.StringTemplate;
 using Common.Script.Utility;
+using Common.Script.Visitors;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using System;
@@ -34,6 +35,7 @@ namespace Common.Models
                 instance.Variables.Add(variable.Name, new Symbol(variable));
             }
             World.Instance.Instances.Add(instance.Id, instance);
+            ExecutionVisitor.ExecuteRunBlock(instance, "Spawned", new List<Symbol>() { });
 
             return instance;
         }
