@@ -12,9 +12,11 @@ namespace Common.Script.Utility
     {
         static Random random = new Random();
 
-        public static double Random()
+        public static double Random(object[] parameters)
         {
-            return random.NextDouble();
+            var min = Convert.ToInt32(parameters[0]);
+            var max = Convert.ToInt32(parameters[1]);
+            return random.Next(min, max);
         }
 
         public static double StrLength(object[] parameters)
@@ -79,6 +81,17 @@ namespace Common.Script.Utility
             {
                 return false;
             }
+        }
+
+        public static void Spawn(object[] parameters)
+        {
+            var region = parameters[0] as Region;
+            var x = Convert.ToInt32(parameters[1]);
+            var y = Convert.ToInt32(parameters[2]);
+
+            var breed = parameters[3] as Thing;
+
+            World.Instance.Spawn(breed.Id, region.Id, new Vector2(x, y));
         }
 
         public static bool AddItem(object[] parameters)

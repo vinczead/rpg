@@ -10,8 +10,39 @@
     "returnType": "Boolean"
   },
   {
+    "name": "Spawn",
+    "parameters": [
+      {
+        "name": "Region",
+        "type": "Region"
+      },
+      {
+        "name": "X",
+        "type": "Number"
+      },
+      {
+        "name": "Y",
+        "type": "Number"
+      },
+      {
+        "name": "Breed",
+        "type": "Thing"
+      }
+    ],
+    "returnType": "Number"
+  },
+  {
     "name": "Random",
-    "parameters": [],
+    "parameters": [
+      {
+        "name": "Min",
+        "type": "Number"
+      },
+      {
+        "name": "Max",
+        "type": "Number"
+      }
+    ],
     "returnType": "Number"
   },
   {

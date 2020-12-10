@@ -208,7 +208,7 @@ namespace Common.Script.Visitors
             var modelSymbol = GetSymbolFromScope(context.modelId, modelId);
             if (modelSymbol != null)
             {
-                if(modelSymbol.Type != TypeSystem.Instance["SpriteModel"])
+                if (modelSymbol.Type != TypeSystem.Instance["SpriteModel"])
                     errors.Add(new Error(context.modelId, $"Type of {modelId} must be {TypeSystem.Instance["SpriteModel"]}"));
             }
 
@@ -526,9 +526,12 @@ namespace Common.Script.Visitors
             var pathType = TypeVisitor.GetType(context.path(), scope, errors);
             var expressionType = TypeVisitor.GetType(context.expression(), scope, errors) ?? TypeSystem.Instance["ErrorType"];
 
+            if(pathType == TypeSystem.Instance["AnyType"])
+                return base.VisitAssignmentStatement(context);
+
             if (pathType != TypeSystem.Instance["ErrorType"] && !expressionType.InheritsFrom(pathType))
             {
-                errors.Add(new Error(context.expression(), $"Type mismatch: {expressionType} cannot be converted to {pathType}."));
+                errors.Add(new Error(context.expression(), $"Type mismatch: {expressionType} cannot be assigned to {pathType}."));
             }
 
             return base.VisitAssignmentStatement(context);

@@ -8,6 +8,7 @@ namespace WorldEditor.Utility
     {
         SelectionTool,
         EntityTool,
+        PlayerTool,
         EraserTool,
         TileTool
     }

@@ -19,6 +19,7 @@
     <None Remove="Resources\Icons\OpenFolder_16x.png" />
     <None Remove="Resources\Icons\OpenProject_16x.png" />
     <None Remove="Resources\Icons\Paste_16x.png" />
+    <None Remove="Resources\Icons\Player_16x.png" />
     <None Remove="Resources\Icons\Redo_16x.png" />
     <None Remove="Resources\Icons\SaveAs_16x.png" />
     <None Remove="Resources\Icons\Save_16x.png" />
@@ -29,6 +30,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Resource Include="Resources\Icons\Player_16x.png" />
     <EmbeddedResource Include="ViGaSHighlighting.xshd" />
   </ItemGroup>
 
@@ -74,10 +76,17 @@
     <Compile Update="Views\Content\TileTypes\TileTypesGrid.xaml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Update="Views\MainWindow\Tools\PlayerTool.xaml.cs">
+      <SubType>Code</SubType>
+    </Compile>
   </ItemGroup>
 
   <ItemGroup>
     <Page Update="Views\Content\TileTypes\TileTypesGrid.xaml">
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Update="Views\MainWindow\Tools\PlayerTool.xaml">
+      <XamlRuntime>$(DefaultXamlRuntime)</XamlRuntime>
       <SubType>Designer</SubType>
     </Page>
   </ItemGroup>

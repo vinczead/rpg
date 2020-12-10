@@ -26,5 +26,11 @@
                     Path=SelectedTool,
                     Converter={StaticResource ToolTypeToVisibilityConverter},
                     ConverterParameter={x:Static utility:ToolType.TileTool}}"/>
+        
+        <local:PlayerTool Grid.Row="1" Visibility="{Binding
+                    Mode=OneWay,
+                    Path=SelectedTool,
+                    Converter={StaticResource ToolTypeToVisibilityConverter},
+                    ConverterParameter={x:Static utility:ToolType.PlayerTool}}"/>
     </Grid>
 </UserControl>

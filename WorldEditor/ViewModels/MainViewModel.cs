@@ -31,7 +31,21 @@ namespace WorldEditor.ViewModels
         public TilesViewModel Tiles { get => tiles; set => Set(ref tiles, value); }
 
         private RegionsViewModel regions;
-        public RegionsViewModel Regions { get => regions; set => Set(ref regions, value); }        
+        public RegionsViewModel Regions { get => regions; set => Set(ref regions, value); }
+
+        private InstanceViewModel playerInstance;
+        public InstanceViewModel PlayerInstance
+        {
+            get => playerInstance;
+            set
+            {
+                Set(ref playerInstance, value);
+                if (value == null)
+                    World.Instance.Player = null;
+                else
+                    World.Instance.Player = value.ThingInstance as CharacterInstance;
+            }
+        }
 
         private bool isProjectOpen;
         public bool IsProjectOpen
@@ -53,6 +67,13 @@ namespace WorldEditor.ViewModels
                     Breeds = new BreedsViewModel(this);
                     Tiles = new TilesViewModel(this);
                     Regions = new RegionsViewModel(this);
+                    if(World.Instance.Player?.Id != null)
+                    {
+                        var playerInstanceVM = Regions.Items
+                            .Select(region => region.Instances.FirstOrDefault(instance => instance.Id == World.Instance.Player.Id))
+                            .FirstOrDefault(instance => instance != null);
+                        PlayerInstance = playerInstanceVM;
+                    }
                 } else
                 {
                     Sidebar = null;
@@ -61,6 +82,7 @@ namespace WorldEditor.ViewModels
                     Breeds = null;
                     Tiles = null;
                     Regions = null;
+                    PlayerInstance = null;
                 }
             }
         }

@@ -16,9 +16,9 @@ namespace WorldEditor.Views
     /// <summary>
     /// Interaction logic for RegionTabs.xaml
     /// </summary>
-    public partial class RegionTabs : UserControl
+    public partial class RegionEditor : UserControl
     {
-        public RegionTabs()
+        public RegionEditor()
         {
             InitializeComponent();
         }

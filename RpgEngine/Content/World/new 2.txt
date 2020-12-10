@@ -1,4 +1,0 @@
-Visitor -> bejárás
-Visitorok sorrendje
-github link összefoglalásba
-githubra valami komplexebb esettanulmány

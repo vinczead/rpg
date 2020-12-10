@@ -35,6 +35,7 @@
         <MenuItem Header="Tools">
             <MenuItem Header="Entity Tool" Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.EntityTool}"/>
             <MenuItem Header="Tile Tool" Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.TileTool}"/>
+            <MenuItem Header="Player Tool" Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.PlayerTool}"/>
         </MenuItem>
         <MenuItem Header="Contents">
             <MenuItem Header="Edit Contents..." Command="{Binding OpenContents}"/>

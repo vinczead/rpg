@@ -1,0 +1,457 @@
+texture T_TILES from "textures/TILES.png"
+texture T_MAN from "textures/man.png"
+texture T_RING from "textures/RING.png"
+texture T_TREE from "textures\tree.png"
+texture T_ITEMS from "textures\ITEMS.png"
+
+model M_GRASS from T_TILES
+    frame size 32, 32 
+    collision 0, 0, 0, 0
+    animation Idle
+        frame 96, 0, 1000
+    end
+end
+
+model M_WATER from T_TILES
+    frame size 32, 32 
+    collision 0, 0, 0, 0
+    animation Idle looping
+        frame 0, 64, 150
+        frame 32, 64, 150
+        frame 64, 64, 150
+        frame 96, 64, 150
+        frame 128, 64, 150
+        frame 160, 64, 150
+        frame 192, 64, 150
+        frame 224, 64, 150
+        frame 256, 64, 150
+        frame 288, 64, 150
+        frame 320, 64, 150
+        frame 288, 64, 150
+        frame 256, 64, 150
+        frame 224, 64, 150
+        frame 192, 64, 150
+        frame 160, 64, 150
+        frame 128, 64, 150
+        frame 96, 64, 150
+        frame 64, 64, 150
+        frame 32, 64, 150
+    end
+end
+
+model M_RING from T_RING
+    frame size 16, 16 
+    collision 0, 0, 0, 0
+    animation Idle
+        frame 0, 0, 1000
+    end
+end
+
+model M_MAN from T_MAN
+    frame size 32, 32 
+    collision 9, 28, 14, 4
+    animation Idle_Left
+        frame 0, 0, 500
+    end
+    animation Move_Left looping
+        frame 0, 0, 500
+        frame 32, 0, 500
+        frame 64, 0, 500
+        frame 96, 0, 500
+    end
+    animation Dying_Left
+        frame 0, 0, 250
+        frame 512, 0, 250
+        frame 0, 0, 250
+        frame 512, 0, 250
+        frame 0, 0, 250
+        frame 512, 0, 250
+        frame 0, 0, 250
+        frame 544, 0, 125
+    end
+    animation Dead_Left
+        frame 512, 0, 1000
+    end
+    animation Move_Right looping
+        frame 128, 0, 500
+        frame 160, 0, 500
+        frame 192, 0, 500
+        frame 224, 0, 500
+    end
+    animation Idle_Right
+        frame 128, 0, 500
+    end
+    animation Dying_Right
+        frame 128, 0, 250
+        frame 512, 0, 250
+        frame 128, 0, 250
+        frame 512, 0, 250
+        frame 128, 0, 250
+        frame 512, 0, 250
+        frame 128, 0, 250
+        frame 544, 0, 125
+    end
+    animation Dead_Right
+        frame 512, 0, 1000
+    end
+    animation Idle_Down
+        frame 256, 0, 500
+    end
+    animation Move_Down looping
+        frame 256, 0, 500
+        frame 288, 0, 500
+        frame 320, 0, 500
+        frame 352, 0, 500
+    end
+    animation Dying_Down
+        frame 256, 0, 250
+        frame 512, 0, 250
+        frame 256, 0, 250
+        frame 512, 0, 250
+        frame 256, 0, 250
+        frame 512, 0, 250
+        frame 256, 0, 250
+        frame 544, 0, 125
+    end
+    animation Dead_Down
+        frame 512, 0, 1000
+    end
+    animation Idle_Up
+        frame 384, 0, 500
+    end
+    animation Move_Up looping
+        frame 384, 0, 500
+        frame 416, 0, 500
+        frame 448, 0, 500
+        frame 480, 0, 500
+    end
+    animation Dying_Up
+        frame 384, 0, 250
+        frame 512, 0, 250
+        frame 384, 0, 250
+        frame 512, 0, 250
+        frame 384, 0, 250
+        frame 512, 0, 250
+        frame 384, 0, 250
+        frame 544, 0, 125
+    end
+    animation Dead_Up
+        frame 512, 0, 1000
+    end
+end
+
+model M_TREE from T_TREE
+    frame size 80, 128 
+    collision 19, 102, 46, 22
+    animation Idle
+        frame 0, 0, 1000
+    end
+end
+
+model M_POTION_RED from T_ITEMS
+    frame size 32, 32 
+    collision 7, 24, 19, 5
+    animation Idle
+        frame 32, 0, 1000
+    end
+end
+
+model M_POTION_BLUE from T_ITEMS
+    frame size 32, 32 
+    collision 0, 0, 0, 0
+    animation Idle
+        frame 0, 0, 1000
+    end
+end
+
+model M_TORCH from T_ITEMS
+    frame size 32, 32 
+    collision 0, 0, 0, 0
+    animation Inactive
+        frame 0, 32, 1000
+    end
+    animation Active looping
+        frame 32, 32, 125
+        frame 64, 32, 125
+        frame 96, 32, 125
+        frame 128, 32, 125
+    end
+end
+
+model M_DOOR from T_ITEMS
+    frame size 32, 32 
+    collision 0, 0, 32, 32
+    animation Inactive looping
+        frame 0, 64, 1000
+    end
+    animation Active looping
+        frame 32, 64, 1000
+    end
+end
+
+model M_BUTTON from T_ITEMS
+    frame size 23, 22 
+    collision 0, 13, 23, 9
+    animation Inactive looping
+        frame 0, 96, 1000
+    end
+    animation Active looping
+        frame 23, 96, 1000
+    end
+end
+
+model M_WALL from T_TILES
+    frame size 32, 32 
+    collision 0, 0, 0, 0
+    animation Idle looping
+        frame 64, 0, 1000
+    end
+end
+
+tile GRASS from M_GRASS walkable
+tile WATER from M_WATER
+tile WALL from M_WALL
+
+breed RING_OF_COUNTING from Equipment
+    set Self.Name to "Ring of Counting"
+    set Self.Model to $M_RING
+    set Self.Value to 100
+    set Self.Description to "Counts how many times it was equipped."
+
+    variables
+        count is Number withvalue 0
+
+    end
+
+    run when Equipped
+        set Self.count to Self.count + 1
+        ShowMessage("Equipped this many times: " + Self.count)
+    end
+
+end
+
+breed TREE from Thing
+    set Self.Name to ""
+    set Self.Model to $M_TREE
+
+    variables
+    end
+
+end
+
+breed POTION_OF_HEALTH from Consumable
+    set Self.Name to "Potion of Health"
+    set Self.Model to $M_POTION_RED
+    set Self.Value to 100
+    set Self.Description to "Increases your health by 25."
+
+    variables
+    end
+
+    run when Consumed
+        set Character.CurrentHealth to Character.CurrentHealth + 25
+        if Character.CurrentHealth > Character.Breed.MaxHealth then
+            set Character.CurrentHealth to Character.Breed.MaxHealth
+        end
+    end
+
+end
+
+breed POTION_OF_MANA from Consumable
+    set Self.Name to "Potion of Mana"
+    set Self.Model to $M_POTION_BLUE
+    set Self.Value to 150
+    set Self.Description to "Increases your mana by 20."
+
+    variables
+    end
+
+    run when Consumed
+        set Character.CurrentMana to Character.CurrentMana + 20
+        if Character.CurrentMana > Character.Breed.MaxMana then
+            set Character.CurrentMana to Character.Breed.MaxMana
+        end
+    end
+
+end
+
+breed REMOTE_OPENED_DOOR from Activator
+    set Self.Name to "Door"
+    set Self.Model to $M_DOOR
+
+    variables
+    end
+
+    run when Activated
+        if Self.Activated = true then
+            if $PLAYERINSTANCE.Region = $SECOND then
+                MoveToRegion($PLAYERINSTANCE, $ISLAND, 624, 70)
+            else
+                MoveToRegion($PLAYERINSTANCE, $SECOND, 32, 280)
+            end
+        else
+            ShowMessage("This door is opened remotely.")
+        end
+    end
+
+end
+
+breed TORCH from Activator
+    set Self.Name to "Torch"
+    set Self.Model to $M_TORCH
+
+    variables
+    end
+
+    run when Activated
+    	set Self.Activated to not Self.Activated
+    end
+
+end
+
+breed DOOR_OPENER_BUTTON from Activator
+    set Self.Name to "Button"
+    set Self.Model to $M_BUTTON
+
+    variables
+    end
+
+    run when Activated
+    	set Self.Activated to not Self.Activated
+        if Self.Region = $ISLAND then
+    	    set $REGION_SWITCH_DOOR.Activated to not $REGION_SWITCH_DOOR.Activated
+        else
+            set $REGION_SWITCH_DOOR2.Activated to not $REGION_SWITCH_DOOR2.Activated
+        end
+        if Self.Activated = True then
+    	    ShowMessage("Somewhere a door has opened...")
+        else
+            ShowMessage("The door is now closed...")
+        end
+    end
+
+end
+
+breed TOWNGUARD from Character
+    set Self.Name to "Town Guard"
+    set Self.Model to $M_MAN
+    set Self.MaxHealth to 100
+    set Self.MaxMana to 10
+    set Self.Strength to 10
+    set Self.Dexterity to 10
+    set Self.Speed to 50
+    set Self.Intelligence to 10
+    set Self.Protection to 5
+    AddBreedTopic(Self, "TG_HELLO", "Hello, how are you?")
+    AddBreedTopic(Self, "TG_WHAT_IS_THIS_PLACE", "What is this place?")
+    AddBreedItem(Self, $RING_OF_COUNTING)
+
+    variables
+    end
+    
+    run when TalkedTo    
+        if Topic = "TG_HELLO" then
+            AddSpeechText("Me: Hello, how are you?")
+            AddSpeechText("Guard: Thanks, I'm fine.")
+            AddSpeechText("Guard: Here, take this potion, you might need it.")
+            ShowMessage("You received a Health Potion.")
+            AddItem(Character, $POTION_OF_HEALTH)
+            AddSpeechText("Me: Thank you!")
+            RemoveTopic(Self, "TG_HELLO")
+        end
+        
+        if Topic = "TG_WHAT_IS_THIS_PLACE" then
+            ShowMessage("Not implemented.")
+        end
+    end
+
+end
+
+breed PLAYER from Character
+    set Self.Name to "Me"
+    set Self.Model to $M_MAN
+    set Self.MaxHealth to 100
+    set Self.MaxMana to 50
+    set Self.Strength to 50
+    set Self.Dexterity to 10
+    set Self.Speed to 90
+    set Self.Intelligence to 10
+    set Self.Protection to 5
+    AddBreedItem(Self, $POTION_OF_HEALTH)
+    AddBreedItem(Self, $POTION_OF_MANA)
+
+    variables
+    end
+
+end
+
+region ISLAND 23, 15
+    tile size 32, 32
+    tiles
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WALL, $WALL, $WALL, $WALL, $WALL, $WALL, $WALL, $WALL,  $WALL]
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WALL, $WALL, $WALL, $WALL, $WALL, $GRASS, $WALL, $WALL,  $WALL]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $WATER, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+
+    end
+
+    instance PLAYERINSTANCE of PLAYER at 150, 150
+    instance of TREE at 170, 130
+    instance of TOWNGUARD at 200, 200
+    instance of TOWNGUARD at 220, 210
+    instance of TREE at 130, 130
+    instance of TREE at 396, 323
+    instance of TREE at 368, 373
+    instance of RING_OF_COUNTING at 138, 330
+    instance of POTION_OF_HEALTH at 353, 163
+    instance of POTION_OF_HEALTH at 395, 167
+    instance of POTION_OF_HEALTH at 423, 164
+    instance of POTION_OF_HEALTH at 491, 137
+    instance of POTION_OF_HEALTH at 500, 137
+    instance of POTION_OF_HEALTH at 520, 137
+    instance of POTION_OF_HEALTH at 540, 137
+    instance of RING_OF_COUNTING at 160, 330
+    instance of POTION_OF_MANA at 235, 242
+    instance of POTION_OF_MANA at 229, 270
+    instance of POTION_OF_MANA at 240, 312
+    instance of POTION_OF_MANA at 260, 267
+    instance of POTION_OF_MANA at 272, 341
+    instance REGION_SWITCH_DOOR of REMOTE_OPENED_DOOR at 624, 64
+    instance of DOOR_OPENER_BUTTON at 600, 140
+    instance of TORCH at 592, 55
+
+end
+
+region SECOND 10, 10
+    tile size 32, 32
+    tiles
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+            [$GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS, $GRASS,  $GRASS]
+
+    end
+
+    instance REGION_SWITCH_DOOR2 of REMOTE_OPENED_DOOR at 48, 320
+    instance of DOOR_OPENER_BUTTON at 100, 200
+
+end
+
+player PLAYERINSTANCE

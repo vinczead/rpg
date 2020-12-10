@@ -13,7 +13,6 @@ namespace Common.Models
         {
             this.consumer = consumer;
         }
-
         public override void Visit(ConsumableInstance consumable)
         {
             consumer.Items.Remove(consumable);

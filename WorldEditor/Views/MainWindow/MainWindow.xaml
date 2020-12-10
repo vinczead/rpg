@@ -28,7 +28,7 @@
                 <ColumnDefinition/>
             </Grid.ColumnDefinitions>
             <local:Sidebar Grid.Column="0" DataContext="{Binding Sidebar}"/>
-            <local:RegionTabs Grid.Column="1" DataContext="{Binding Regions}"/>
+            <local:RegionEditor Grid.Column="1" DataContext="{Binding Regions}"/>
         </Grid>
     </Grid>
 </Window>

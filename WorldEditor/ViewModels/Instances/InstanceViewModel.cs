@@ -71,6 +71,7 @@ namespace WorldEditor.ViewModels
                 Region.Region.instances.RemoveAll(instance => instance.Id == ThingInstance.Id);
                 var originalViewModel = Region.Instances.First(instance => instance.Id == ThingInstance.Id);
                 Region.Instances.Remove(originalViewModel);
+                Region.Regions.MainViewModel.PlayerInstance = null;
                 window.Close();
             }
             catch

@@ -1,0 +1,336 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="WorldEditor.ViewModels.TexturesViewModel">
+    <Position X="5.25" Y="5.75" Width="1.75" />
+    <Members>
+      <Method Name="TexturesViewModel" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="WorldEditor.ViewModels.CollectionViewModel&lt;T&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="14.375" Y="4.691" />
+        <Point X="14.375" Y="5.375" />
+        <Point X="13.271" Y="5.375" Type="JumpStart" />
+        <Point X="13.104" Y="5.375" Type="JumpEnd" />
+        <Point X="11.771" Y="5.375" Type="JumpStart" />
+        <Point X="11.604" Y="5.375" Type="JumpEnd" />
+        <Point X="9.833" Y="5.375" Type="JumpStart" />
+        <Point X="9.667" Y="5.375" Type="JumpEnd" />
+        <Point X="7.771" Y="5.375" Type="JumpStart" />
+        <Point X="7.604" Y="5.375" Type="JumpEnd" />
+        <Point X="6.125" Y="5.375" />
+        <Point X="6.125" Y="5.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAACAAAAAAAAAAGAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Textures\TexturesViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.TextureViewModel">
+    <Position X="5.25" Y="8.25" Width="1.75" />
+    <Members>
+      <Property Name="BrowseImage" Hidden="true" />
+      <Field Name="byteArrayValue" Hidden="true" />
+      <Property Name="ByteArrayValue" Hidden="true" />
+      <Method Name="ExecuteBrowseImage" Hidden="true" />
+      <Field Name="fileName" Hidden="true" />
+      <Property Name="HasTextureValue" Hidden="true" />
+      <Field Name="id" Hidden="true" />
+      <Method Name="TextureViewModel" Hidden="true" />
+    </Members>
+    <AssociationLine Name="Textures" Type="WorldEditor.ViewModels.TexturesViewModel">
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="0.087" Y="0.052" Height="0.182" Width="0.878" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AAASAEAIAAAMAABAAAAAAAAKAAAAAAAAAEIAEABAAgA=</HashCode>
+      <FileName>ViewModels\Textures\TextureViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Textures" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.RegionsViewModel" Collapsed="true">
+    <Position X="9.25" Y="5.75" Width="1.5" />
+    <InheritanceLine Type="WorldEditor.ViewModels.CollectionViewModel&lt;T&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="14.375" Y="4.691" />
+        <Point X="14.375" Y="5.375" />
+        <Point X="13.271" Y="5.375" Type="JumpStart" />
+        <Point X="13.104" Y="5.375" Type="JumpEnd" />
+        <Point X="11.771" Y="5.375" Type="JumpStart" />
+        <Point X="11.604" Y="5.375" Type="JumpEnd" />
+        <Point X="10" Y="5.375" />
+        <Point X="10" Y="5.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAACAAAAAIAAAAGAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Regions\RegionsViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.RegionViewModel" Collapsed="true">
+    <Position X="9.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAACBQAIhAAKBAQAQAAAAmCAggBhAAIAQAAAAQAIEgE=</HashCode>
+      <FileName>ViewModels\Regions\RegionViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Regions" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.TileInstanceViewModel" Collapsed="true">
+    <Position X="10.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AACBAAAAgAAAAAAgAAAAoAAAAAAAAADAAAAAAAIAAQA=</HashCode>
+      <FileName>ViewModels\Tiles\TileInstanceViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Region" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.TilesViewModel" Collapsed="true">
+    <Position X="7.25" Y="5.75" Width="1.5" />
+    <InheritanceLine Type="WorldEditor.ViewModels.CollectionViewModel&lt;T&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="14.375" Y="4.691" />
+        <Point X="14.375" Y="5.375" />
+        <Point X="13.271" Y="5.375" Type="JumpStart" />
+        <Point X="13.104" Y="5.375" Type="JumpEnd" />
+        <Point X="11.771" Y="5.375" Type="JumpStart" />
+        <Point X="11.604" Y="5.375" Type="JumpEnd" />
+        <Point X="9.833" Y="5.375" Type="JumpStart" />
+        <Point X="9.667" Y="5.375" Type="JumpEnd" />
+        <Point X="8" Y="5.375" />
+        <Point X="8" Y="5.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAACAAAAAAAAAAGAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Tiles\TilesViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.TileViewModel" Collapsed="true">
+    <Position X="7.25" Y="7" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgACgAAAAAAIAAAAAgAAAAAAAAAAAIIAAAAAAAIAAwA=</HashCode>
+      <FileName>ViewModels\Tiles\TileViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Tiles" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.InstanceViewModel" Collapsed="true">
+    <Position X="8.25" Y="8.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgCCAgAAgAAAAAAAAAAAgABACCAIBAAACABkAAIAYwE=</HashCode>
+      <FileName>ViewModels\Instances\InstanceViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Region" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.AnimationViewModel" Collapsed="true">
+    <Position X="13" Y="8" Width="2" />
+    <InheritanceLine Type="WorldEditor.ViewModels.CollectionViewModel&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.375" Y="4.691" />
+        <Point X="14.375" Y="5.375" />
+        <Point X="15.246" Y="5.375" />
+        <Point X="15.246" Y="8.375" />
+        <Point X="15" Y="8.375" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AgACAIEAAACAAAAAgAAAAEAAAAEAAAAAAAAAIAAAAiA=</HashCode>
+      <FileName>ViewModels\SpriteModels\AnimationViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="SpriteModel" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.FrameViewModel" Collapsed="true">
+    <Position X="13" Y="9.25" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAIIABAACAAAAgAAAAEAAAAAAAAAAAABgAAAAYAE=</HashCode>
+      <FileName>ViewModels\SpriteModels\FrameViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Animation" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.SpriteModelsViewModel" Collapsed="true">
+    <Position X="13" Y="5.75" Width="2" />
+    <Members>
+      <Property Name="MainViewModel" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="WorldEditor.ViewModels.CollectionViewModel&lt;T&gt;" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.375" Y="4.691" />
+        <Point X="14.375" Y="5.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAACAAAAAAAAAAGAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\SpriteModels\SpriteModelsViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="MainViewModel" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.SpriteModelViewModel" Collapsed="true">
+    <Position X="13" Y="6.75" Width="2" />
+    <InheritanceLine Type="WorldEditor.ViewModels.CollectionViewModel&lt;T&gt;" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="14.375" Y="4.691" />
+        <Point X="14.375" Y="5.375" />
+        <Point X="15.241" Y="5.375" />
+        <Point X="15.241" Y="7.125" />
+        <Point X="15" Y="7.125" />
+      </Path>
+    </InheritanceLine>
+    <AssociationLine Name="SpriteModels" Type="WorldEditor.ViewModels.SpriteModelsViewModel">
+      <MemberNameLabel ManuallyPlaced="true" ManuallySized="true">
+        <Position X="0.11" Y="0.06" Height="0.182" Width="1.129" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>AhACAEEAAAOICAAAABAEAEBAACMAUIAgAAAAAAAAEgA=</HashCode>
+      <FileName>ViewModels\SpriteModels\SpriteModelViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="SpriteModels" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.BreedsViewModel" Collapsed="true">
+    <Position X="11.25" Y="5.75" Width="1.5" />
+    <Members>
+      <Property Name="MainViewModel" Hidden="true" />
+    </Members>
+    <InheritanceLine Type="WorldEditor.ViewModels.CollectionViewModel&lt;T&gt;" FixedFromPoint="true">
+      <Path>
+        <Point X="14.375" Y="4.691" />
+        <Point X="14.375" Y="5.375" />
+        <Point X="13.271" Y="5.375" Type="JumpStart" />
+        <Point X="13.104" Y="5.375" Type="JumpEnd" />
+        <Point X="12" Y="5.375" />
+        <Point X="12" Y="5.75" />
+      </Path>
+    </InheritanceLine>
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAACAAAAAAAAAAGAAAAEAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>ViewModels\Breeds\BreedsViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="MainViewModel" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.BreedViewModel" Collapsed="true">
+    <Position X="11.25" Y="7.25" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AiACAEAAAAAIAAAAAgAAAACAAAAhAAABARAAgQIiAgA=</HashCode>
+      <FileName>ViewModels\Breeds\BreedViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Breeds" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.MainViewModel" Collapsed="true">
+    <Position X="8.75" Y="4" Width="1.5" />
+    <AssociationLine Name="Breeds" Type="WorldEditor.ViewModels.BreedsViewModel" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.25" Y="4.448" />
+        <Point X="11.688" Y="4.448" />
+        <Point X="11.688" Y="5.75" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.075" Y="0.568" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Regions" Type="WorldEditor.ViewModels.RegionsViewModel">
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.11" Y="0.556" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Sidebar" Type="WorldEditor.ViewModels.SidebarViewModel" FixedToPoint="true">
+      <Path>
+        <Point X="8.75" Y="4.125" />
+        <Point X="7.25" Y="4.125" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.154" Y="0.145" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="SpriteModels" Type="WorldEditor.ViewModels.SpriteModelsViewModel" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="10.25" Y="4.188" />
+        <Point X="13.188" Y="4.188" />
+        <Point X="13.188" Y="5.75" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.122" Y="0.603" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Textures" Type="WorldEditor.ViewModels.TexturesViewModel" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8.75" Y="4.244" />
+        <Point X="7.501" Y="4.244" />
+        <Point X="7.501" Y="4.839" />
+        <Point X="5.875" Y="4.839" />
+        <Point X="5.875" Y="5.75" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="0.145" Y="0.214" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <AssociationLine Name="Tiles" Type="WorldEditor.ViewModels.TilesViewModel" ManuallyRouted="true" FixedFromPoint="true" FixedToPoint="true">
+      <Path>
+        <Point X="8.75" Y="4.55" />
+        <Point X="7.688" Y="4.55" />
+        <Point X="7.688" Y="5.75" />
+      </Path>
+      <MemberNameLabel ManuallyPlaced="true">
+        <Position X="-0.559" Y="0.622" />
+      </MemberNameLabel>
+    </AssociationLine>
+    <TypeIdentifier>
+      <HashCode>gxAAAQABAEAACEVAAgACAAAAUgIEAAICAAAAKAKAAAE=</HashCode>
+      <FileName>ViewModels\MainViewModel.cs</FileName>
+    </TypeIdentifier>
+    <ShowAsAssociation>
+      <Property Name="Breeds" />
+      <Property Name="Regions" />
+      <Property Name="Sidebar" />
+      <Property Name="SpriteModels" />
+      <Property Name="Textures" />
+      <Property Name="Tiles" />
+    </ShowAsAssociation>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.SidebarViewModel" Collapsed="true">
+    <Position X="5.75" Y="4" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AABAAAAAAAAAAAACIAQAACAEAIAAAACCAAQAAAAEQAA=</HashCode>
+      <FileName>ViewModels\SidebarViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="WorldEditor.ViewModels.CollectionViewModel&lt;T&gt;" Collapsed="true">
+    <Position X="13.5" Y="4" Width="2" />
+    <Members>
+      <Method Name="CollectionViewModel" Hidden="true" />
+      <Property Name="EditItem" Hidden="true" />
+      <Method Name="ExecuteEditItem" Hidden="true" />
+      <Method Name="ExecuteRemoveItem" Hidden="true" />
+      <Property Name="IsItemSelected" Hidden="true" />
+      <Property Name="Items" Hidden="true" />
+      <Method Name="ReloadItems" Hidden="true" />
+      <Property Name="RemoveItem" Hidden="true" />
+      <Property Name="SelectedItem" Hidden="true" />
+    </Members>
+    <TypeIdentifier>
+      <HashCode>AAAAAAEEAACACAAAAAgAAEAAgAEAAAAEABAAAAEQAAA=</HashCode>
+      <FileName>ViewModels\CollectionViewModel.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Font Name="Segoe UI" Size="9" />
+</ClassDiagram>

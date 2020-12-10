@@ -278,8 +278,8 @@ namespace Common.Script.Visitors
             if (symbol != null)
                 return symbol;
 
-            errors.Add(new Error(context, $"{symbolName} does not exist in this context."));
-            return null;
+            errors.Add(new Error(context, $"{symbolName} MAY not exist in this context.", ErrorSeverity.Warning));
+            return new Symbol(symbolName, TypeSystem.Instance["ErrorType"]);
         }
 
         private Symbol GetSymbolFromScope(IToken token, string symbolName)
@@ -291,8 +291,8 @@ namespace Common.Script.Visitors
             if (symbol != null)
                 return symbol;
 
-            errors.Add(new Error(token, $"{symbolName} does not exist in this context."));
-            return null;
+            errors.Add(new Error(token, $"{symbolName} MAY not exist in this context.", ErrorSeverity.Warning));
+            return new Symbol(symbolName, TypeSystem.Instance["ErrorType"]);
         }
     }
 }

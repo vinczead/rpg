@@ -61,10 +61,31 @@ namespace WorldEditor.ViewModels
 
         private void ExecuteInstanceClicked(InstanceViewModel instanceViewModel)
         {
-            new InstanceEditWindow()
+            if (Regions.MainViewModel.Sidebar.SelectedTool == Utility.ToolType.EntityTool)
             {
-                DataContext = new InstanceViewModel(instanceViewModel.Breed, instanceViewModel.ThingInstance, this)
-            }.ShowDialog();
+                new InstanceEditWindow()
+                {
+                    DataContext = new InstanceViewModel(instanceViewModel.Breed, instanceViewModel.ThingInstance, this)
+                }.ShowDialog();
+            }
+
+            if (Regions.MainViewModel.Sidebar.SelectedTool == Utility.ToolType.PlayerTool)
+            {
+                if(instanceViewModel.ThingInstance.GetType() != typeof(CharacterInstance))
+                {
+                    MessageBox.Show("Please select a Character instance.", "Failed to set player");
+                    return;
+                }
+
+                if (instanceViewModel.ThingInstance.IsIdGenerated)
+                {
+                    MessageBox.Show("Please provide a custom Id for the character first.", "Failed to set player");
+                    return;
+                }
+
+                Regions.MainViewModel.PlayerInstance = instanceViewModel;
+
+            }
         }
 
         private void ExecuteTileClicked(Vector2 position)
@@ -238,7 +259,7 @@ namespace WorldEditor.ViewModels
                         }
                     }
                     Region = regionToAdd;
-                    
+
                     Instances = new ObservableCollection<InstanceViewModel>();
 
                     World.Instance.Regions.Add(id, regionToAdd);

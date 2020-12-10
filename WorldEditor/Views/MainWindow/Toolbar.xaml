@@ -28,5 +28,10 @@
             Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.EntityTool}">
             <Image Source="/Resources/Icons/Object_16x.png"/>
         </Button>
+        <Button
+            ToolTip="Player Tool"
+            Command="{Binding Sidebar.SetTool}" CommandParameter="{x:Static utility:ToolType.PlayerTool}">
+            <Image Source="/Resources/Icons/Player_16x.png"/>
+        </Button>
     </ToolBar>
 </UserControl>
