@@ -20,6 +20,7 @@ namespace Common.Utility
         public static Texture2D PopupBackground { get; set; }
         public static Texture2D TransparentBox { get; set; }
         public static Texture2D SolidBox { get; set; }
+        public static Texture2D MenuBackground { get; set; }
 
         public static void LoadGameContent(ContentManager contentManager)
         {
@@ -29,6 +30,7 @@ namespace Common.Utility
             PopupBackground = contentManager.Load<Texture2D>("GUI/PopupBackground");
             TransparentBox = contentManager.Load<Texture2D>("GUI/TransparentBox");
             SolidBox = contentManager.Load<Texture2D>("GUI/SolidBox");
+            MenuBackground = contentManager.Load<Texture2D>("GUI/MenuBackground");
         }
     }
 }

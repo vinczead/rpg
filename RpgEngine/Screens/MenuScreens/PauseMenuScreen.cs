@@ -70,6 +70,7 @@ namespace RpgEngine.Screens
         {
             ScreenManager.RemoveScreen(this);
             ScreenManager.PopScreen();
+            ScreenManager.PopScreen();
             ScreenManager.AddScreen(new MainMenuScreen());
         }
     }

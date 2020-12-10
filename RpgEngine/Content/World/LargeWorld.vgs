@@ -1,8 +1,8 @@
-texture T_TILES from "textures/TILES.png"
-texture T_MAN from "textures/man.png"
-texture T_RING from "textures/RING.png"
-texture T_TREE from "textures\tree.png"
-texture T_ITEMS from "textures\ITEMS.png"
+texture T_TILES from "large-textures/TILES.png"
+texture T_MAN from "large-textures/man.png"
+texture T_RING from "large-textures/RING.png"
+texture T_TREE from "large-textures\tree.png"
+texture T_ITEMS from "large-textures\ITEMS.png"
 
 model M_GRASS from T_TILES
     frame size 32, 32 

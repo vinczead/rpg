@@ -46,7 +46,7 @@ namespace RpgEngine.Screens
         {
             var sb = ScreenManager.SpriteBatch;
 
-            GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, new Vector2(Constants.CanvasWidth / 2, Constants.CanvasHeight / 2), new Vector2(100, 80), Assets.TranslucentBlack1);
+            GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, new Vector2(Constants.CanvasWidth / 2, Constants.CanvasHeight / 2), new Vector2(250, 80), Assets.TranslucentBlack1);
             GuiHelper.DrawCenteredText(sb, Assets.StandardFont, message, new Vector2(Constants.CanvasWidth / 2, 85), Assets.StandardTextColor);
 
             base.Draw(gameTime);

@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using RpgEngine.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -24,6 +25,12 @@ namespace RpgEngine.Screens
 
         }
 
+        public override void Draw(GameTime gameTime)
+        {
+            ScreenManager.SpriteBatch.Draw(Assets.MenuBackground, new Rectangle(0, 0, 320, 200), Color.White);
+            base.Draw(gameTime);
+        }
+
         private void CreditsMenuSelected(object sender, EventArgs e)
         {
             ScreenManager.AddScreen(new CreditsScreen());
@@ -31,7 +38,18 @@ namespace RpgEngine.Screens
 
         private void NewGameMenuSelected(object sender, EventArgs e)
         {
-            LoadingScreen.Load(ScreenManager, new Screen[] { new GameplayScreen("Content/World/World.vgs") });
+            var worlds = Directory.GetFiles("Content/World", "*.vgs");
+            if (worlds.Length == 1)
+            {
+                LoadingScreen.Load(ScreenManager, new Screen[] { new GameplayScreen(worlds[0]) });
+            }
+            else
+                ScreenManager.AddScreen(SelectorMenuScreen.Create("Select a world!", worlds, StartWorld));
+        }
+
+        private void StartWorld(object sender, MenuItemSelectedEventArgs e)
+        {
+            LoadingScreen.Load(ScreenManager, new Screen[] { new GameplayScreen(e.MenuItem.Text) });
         }
 
         private void LoadGameMenuSelected(object sender, EventArgs e)
