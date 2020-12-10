@@ -138,7 +138,7 @@ namespace WorldEditor.ViewModels
         }
 
         public int Top { get => Y - Breed?.SpriteModel?.Items?[0]?.Items?[0]?.Height ?? 0; }
-        public int Left { get => X - Breed?.SpriteModel?.Items?[0]?.Items?[0]?.Width ?? 0; }
+        public int Left { get => X - Breed?.SpriteModel?.Items?[0]?.Items?[0]?.Width / 2 ?? 0; }
         public int FrameOffsetX { get => -Breed?.SpriteModel?.Items?[0]?.Items?[0]?.X ?? 0; }
         public int FrameOffsetY { get => -Breed?.SpriteModel?.Items?[0]?.Items?[0]?.Y ?? 0; }
         public int FrameWidth { get => Breed?.SpriteModel?.Items?[0]?.Items?[0]?.Width ?? 0; }
