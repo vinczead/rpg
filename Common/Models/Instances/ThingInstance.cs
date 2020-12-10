@@ -60,7 +60,8 @@ namespace Common.Models
                 }
             }
 
-            var elapsedTime = new Symbol("ElapsedTime", TypeSystem.Instance["Number"], gameTime.ElapsedGameTime.TotalMilliseconds.ToString());
+            var elapsedMs = gameTime.ElapsedGameTime.TotalMilliseconds.ToString();
+            var elapsedTime = new Symbol("ElapsedTime", TypeSystem.Instance["Number"], elapsedMs);
             ExecutionVisitor.ExecuteRunBlock(this, "Updated", new List<Symbol>() { elapsedTime });
         }
 
