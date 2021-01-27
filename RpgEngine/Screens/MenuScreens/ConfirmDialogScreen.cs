@@ -23,8 +23,10 @@ namespace RpgEngine.Screens
                 Description = "",
                 Font = Assets.StandardFont
             };
-            var noMenuPosX = (int)(Constants.CanvasWidth / 2 - Assets.StandardFont.MeasureString(noMenu.Text).X / 2);
-            noMenu.Position = new Vector2(noMenuPosX, 100);
+            var measuredString = Assets.StandardFont.MeasureString(noMenu.Text);
+
+            var noMenuPosX = (int)(Constants.CanvasWidth / 2 - measuredString.X / 2);
+            noMenu.Position = new Vector2(noMenuPosX, Constants.CanvasHeight / 2);
             if (noHandler != null)
                 noMenu.Selected += noHandler;
             noMenu.Selected += OnCancel;
@@ -36,7 +38,7 @@ namespace RpgEngine.Screens
                 Font = Assets.StandardFont,
             };
             var yesMenuPosX = (int)(Constants.CanvasWidth / 2 - Assets.StandardFont.MeasureString(yesMenu.Text).X / 2);
-            yesMenu.Position = new Vector2(yesMenuPosX, 115);
+            yesMenu.Position = new Vector2(yesMenuPosX, Constants.CanvasHeight / 2 + measuredString.Y);
             if (yesHandler != null)
                 yesMenu.Selected += yesHandler;
             MenuItems.Add(yesMenu);
@@ -46,8 +48,10 @@ namespace RpgEngine.Screens
         {
             var sb = ScreenManager.SpriteBatch;
 
+            var measuredString = Assets.StandardFont.MeasureString(message);
+
             GuiHelper.DrawCenteredTextureStretched(sb, Assets.SolidBox, new Vector2(Constants.CanvasWidth / 2, Constants.CanvasHeight / 2), new Vector2(250, 80), Assets.TranslucentBlack1);
-            GuiHelper.DrawCenteredText(sb, Assets.StandardFont, message, new Vector2(Constants.CanvasWidth / 2, 85), Assets.StandardTextColor);
+            GuiHelper.DrawCenteredText(sb, Assets.StandardFont, message, new Vector2(Constants.CanvasWidth / 2, Constants.CanvasHeight / 2 - measuredString.Y), Assets.StandardTextColor);
 
             base.Draw(gameTime);
         }
